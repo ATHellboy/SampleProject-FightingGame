@@ -100,8 +100,8 @@ namespace Assets.Infrastructure.MessageBusImplementations.UniRx {
 							Subscription = subscription
 						});
 					} else {
-						//Debug.LogWarning("Duplicate Subscription.");
-					}
+                        Debug.LogWarning("Duplicate Subscription.");
+                    }
 				}
 			} else {
 				UnityEngine.Debug.LogWarning($"Message Rule for {messageHandlerType.Name}<{messageType}> Not Found.");
