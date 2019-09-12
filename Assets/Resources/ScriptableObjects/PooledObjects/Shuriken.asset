@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfded651e93c48444b3795b47d7855fa, type: 3}
+  m_Name: Shuriken
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4709808579339924, guid: 47e219dcf944ccd40a581635c8c00fbe, type: 3}
+  number: 10
+  expandBy: 1
+  parent: {fileID: 0}
