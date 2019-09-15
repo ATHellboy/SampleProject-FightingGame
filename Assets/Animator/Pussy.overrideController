@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Pussy
+  m_Controller: {fileID: 9100000, guid: 35a862e55eb35b5488b14578c8e11fda, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 393e1af87be0f134386cef9f66b209c9, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: fdfb9d7bd36b48642ac072a27ba25094, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 5a61b98932e4657448f27009b6c39ec7, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 134147482c1e04644a3bd6856a0bd197, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: f802d0f8a7566f74c8649d415032765d, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: c7c4795fc9c3ced47af1890bee783612, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 15d83fcf5bc0b4a4a8d9fbe4b76d4231, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: c7c4795fc9c3ced47af1890bee783612, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 5776fc16d68d30847beee63a2cbe51d9, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 55d18d6f192344e488bbab04e5021729, type: 2}

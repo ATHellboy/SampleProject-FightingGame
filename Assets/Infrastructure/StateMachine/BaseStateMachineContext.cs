@@ -1,23 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class BaseStateMachineContext : IStateMachineContext
+namespace Infrastructure.StateMachine
 {
-    public GameObject GO { get; private set; }
-    public IState StartState { get; private set; }
-    public IState CurrentState { get; set; }
-    public bool UpdateStateMachine { get; private set; }
-
-    public BaseStateMachineContext(GameObject go, IState startState)
+    public class BaseStateMachineContext : IStateMachineContext
     {
-        GO = go;
-        StartState = startState;
-        UpdateStateMachine = false;
-    }
+        public GameObject GO { get; private set; }
+        public IState StartState { get; private set; }
+        public IState CurrentState { get; set; }
+        public bool IsActive { get; private set; } = false;
+        public bool CanControl { get; private set; } = false;
+        public bool DebugStateMachine { get; private set; }
 
-    public void ToggleStateMachineUpdate(bool update)
-    {
-        UpdateStateMachine = update;
+        public BaseStateMachineContext(GameObject go, IState startState, bool debug)
+        {
+            GO = go;
+            StartState = startState;
+            DebugStateMachine = debug;
+        }
+
+        public void ToggleContext(bool active)
+        {
+            IsActive = active;
+        }
+
+        public void ToggleControl(bool active)
+        {
+            CanControl = active;
+        }
     }
 }

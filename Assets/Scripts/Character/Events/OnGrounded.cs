@@ -1,26 +1,17 @@
-﻿using AlirezaTarahomi.FightingGame.Player.Event;
-using Assets.Infrastructure.Scripts.CQRS;
+﻿using Assets.Infrastructure.Scripts.CQRS;
 using System;
 using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.Event
 {
-    public class OnGrounded : IEvent, IPlayerIdProperty, IScriptableObjectProperty
+    public class OnGrounded : IEvent
     {
         public string EntityId { get; }
         public DateTime UtcOccureTime { get; }
-        public int PlayerId { get; }
-        public CharacterStats Type { get; }
 
-        public OnGrounded(int id, CharacterStats type)
+        public OnGrounded(string entityId)
         {
-            PlayerId = id;
-            Type = type;
-        }
-
-        public ScriptableObject GetScriptableObject()
-        {
-            return Type;
+            EntityId = entityId;
         }
     }
 }

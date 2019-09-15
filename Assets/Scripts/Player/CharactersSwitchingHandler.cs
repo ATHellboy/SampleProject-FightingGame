@@ -1,5 +1,4 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Event;
-using AlirezaTarahomi.FightingGame.Player.Event;
 using Assets.Infrastructure.Scripts.CQRS;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +6,6 @@ using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.Player
 {
-    // TODO: Switch state on character
     public class CharactersSwitchingHandler
     {
         private IMessageBus _messageBus;
@@ -15,7 +13,7 @@ namespace AlirezaTarahomi.FightingGame.Player
         private Queue<Character.CharacterController> _characters = new Queue<Character.CharacterController>();
         private Character.CharacterController _currentCharacterController;
 
-        public CharactersSwitchingHandler(IMessageBus messageBus, [Inject(Id = "id")] int id)
+        public CharactersSwitchingHandler(IMessageBus messageBus, [Inject(Id = "playerId")] int id)
         {
             _messageBus = messageBus;
             _id = id;
@@ -34,22 +32,22 @@ namespace AlirezaTarahomi.FightingGame.Player
         public Transform ConfigCharacters()
         {
             _currentCharacterController = DequeueCharacter();
-            _messageBus.RaiseEvent(new OnControlToggled(_id, _currentCharacterController.Stats, true));
-            _messageBus.RaiseEvent(new OnOtherDisabled(_id, _currentCharacterController.Stats));
+            _currentCharacterController.isJustEntered = true;
+            _messageBus.RaiseEvent(new OnOtherDisabled(_currentCharacterController.EntityId, _id));
             return _currentCharacterController.transform;
         }
 
         public Transform EnterNextCharacter()
         {
             _currentCharacterController = DequeueCharacter();
-            _messageBus.RaiseEvent(new OnCharacterArrivalToggled(_id, _currentCharacterController.Stats, true));
+            _messageBus.RaiseEvent(new OnCharacterArrivalToggled(_currentCharacterController.EntityId, true));
             return _currentCharacterController.transform;
         }
 
         public void ExitCurrentCharacter()
         {
             EnqueueCharacter(_currentCharacterController);
-            _messageBus.RaiseEvent(new OnCharacterArrivalToggled(_id, _currentCharacterController.Stats, false));
+            _messageBus.RaiseEvent(new OnCharacterArrivalToggled(_currentCharacterController.EntityId, false));
         }
     }
 }

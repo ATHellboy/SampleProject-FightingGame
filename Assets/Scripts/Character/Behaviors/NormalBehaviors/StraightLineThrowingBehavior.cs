@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
 {
@@ -20,19 +19,26 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
             ThrowingObjectBehavior = throwingObjectBehavior;
         }
 
-        public Status Behave()
+        public Status BehaviorCondition
         {
-            if (_context.isGrounded || _context.jumpCounter <= 2)
+            get
             {
-                ThrowingObjectBehavior.UseObject(_context.Transform.right);
-                return Status.Success;
+                if (_context.isGrounded || _context.jumpCounter <= 1)
+                {
+                    return Status.Success;
+                }
+                return Status.Fail;
             }
-            return Status.Fail;
         }
 
-        public Status EndBehavior()
+        public void Behave()
         {
-            return Status.Success;
+            ThrowingObjectBehavior.UseObject(_context.Transform.right);
+        }
+
+        public void EndBehavior()
+        {
+
         }
     }
 }

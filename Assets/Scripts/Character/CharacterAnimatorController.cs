@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character
 {
@@ -28,6 +26,16 @@ namespace AlirezaTarahomi.FightingGame.Character
             _animator.SetBool("isJumped", active);
         }
 
+        public void ToggleFalling(bool active)
+        {
+            _animator.SetBool("isFallen", active);
+        }
+
+        public void ToggleLanding(bool active)
+        {
+            _animator.SetBool("isLanded", active);
+        }
+
         public void ToggleAttacking(bool active)
         {
             _animator.SetBool("isAttacked", active);
@@ -36,6 +44,11 @@ namespace AlirezaTarahomi.FightingGame.Character
         public void Die()
         {
             _animator.SetBool("isDied", true);
+        }
+
+        public void Reset()
+        {
+            _animator.Rebind();
         }
     }
 }

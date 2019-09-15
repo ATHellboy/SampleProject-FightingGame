@@ -5,30 +5,28 @@ using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.Character
 {
-    // TODO: Remove Mono
     public class GroundCheck : MonoBehaviour
     {
-        private CharacterController _controller;
         private IMessageBus _messageBus;
-        private CharacterStats _stats;
-        private int _playerId;
+        private string _characterId;
+        private CharacterController _controller;
         private Collider2D _collider;
 
         [Inject]
         public void Construct(IMessageBus messageBus, [Inject(Id = "stats")] CharacterStats stats,
-            [Inject(Id = "id")] int playerId)
+            [Inject(Id = "id")] string characterId)
         {
             _messageBus = messageBus;
+            _characterId = characterId;
+
             _controller = GetComponentInParent<CharacterController>();
-            _stats = stats;
-            _playerId = playerId;
             _collider = GetComponent<Collider2D>();
         }
 
         void OnTriggerEnter2D(Collider2D collision)
         {
             _controller.isGrounded = true;
-            _messageBus.RaiseEvent(new OnGrounded(_playerId, _stats));
+            _messageBus.RaiseEvent(new OnGrounded(_characterId));
         }
 
         void OnTriggerExit2D(Collider2D collision)

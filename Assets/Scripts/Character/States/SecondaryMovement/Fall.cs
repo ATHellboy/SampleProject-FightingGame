@@ -1,33 +1,31 @@
-﻿using AlirezaTarahomi.FightingGame.InputSystem;
-using System.Collections;
-using System.Collections.Generic;
-using AlirezaTarahomi.FightingGame.Character.Context;
+﻿using AlirezaTarahomi.FightingGame.Character.Context;
+using Infrastructure.StateMachine;
 using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
 {
     public class Fall : BaseState<CharacterSecondaryMovementStateMachineContext>
     {
-        private InputManager _inputManager;
-
-        public Fall(InputManager inputManager)
-        {
-            _inputManager = inputManager;
-        }
-
         public override void Enter(CharacterSecondaryMovementStateMachineContext context)
         {
             context.LocomotionHandler.ChangeMoveSpeed(context.Stats.airMovementValues.inAirMoveSpeed);
             context.LocomotionHandler.SetAirGravityScale();
-            context.AnimatorController.ToggleJumping(true);
+            context.AnimatorController.ToggleFalling(true);
         }
 
-        public override void Update(StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
+        public override void Update(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
         {
-            if (context.jumpCounter < context.Stats.airMovementValues.jumpNumber && _inputManager.IsDown("Jump_P" + context.Id))
+            if (context.isFlying)
             {
-                context.jumpCounter++;
-                context.LocomotionHandler.Jump(context.Stats.airMovementValues.lessJumpHeight, context.Stats.airMovementValues.jumpSpeed);
+                NextState = context.RelatedStates.fly;
+                stateMachine.ChangeState(this, NextState, context);
+            }
+
+            if (context.CheckNextJumpCondition())
+            {
+                context.jumpHeight = context.Stats.airMovementValues.lessJumpHeight;
+                NextState = context.RelatedStates.jump;
+                stateMachine.ChangeState(this, NextState, context);
             }
 
             if (context.jumpCounter > 1)
@@ -36,7 +34,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
             }
         }
 
-        public override void FixedUpdate(StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
+        public override void FixedUpdate(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
         {
             if (context.isGrounded)
             {
@@ -45,9 +43,14 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
             }
         }
 
+        public override void LateUpdate(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
+        {
+
+        }
+
         public override void Exit(CharacterSecondaryMovementStateMachineContext context)
         {
-            context.AnimatorController.ToggleJumping(false);
+            context.AnimatorController.ToggleFalling(false);
             if (context.jumpCounter > 1)
             {
                 context.LocomotionHandler.ChangeDetectionCollisionMode(CollisionDetectionMode2D.Discrete);

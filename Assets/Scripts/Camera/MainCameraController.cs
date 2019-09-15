@@ -3,9 +3,6 @@ using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.CameraSystem
 {
-    /// <summary>
-    /// Facade class for MainCamera
-    /// </summary>
     public class MainCameraController : MonoBehaviour
     {
         public Vector2 CameraSize

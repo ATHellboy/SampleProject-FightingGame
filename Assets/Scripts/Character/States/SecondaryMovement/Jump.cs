@@ -1,49 +1,66 @@
-﻿using AlirezaTarahomi.FightingGame.InputSystem;
-using System.Collections;
-using System.Collections.Generic;
-using AlirezaTarahomi.FightingGame.Character.Context;
+﻿using AlirezaTarahomi.FightingGame.Character.Context;
+using Infrastructure.StateMachine;
 using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
 {
     public class Jump : BaseState<CharacterSecondaryMovementStateMachineContext>
     {
-        private InputManager _inputManager;
-
-        public Jump(InputManager inputManager)
-        {
-            _inputManager = inputManager;
-        }
-
         public override void Enter(CharacterSecondaryMovementStateMachineContext context)
         {
-            context.jumpCounter = 1;
             context.LocomotionHandler.ChangeMoveSpeed(context.Stats.airMovementValues.inAirMoveSpeed);
-            context.LocomotionHandler.Jump(context.Stats.airMovementValues.jumpHeight, context.Stats.airMovementValues.jumpSpeed);
+            ExecuteJumping(context.jumpHeight, context.Stats.airMovementValues.jumpSpeed, context);
             context.AnimatorController.ToggleJumping(true);
         }
 
-        public override void Update(StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
+        public override void Update(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
         {
-            if (context.jumpCounter < context.Stats.airMovementValues.jumpNumber && _inputManager.IsDown("Jump_P" + context.Id))
+            if (context.isFlying)
             {
-                context.jumpCounter++;
-                context.LocomotionHandler.Jump(context.Stats.airMovementValues.lessJumpHeight, context.Stats.airMovementValues.jumpSpeed);
+                NextState = context.RelatedStates.fly;
+                stateMachine.ChangeState(this, NextState, context);
+            }
+
+            if (context.CheckNextJumpCondition())
+            {
+                context.jumpHeight = context.Stats.airMovementValues.lessJumpHeight;
+                ExecuteJumping(context.jumpHeight, context.Stats.airMovementValues.jumpSpeed, context);
             }
         }
 
-        public override void FixedUpdate(StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
+        public override void FixedUpdate(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
         {
-            if (context.LocomotionHandler.GetVelocity().y == 0 || Mathf.Sign(context.LocomotionHandler.GetVelocity().y) == -1)
+            if (CheckFallCondition(context))
             {
                 NextState = context.RelatedStates.fall;
                 stateMachine.ChangeState(this, NextState, context);
             }
         }
 
+        public override void LateUpdate(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
+        {
+
+        }
+
         public override void Exit(CharacterSecondaryMovementStateMachineContext context)
         {
             context.AnimatorController.ToggleJumping(false);
+        }
+
+        private void ExecuteJumping(float height, float speed, CharacterSecondaryMovementStateMachineContext context)
+        {
+            context.jumpCounter++;
+            context.LocomotionHandler.Jump(height, speed);
+        }
+
+        private bool CheckFallCondition(CharacterSecondaryMovementStateMachineContext context)
+        {
+            if (context.LocomotionHandler.GetVelocity().y == 0 ||
+                Mathf.Sign(context.LocomotionHandler.GetVelocity().y) == -1)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

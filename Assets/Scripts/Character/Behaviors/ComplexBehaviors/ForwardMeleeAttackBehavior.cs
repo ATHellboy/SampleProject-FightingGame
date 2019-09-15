@@ -11,8 +11,8 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
     [CreateAssetMenu(menuName = "Attacks/Complex Attacks/ForwardMeleeAttackBehavior")]
     public class ForwardMeleeAttackBehavior : ScriptableObject, IComplexAttackBehavior
     {
-        public float velocity = 50;
-        public float distance = 8;
+        [SerializeField] private float _velocity = 50;
+        [SerializeField] private float _distance = 8;
 
         private IMessageBus _messageBus;
         private CharacterBehaviorContext _context;
@@ -28,35 +28,42 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
             _context = context;
         }
 
-        public Status Behave()
+        public Status BehaviorCondition
         {
-            if (!_context.isGrounded)
+            get
             {
-                _messageBus.RaiseEvent(new OnControlToggled(_context.PlayerId, _context.Stats, false));
-                _context.hitboxCollider.enabled = true;
-                _context.AnimatorController.ToggleAttacking(true);
-                 Observable.FromCoroutine(_ => MoveForwardThenAttack()).Subscribe();
-                return Status.Success;
+                if (!_context.isGrounded)
+                {
+                    return Status.Success;
+                }
+                return Status.Fail;
             }
-            return Status.Fail;
         }
 
-        public Status EndBehavior()
+        public void Behave()
         {
-            _messageBus.RaiseEvent(new OnControlToggled(_context.PlayerId, _context.Stats, true));
+            _messageBus.RaiseEvent(new OnCharacterFlownToggled(_context.CharacterId, true));
+            _messageBus.RaiseEvent(new OnControlToggled(_context.CharacterId, false));
+            _context.hitboxCollider.enabled = true;
+            _context.AnimatorController.ToggleAttacking(true);
+            Observable.FromCoroutine(_ => MoveForwardAndAttack()).Subscribe();
+        }
+
+        public void EndBehavior()
+        {
+            _messageBus.RaiseEvent(new OnCharacterFlownToggled(_context.CharacterId, false));
+            _messageBus.RaiseEvent(new OnControlToggled(_context.CharacterId, true));
             _context.hitboxCollider.enabled = false;
             _context.AnimatorController.ToggleAttacking(false);
-            return Status.Success;
         }
 
-        IEnumerator MoveForwardThenAttack()
+        IEnumerator MoveForwardAndAttack()
         {
-            _context.LocomotionHandler.PushForward(velocity);
+            _context.LocomotionHandler.PushForward(_velocity);
 
-            yield return new WaitForSeconds(distance / velocity);
+            yield return new WaitForSeconds(_distance / _velocity);
 
-            _messageBus.RaiseEvent(new OnPushForwardEnded(_context.PlayerId, _context.Stats));
-            _messageBus.RaiseEvent(new OnAttackToggled(_context.PlayerId, _context.Stats, false));
+            _messageBus.RaiseEvent(new OnAttackToggled(_context.CharacterId, _context.PlayerId, false));
         }
     }
 }

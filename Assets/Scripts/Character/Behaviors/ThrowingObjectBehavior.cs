@@ -1,11 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Zenject;
-using System;
 using Assets.Infrastructure.Scripts.CQRS;
 using AlirezaTarahomi.FightingGame.Character.Event;
-using AlirezaTarahomi.FightingGame.Service;
 using AlirezaTarahomi.FightingGame.Tool;
 using Infrastructure.ObjectPool;
 using AlirezaTarahomi.FightingGame.Tool.Event;
@@ -15,14 +11,11 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
     [CreateAssetMenu(menuName = "Attacks/ThrowingObjectBehavior")]
     public class ThrowingObjectBehavior : ScriptableObject
     {
-        public int maxObjectNumber = 9;
-        public float throwingForce = 1.5f;
-
-        public int MaxObjectNumber { get; private set; }
+        [SerializeField] private int _maxObjectNumber = 9;
+        [SerializeField] private float _throwingForce = 1.5f;
+        [SerializeField] private PooledObjectStats _throwableObjectPoolStats = default;
 
         [HideInInspector] public int counter;
-
-        [SerializeField] private PooledObjectStats _throwableObjectPoolStats = default;
 
         private IMessageBus _messageBus;
         private PoolSystem _poolSystem;
@@ -33,7 +26,8 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
         {
             _messageBus = messageBus;
             _poolSystem = poolSystem;
-            counter = maxObjectNumber;
+
+            counter = _maxObjectNumber;
         }
 
         public void Inject(CharacterBehaviorContext context)
@@ -47,10 +41,10 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
             {
                 if (_context.OwnershipService.Contains(collision.gameObject))
                 {
-                    ShurikenController throwableObjectController = collision.GetComponent<ShurikenController>();
-                    if (throwableObjectController.IsStuck)
+                    IThrowableObject throwableObject = collision.GetComponent<IThrowableObject>();
+                    if (throwableObject.CanPick)
                     {
-                        PickObject(collision.gameObject);
+                        PickUpObject(collision.gameObject);
                     }
                 }
             }
@@ -64,21 +58,21 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
                 Transform obj = _poolSystem.Spawn(_throwableObjectPoolStats, _context.Transform.position +
                     _context.Transform.right, Quaternion.identity);
                 _context.OwnershipService.Add(obj.gameObject);
-                ShurikenController throwableObjectController = obj.GetComponent<ShurikenController>();
+                IThrowableObject throwableObject = obj.GetComponent<IThrowableObject>();
                 if (_context.isPowerupActive)
                 {
-                    throwableObjectController.isIllusion = true;
+                    throwableObject.PrepareForPowerup();
                 }
-                throwableObjectController.Throw(throwingForce, direction.normalized);
+                throwableObject.Throw(_throwingForce, direction.normalized);
             }
-            _messageBus.RaiseEvent(new OnAttackToggled(_context.PlayerId, _context.Stats, false));
+            _messageBus.RaiseEvent(new OnAttackToggled(_context.CharacterId, _context.PlayerId, false));
         }
 
-        public void PickObject(GameObject obj)
+        public void PickUpObject(GameObject obj)
         {
             counter++;
+            _messageBus.RaiseEvent(new OnThrowableObjectPickedUp(obj));
             _context.OwnershipService.Remove(obj);
-            _messageBus.RaiseEvent(new OnThrowableObjectPicked(obj));
         }
     }
 }

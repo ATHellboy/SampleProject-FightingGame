@@ -1,65 +1,81 @@
 ﻿using System;
 
-public abstract class BaseState<TContext> : IState where TContext : IStateMachineContext
+namespace Infrastructure.StateMachine
 {
-    public IState NextState { get; protected set; }
-
-    private readonly Type _contextType;
-
-    protected BaseState()
+    public abstract class BaseState<TContext> : IState where TContext : IStateMachineContext
     {
-        _contextType = typeof(TContext);
-    }
+        public IState NextState { get; protected set; }
 
-    public void Enter(IStateMachineContext context)
-    {
-        if (!_contextType.IsAssignableFrom(context.GetType()))
+        private readonly Type _contextType;
+
+        protected BaseState()
         {
-            // Log Or throw exception
-            return;
+            _contextType = typeof(TContext);
         }
 
-        Enter((TContext)context);
-    }
-
-    public abstract void Enter(TContext context);
-
-    public void Update(StateMachine stateMachine, IStateMachineContext context)
-    {
-        if (!_contextType.IsAssignableFrom(context.GetType()))
+        public void Enter(IStateMachineContext context)
         {
-            // Log Or throw exception
-            return;
+            if (!_contextType.IsAssignableFrom(context.GetType()))
+            {
+                // Log Or throw exception
+                return;
+            }
+
+            Enter((TContext)context);
         }
 
-        Update(stateMachine, (TContext)context);
-    }
+        public abstract void Enter(TContext context);
 
-    public abstract void Update(StateMachine stateMachine, TContext context);
-
-    public void FixedUpdate(StateMachine stateMachine, IStateMachineContext context)
-    {
-        if (!_contextType.IsAssignableFrom(context.GetType()))
+        public void Update(float deltaTime, StateMachine stateMachine, IStateMachineContext context)
         {
-            // Log Or throw exception
-            return;
+            if (!_contextType.IsAssignableFrom(context.GetType()))
+            {
+                // Log Or throw exception
+                return;
+            }
+
+            Update(deltaTime, stateMachine, (TContext)context);
         }
 
-        FixedUpdate(stateMachine, (TContext)context);
-    }
+        public abstract void Update(float deltaTime, StateMachine stateMachine, TContext context);
 
-    public abstract void FixedUpdate(StateMachine stateMachine, TContext context);
-
-    public void Exit(IStateMachineContext context)
-    {
-        if (!_contextType.IsAssignableFrom(context.GetType()))
+        public void FixedUpdate(float deltaTime, StateMachine stateMachine, IStateMachineContext context)
         {
-            // Log Or throw exception
-            return;
+            if (!_contextType.IsAssignableFrom(context.GetType()))
+            {
+                // Log Or throw exception
+                return;
+            }
+
+            FixedUpdate(deltaTime, stateMachine, (TContext)context);
         }
 
-        Exit((TContext)context);
-    }
+        public abstract void FixedUpdate(float deltaTime, StateMachine stateMachine, TContext context);
 
-    public abstract void Exit(TContext context);
+        public void LateUpdate(float deltaTime, StateMachine stateMachine, IStateMachineContext context)
+        {
+            if (!_contextType.IsAssignableFrom(context.GetType()))
+            {
+                // Log Or throw exception
+                return;
+            }
+
+            LateUpdate(deltaTime, stateMachine, (TContext)context);
+        }
+
+        public abstract void LateUpdate(float deltaTime, StateMachine stateMachine, TContext context);
+
+        public void Exit(IStateMachineContext context)
+        {
+            if (!_contextType.IsAssignableFrom(context.GetType()))
+            {
+                // Log Or throw exception
+                return;
+            }
+
+            Exit((TContext)context);
+        }
+
+        public abstract void Exit(TContext context);
+    }
 }

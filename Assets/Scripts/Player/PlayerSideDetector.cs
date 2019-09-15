@@ -1,16 +1,18 @@
 ﻿using UnityEngine;
+using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.Player
 {
-    // TODO: Change it to non-monobehaviour class
-    public class PlayerSideDetector : MonoBehaviour
+    public class PlayerSideDetector
     {
-        [SerializeField] private PlayerController _player1 = default;
-        [SerializeField] private PlayerController _player2 = default;
+        private PlayerController _player1;
+        private PlayerController _player2;
 
-        void Update()
+        public PlayerSideDetector([Inject(Id = "player1")] PlayerController player1,
+            [Inject(Id = "player2")] PlayerController player2)
         {
-            UpdateSide();
+            _player1 = player1;
+            _player2 = player2;
         }
 
         public void UpdateSide()
@@ -26,5 +28,11 @@ namespace AlirezaTarahomi.FightingGame.Player
                 _player2.side = Side.Right;
             }
         }
+    }
+
+    public enum Side
+    {
+        Left = -1,
+        Right = 1
     }
 }

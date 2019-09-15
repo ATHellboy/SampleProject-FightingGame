@@ -5,24 +5,18 @@ using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.Event
 {
-    public class OnAttackToggled : IEvent, IPlayerIdProperty, IScriptableObjectProperty
+    public class OnAttackToggled : IEvent, IPlayerIdProperty
     {
         public string EntityId { get; }
         public DateTime UtcOccureTime { get; }
         public int PlayerId { get; }
-        public CharacterStats Type { get; }
-        public bool Enter { get; }
+        public bool Enable { get; }
 
-        public OnAttackToggled(int playerId, CharacterStats type, bool enter)
+        public OnAttackToggled(string entityId, int playerId, bool enable)
         {
+            EntityId = entityId;
             PlayerId = playerId;
-            Type = type;
-            Enter = enter;
-        }
-
-        public ScriptableObject GetScriptableObject()
-        {
-            return Type;
+            Enable = enable;
         }
     }
 }

@@ -1,8 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public interface IThrowableObject : ITool
+namespace AlirezaTarahomi.FightingGame.Tool
 {
-    void Throw(float force, Vector2 direction);
+    public interface IThrowableObject : ITool
+    {
+        bool CanPick { get; }
+
+        void PrepareForPowerup();
+
+        void Throw(float force, Vector2 direction);
+    }
 }

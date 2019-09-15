@@ -4,6 +4,7 @@ using UniRx;
 using AlirezaTarahomi.FightingGame.Character.Powerup;
 using AlirezaTarahomi.FightingGame.Character.Context;
 using AlirezaTarahomi.FightingGame.InputSystem;
+using Infrastructure.StateMachine;
 
 namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 {
@@ -22,15 +23,18 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
             Observable.FromCoroutine(_ => AttackTimer(context)).Subscribe();
         }
 
-        public override void Update(StateMachine stateMachine, CharacterCombatStateMachineContext context)
+        public override void Update(float deltaTime, StateMachine stateMachine, CharacterCombatStateMachineContext context)
         {
-            if (_canAttack && _inputManager.IsDown("Attack_P" + context.Id))
+            if (!context.CanControl)
+                return;
+
+            if (CheckAttackCondition(context))
             {
                 NextState = context.RelatedStates.attack;
                 stateMachine.ChangeState(this, NextState, context);
             }
 
-            if (_inputManager.IsDown("PowerupAttack_P" + context.Id) && !context.isPowerupActive)
+            if (CheckPowerupCondition(context))
             {
                 if (context.powerup.Active() == PowerType.OneTime)
                 {
@@ -40,7 +44,12 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
             }
         }
 
-        public override void FixedUpdate(StateMachine stateMachine, CharacterCombatStateMachineContext context)
+        public override void FixedUpdate(float deltaTime, StateMachine stateMachine, CharacterCombatStateMachineContext context)
+        {
+
+        }
+
+        public override void LateUpdate(float deltaTime, StateMachine stateMachine, CharacterCombatStateMachineContext context)
         {
 
         }
@@ -54,6 +63,24 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
         {
             yield return new WaitForSeconds(context.Stats.miscValues.attackRate);
             _canAttack = true;
+        }
+
+        private bool CheckAttackCondition(CharacterCombatStateMachineContext context)
+        {
+            if (_inputManager.IsDown("Attack_P" + context.PlayerId) && _canAttack)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool CheckPowerupCondition(CharacterCombatStateMachineContext context)
+        {
+            if (_inputManager.IsDown("PowerupAttack_P" + context.PlayerId) && !context.isPowerupActive)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

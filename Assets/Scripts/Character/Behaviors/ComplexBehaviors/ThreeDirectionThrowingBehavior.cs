@@ -1,16 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Zenject;
+﻿using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
 {
     [CreateAssetMenu(menuName = "Attacks/Complex Attacks/ThreeDirectionThrowingBehavior")]
     public class ThreeDirectionThrowingBehavior : ScriptableObject, IComplexAttackBehavior, IThrowingBehavior
     {
-        public float offsetDegree = 20;
+        [SerializeField] private float _offsetDegree = 20;
 
         public ThrowingObjectBehavior ThrowingObjectBehavior { get; private set; }
+
         private CharacterBehaviorContext _context;
 
         public void Inject(CharacterBehaviorContext context)
@@ -23,24 +21,31 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
             ThrowingObjectBehavior = throwingObjectBehavior;
         }
 
-        public Status Behave()
+        public Status BehaviorCondition
         {
-            if (_context.jumpCounter == 3)
+            get
             {
-                Vector3 downToFrontCurve = (_context.Transform.right - _context.Transform.up) / 90;
-                ThrowingObjectBehavior.UseObject(-_context.Transform.up + offsetDegree * downToFrontCurve);
-                ThrowingObjectBehavior.UseObject(((-_context.Transform.up +
-                    (_context.Transform.right - _context.Transform.up) / 2) / 2) + offsetDegree * downToFrontCurve);
-                ThrowingObjectBehavior.UseObject(((_context.Transform.right - _context.Transform.up) / 2) +
-                    offsetDegree * downToFrontCurve);
-                return Status.Success;
+                if (_context.jumpCounter == 2)
+                {
+                    return Status.Success;
+                }
+                return Status.Fail;
             }
-            return Status.Fail;
         }
 
-        public Status EndBehavior()
+        public void Behave()
         {
-            return Status.Success;
+            Vector3 angleUnit = (_context.Transform.right - _context.Transform.up) / 90;
+            ThrowingObjectBehavior.UseObject(-_context.Transform.up + _offsetDegree * angleUnit);
+            ThrowingObjectBehavior.UseObject(((-_context.Transform.up +
+                (_context.Transform.right - _context.Transform.up) / 2) / 2) + _offsetDegree * angleUnit);
+            ThrowingObjectBehavior.UseObject(((_context.Transform.right - _context.Transform.up) / 2) +
+                _offsetDegree * angleUnit);
+        }
+
+        public void EndBehavior()
+        {
+            
         }
     }
 }

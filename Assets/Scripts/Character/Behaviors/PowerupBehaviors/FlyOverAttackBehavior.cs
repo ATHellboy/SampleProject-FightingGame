@@ -1,5 +1,4 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Event;
-using AlirezaTarahomi.FightingGame.Character.Powerup;
 using AlirezaTarahomi.FightingGame.Player.Event;
 using Assets.Infrastructure.Scripts.CQRS;
 using System.Collections;
@@ -12,7 +11,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
     [CreateAssetMenu(menuName = "Attacks/Powerup Attacks/FlyOverAttackBehavior")]
     public class FlyOverAttackBehavior : ScriptableObject, IPowerupAttackBehavior
     {
-        public float velocity = 50;
+        [SerializeField] private float _velocity = 50;
 
         private IMessageBus _messageBus;
         private CharacterBehaviorContext _context;
@@ -28,29 +27,37 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
             _context = context;
         }
 
-        public Status Behave()
+        public Status BehaviorCondition
         {
-            if (_context.isPowerupActive)
+            get
             {
-                _messageBus.RaiseEvent(new OnControlToggled(_context.PlayerId, _context.Stats, false));
-                _context.hitboxCollider.enabled = true;
-                Observable.FromCoroutine(_ => FlyOver()).Subscribe();
-                return Status.Success;
+                if (_context.isPowerupActive)
+                {
+                    return Status.Success;
+                }
+                return Status.Fail;
             }
-            return Status.Fail;
         }
 
-        public Status EndBehavior()
+        public void Behave()
         {
-            _messageBus.RaiseEvent(new OnControlToggled(_context.PlayerId, _context.Stats, true));
+            _messageBus.RaiseEvent(new OnCharacterFlownToggled(_context.CharacterId, true));
+            _messageBus.RaiseEvent(new OnControlToggled(_context.CharacterId, false));
+            _context.hitboxCollider.enabled = true;
+            Observable.FromCoroutine(_ => FlyOver()).Subscribe();
+        }
+
+        public void EndBehavior()
+        {
+            _messageBus.RaiseEvent(new OnCharacterFlownToggled(_context.CharacterId, false));
+            _messageBus.RaiseEvent(new OnControlToggled(_context.CharacterId, true));
             _context.hitboxCollider.enabled = false;
             _context.AnimatorController.ToggleAttacking(false);
-            return Status.Success;
         }
 
         IEnumerator FlyOver()
         {
-            _context.LocomotionHandler.PushForward(velocity);
+            _context.LocomotionHandler.PushForward(_velocity);
             _context.AnimatorController.ToggleAttacking(true);
 
             while (_context.LocomotionHandler.GetVelocity().x != 0)
@@ -58,8 +65,8 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
                 yield return null;
             }
 
-            _messageBus.RaiseEvent(new OnPushForwardEnded(_context.PlayerId, _context.Stats));
-            _messageBus.RaiseEvent(new OnAttackToggled(_context.PlayerId, _context.Stats, false));
+            _messageBus.RaiseEvent(new OnFlyOverEnded(_context.CharacterId));
+            _messageBus.RaiseEvent(new OnAttackToggled(_context.CharacterId, _context.PlayerId, false));
         }
     }
 }

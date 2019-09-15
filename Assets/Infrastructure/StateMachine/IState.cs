@@ -1,12 +1,17 @@
-﻿public interface IState
+﻿namespace Infrastructure.StateMachine
 {
-    IState NextState { get; }
+    public interface IState
+    {
+        IState NextState { get; }
 
-    void Enter(IStateMachineContext context);
+        void Enter(IStateMachineContext context);
 
-    void Update(StateMachine stateMachine, IStateMachineContext context);
+        void Update(float deltaTime, StateMachine stateMachine, IStateMachineContext context);
 
-    void FixedUpdate(StateMachine stateMachine, IStateMachineContext context);
+        void FixedUpdate(float deltaTime, StateMachine stateMachine, IStateMachineContext context);
 
-    void Exit(IStateMachineContext context);
+        void LateUpdate(float deltaTime, StateMachine stateMachine, IStateMachineContext context);
+
+        void Exit(IStateMachineContext context);
+    }
 }

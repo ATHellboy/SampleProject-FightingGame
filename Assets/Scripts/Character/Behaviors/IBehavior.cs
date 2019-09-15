@@ -1,14 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior
 {
     public interface IBehavior
     {
-        Status Behave();
+        Status BehaviorCondition { get; }
 
-        Status EndBehavior();
+        void Behave();
+
+        void EndBehavior();
 
         void Inject(CharacterBehaviorContext context);
     }

@@ -1,20 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.Character.Powerup
 {
     public class CharacterPowerupContext
     {
-        public CharacterStats Stats { get; private set; }
-        public int PlayerId { get; private set; }
+        public string CharacterId { get; private set; }
 
-        public CharacterPowerupContext([Inject(Id = "stats")] CharacterStats stats,
-            [Inject(Id = "id")] int playerId)
+        public CharacterPowerupContext([Inject(Id = "id")] string characterId)
         {
-            Stats = stats;
-            PlayerId = playerId;
+            CharacterId = characterId;
         }
     }
 }

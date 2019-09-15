@@ -1,4 +1,4 @@
-﻿using AlirezaTarahomi.FightingGame.Game.Event;
+﻿using AlirezaTarahomi.FightingGame.Player.Event;
 using Assets.Infrastructure.Scripts.CQRS;
 using UnityEngine;
 using UnityEngine.SceneManagement;

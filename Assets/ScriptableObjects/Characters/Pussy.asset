@@ -19,7 +19,7 @@ MonoBehaviour:
     jumpHeight: 6
     lessJumpHeight: 4
     jumpSpeed: 30
-    jumpNumber: 3
+    jumpNumber: 2
   cameraValues:
     cameraRadius: 5.46
     cameraWeight: 1

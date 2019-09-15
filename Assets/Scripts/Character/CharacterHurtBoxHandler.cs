@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Zenject;
 using AlirezaTarahomi.FightingGame.Service;
 using AlirezaTarahomi.FightingGame.Character.Context;
 using AlirezaTarahomi.FightingGame.Character.Behavior;
+using AlirezaTarahomi.FightingGame.Tool;
 
 namespace AlirezaTarahomi.FightingGame.Character
 {
@@ -39,10 +38,8 @@ namespace AlirezaTarahomi.FightingGame.Character
 
             if (collision.CompareTag("Hitbox"))
             {
-                ITool tool = collision.gameObject.GetComponent<ITool>();
-                if (!_ownershipService.Contains(collision.gameObject) && tool.IsDeadly)
+                if (GetInjured(collision))
                 {
-                    _mainStateMachineContext.isInjured = true;
                     return;
                 }
             }
@@ -51,6 +48,17 @@ namespace AlirezaTarahomi.FightingGame.Character
             {
                 _throwingObjectBehavior.OnTriggerEnter2D(collision);
             }
+        }
+
+        private bool GetInjured(Collider2D collision)
+        {
+            ITool tool = collision.gameObject.GetComponent<ITool>();
+            if (!_ownershipService.Contains(collision.gameObject) && tool.IsDeadly)
+            {
+                _mainStateMachineContext.isInjured = true;
+                return true;
+            }
+            return false;
         }
     }
 }

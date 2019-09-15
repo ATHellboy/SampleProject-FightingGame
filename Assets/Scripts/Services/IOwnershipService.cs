@@ -1,12 +1,11 @@
-﻿using AlirezaTarahomi.FightingGame.Character;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Service
 {
     public interface IOwnershipService
     {
-        List<GameObject> HitboxObjects { get; }
+        List<GameObject> Objects { get; }
 
         void Add(GameObject GO);
         void Remove(GameObject GO);

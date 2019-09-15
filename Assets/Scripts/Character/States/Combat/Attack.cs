@@ -1,11 +1,8 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Behavior;
-using AlirezaTarahomi.FightingGame.Character.Behavior.Complex;
-using AlirezaTarahomi.FightingGame.Character.Behavior.Normal;
-using AlirezaTarahomi.FightingGame.Character.Behavior.Powerup;
 using AlirezaTarahomi.FightingGame.Character.Context;
 using AlirezaTarahomi.FightingGame.Character.Event;
 using Assets.Infrastructure.Scripts.CQRS;
-using System.Collections.Generic;
+using Infrastructure.StateMachine;
 using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.State.Combat
@@ -22,30 +19,26 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
         public override void Enter(CharacterCombatStateMachineContext context)
         {
-            _messageBus.RaiseEvent(new OnAttackToggled(context.Id, context.Stats, true));
-
-            for (int i = 0; i < context.AttackBehaviors.Count; i++)
-            {
-                _currentBehavior = context.AttackBehaviors[i];
-                if (_currentBehavior != null && _currentBehavior.Behave() == Status.Success)
-                {
-                    break;
-                }
-            }
+            _messageBus.RaiseEvent(new OnAttackToggled(context.CharacterId, context.PlayerId, true));
+            ExecuteAttacking(context);
         }
 
-        public override void Update(StateMachine stateMachine, CharacterCombatStateMachineContext context)
+        public override void Update(float deltaTime, StateMachine stateMachine, CharacterCombatStateMachineContext context)
         {
-            if (context.goToNextState)
+            if (context.isAttackingEnded || _currentBehavior == null)
             {
-                context.goToNextState = false;
-
+                context.isAttackingEnded = false;
                 NextState = context.RelatedStates.none;
                 stateMachine.ChangeState(this, NextState, context);
             }
         }
 
-        public override void FixedUpdate(StateMachine stateMachine, CharacterCombatStateMachineContext context)
+        public override void FixedUpdate(float deltaTime, StateMachine stateMachine, CharacterCombatStateMachineContext context)
+        {
+
+        }
+
+        public override void LateUpdate(float deltaTime, StateMachine stateMachine, CharacterCombatStateMachineContext context)
         {
 
         }
@@ -53,6 +46,20 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
         public override void Exit(CharacterCombatStateMachineContext context)
         {
             _currentBehavior.EndBehavior();
+            _currentBehavior = null;
+        }
+
+        private void ExecuteAttacking(CharacterCombatStateMachineContext context)
+        {
+            for (int i = 0; i < context.AttackBehaviors.Count; i++)
+            {
+                _currentBehavior = context.AttackBehaviors[i];
+                if (_currentBehavior != null && _currentBehavior.BehaviorCondition == Status.Success)
+                {
+                    _currentBehavior.Behave();
+                    break;
+                }
+            }
         }
     }
 }

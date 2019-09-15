@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 
-public interface IStateMachineContext
+namespace Infrastructure.StateMachine
 {
-    GameObject GO { get; }
-    IState StartState { get; }
-    IState CurrentState { get; set; }
-    bool UpdateStateMachine { get; }
+    public interface IStateMachineContext
+    {
+        GameObject GO { get; }
+        IState StartState { get; }
+        IState CurrentState { get; set; }
+        bool IsActive { get; }
+        bool DebugStateMachine { get; }
+    }
 }

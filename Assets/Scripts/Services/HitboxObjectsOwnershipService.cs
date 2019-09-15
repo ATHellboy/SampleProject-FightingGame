@@ -1,37 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UniRx;
 
 namespace AlirezaTarahomi.FightingGame.Service
 {
     public class HitboxObjectsOwnershipService : IOwnershipService
     {
-        public List<GameObject> HitboxObjects { get; private set; } = new List<GameObject>();
+        public List<GameObject> Objects { get; private set; } = new List<GameObject>();
 
         public void Add(GameObject GO)
         {
-            HitboxObjects.Add(GO);
+            Objects.Add(GO);
         }
 
         public void Remove(GameObject GO)
         {
-            Observable.FromCoroutine(_ => WaitForFrameToRemove(GO)).Subscribe();
+            Objects.Remove(GO);
         }
 
         public bool Contains(GameObject GO)
         {
-            if (HitboxObjects.Contains(GO))
+            if (Objects.Contains(GO))
             {
                 return true;
             }
             return false;
-        }
-
-        IEnumerator WaitForFrameToRemove(GameObject GO)
-        {
-            yield return null;
-            HitboxObjects.Remove(GO);
         }
     }
 }

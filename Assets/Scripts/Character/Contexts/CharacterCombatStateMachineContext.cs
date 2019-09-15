@@ -5,14 +5,19 @@ using AlirezaTarahomi.FightingGame.Character.State.Combat;
 using System.Collections.Generic;
 using AlirezaTarahomi.FightingGame.Character.Behavior;
 using AlirezaTarahomi.FightingGame.Character.Powerup;
+using Infrastructure.StateMachine;
 
 namespace AlirezaTarahomi.FightingGame.Character.Context
 {
     public class CharacterCombatStateMachineContext : BaseStateMachineContext
     {
         public IPowerup powerup;
+        public bool isGrounded;
+        public bool isAttackingEnded;
+        public bool isPowerupActive;
 
-        public int Id { get; private set; }
+        public string CharacterId { get; private set; }
+        public int PlayerId { get; private set; }
         public CharacterStats Stats { get; private set; }
         public CharacterAnimatorController AnimatorController { get; private set; }
         public List<IAttackBehavior> AttackBehaviors { get; private set; } = new List<IAttackBehavior>();
@@ -30,15 +35,12 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         }
         public States RelatedStates { get; }
 
-        public bool isGrounded;
-        public bool goToNextState;
-        public bool isPowerupActive;
-
-        public CharacterCombatStateMachineContext(GameObject go, IState startState,
-            [Inject(Id = "id")] int id, [Inject(Id = "stats")] CharacterStats stats,
-            CharacterAnimatorController animatorController, None none, Attack attack) : base(go, startState)
+        public CharacterCombatStateMachineContext(GameObject go, IState startState, [Inject(Id = "id")] string characterId,
+            [Inject(Id = "playerId")] int playerId, [Inject(Id = "stats")] CharacterStats stats, [Inject(Id = "debug")] bool debug,
+            CharacterAnimatorController animatorController, None none, Attack attack) : base(go, startState, debug)
         {
-            Id = id;
+            CharacterId = characterId;
+            PlayerId = playerId;
             Stats = stats;
             AnimatorController = animatorController;
             RelatedStates = new States(none, attack);

@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Characters
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 5e0f6a90d57cb374eac4119d5dbfeee6, type: 3}
+    - {fileID: 102900000, guid: e47d4a4378cf18142a1e2e770bba0c7c, type: 3}
+    - {fileID: 102900000, guid: f45872b74e162f94087c8dd8c8d2465a, type: 3}
+    - {fileID: 2800000, guid: f4606bae91698bc4bb65b06b9b8c3651, type: 3}
+    totalSpriteSurfaceArea: 747895
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 90e11f408500a8241a1e0f209bb0b2d1, type: 3}
+  - {fileID: 21300000, guid: 890610d035019a54081ced4c2dc7b851, type: 3}
+  - {fileID: 21300000, guid: d31c62b213ddd8b44b3f80d3ca23f5f8, type: 3}
+  - {fileID: 21300000, guid: 725907b3468201b448c47ce78b7fa479, type: 3}
+  - {fileID: 21300000, guid: 88d13e54aca590041be462306f6dd3a3, type: 3}
+  - {fileID: 21300000, guid: 4d522766a0b398641970f218ca2e5c19, type: 3}
+  - {fileID: 21300000, guid: 638d1867412f2a443a520c4cd9f5f3fe, type: 3}
+  - {fileID: 21300000, guid: 809ceea70c526464f8651f61aacf550e, type: 3}
+  - {fileID: 21300000, guid: a80c82ad3bd81bd4882bf29f0226fb31, type: 3}
+  - {fileID: 21300000, guid: f4606bae91698bc4bb65b06b9b8c3651, type: 3}
+  - {fileID: 21300000, guid: 590d779fcff8ebb4c8d58f678d723c61, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Stand
+  - StuckShuriken
+  - Stand
+  - Die
+  - IllusionShuriken
+  - Attack
+  - Die
+  - Jump
+  - Jump
+  - White
+  - Shuriken
+  m_Tag: Characters
+  m_IsVariant: 0

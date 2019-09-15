@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public interface ITool
+namespace AlirezaTarahomi.FightingGame.Tool
 {
-    bool IsDeadly { get; }
+    public interface ITool
+    {
+        bool IsDeadly { get; }
+    }
 }

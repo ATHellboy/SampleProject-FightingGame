@@ -1,5 +1,4 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Behavior;
-using AlirezaTarahomi.FightingGame.Character.Behavior.Powerup;
 using AlirezaTarahomi.FightingGame.Character.Event;
 using Assets.Infrastructure.Scripts.CQRS;
 using System.Collections;
@@ -12,7 +11,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
     [CreateAssetMenu(menuName = "Powerups/UnlimitedThrowingObjectPowerup")]
     public class UnlimitedThrowingObjectPowerup : ScriptableObject, IPowerup, IThrowingBehavior
     {
-        public float time = 5;
+        [SerializeField] private float _time = 2.5f;
 
         public ScriptableObject PowerupAttackBehavior { get; }
         public ThrowingObjectBehavior ThrowingObjectBehavior { get; private set; }
@@ -44,19 +43,19 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
             _lastObjectNumber = ThrowingObjectBehavior.counter;
             ThrowingObjectBehavior.counter = INFINITE;
             Observable.FromCoroutine(_ => Timer()).Subscribe();
-            _messageBus.RaiseEvent(new OnPowerupToggled(_context.PlayerId, _context.Stats, true));
+            _messageBus.RaiseEvent(new OnPowerupToggled(_context.CharacterId, true));
             return PowerType.TimeBased;
         }
 
         public void Disable()
         {
             ThrowingObjectBehavior.counter = _lastObjectNumber;
-            _messageBus.RaiseEvent(new OnPowerupToggled(_context.PlayerId, _context.Stats, false));
+            _messageBus.RaiseEvent(new OnPowerupToggled(_context.CharacterId, false));
         }
 
         IEnumerator Timer()
         {
-            yield return new WaitForSeconds(time);
+            yield return new WaitForSeconds(_time);
             Disable();
         }
     }

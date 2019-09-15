@@ -1,5 +1,5 @@
-﻿using AlirezaTarahomi.FightingGame.CameraSystem;
-using AlirezaTarahomi.FightingGame.Player;
+﻿using AlirezaTarahomi.FightingGame.Player;
+using Infrastructure.Extension;
 using UnityEngine;
 using Zenject;
 
@@ -9,21 +9,22 @@ namespace AlirezaTarahomi.FightingGame.Character
     {
         private Rigidbody2D _rigidbody;
         private Transform _transform;
-        private MainCameraController _mainCameraController;
         private PlayerController _playerController;
         private CharacterStats _stats;
         private float _onAirGravityScale;
-        private float _throwingAngle = 30;
+        private float _throwingAngle;
         private float _moveSpeed;
 
-        public CharacterLocomotionHandler(Rigidbody2D rigidbody, Transform transform, MainCameraController mainCameraController,
-            PlayerController playerController, [Inject(Id = "stats")] CharacterStats stats)
+        public CharacterLocomotionHandler(Rigidbody2D rigidbody, Transform transform,
+            PlayerController playerController, [Inject(Id = "stats")] CharacterStats stats,
+            [Inject(Id = "throwingAngle")] float throwingAngle)
         {
             _rigidbody = rigidbody;
             _transform = transform;
-            _mainCameraController = mainCameraController;
             _playerController = playerController;
             _stats = stats;
+            _throwingAngle = throwingAngle;
+
             _onAirGravityScale = (Mathf.Pow(_stats.airMovementValues.jumpSpeed, 2) / (2 * _stats.airMovementValues.jumpHeight)) / 9.81f;
         }
 
@@ -46,23 +47,16 @@ namespace AlirezaTarahomi.FightingGame.Character
         public void Jump(float height, float speed)
         {
             _rigidbody.gravityScale = (Mathf.Pow(speed, 2) / (2 * height)) / 9.81f;
-            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, speed); // TODO: Add extension
+            _rigidbody.SetYVelocity(speed);
         }
 
         public void PushForward(float velocity)
         {
-            SetNoGravityScale();
-            // The direction is wrong for another approach with that setup of camera
-            _rigidbody.velocity = new Vector2(_transform.right.x * velocity, 0); // TODO: Add extension
+            _rigidbody.velocity = new Vector2(_transform.right.x * velocity, 0);
         }
 
-        public void ThrowInside(float force, Side side)
+        private void ProjectMotion(Side side)
         {
-            Stop();
-            SetEnterGravityScale();
-            Flip(side);
-
-            // Projection motion
             Vector3 targetPos = _playerController.currentCharacter.position;
             float d = Mathf.Abs(targetPos.x - _transform.position.x);
             float h = Mathf.Abs(_transform.position.y - targetPos.y);
@@ -75,6 +69,14 @@ namespace AlirezaTarahomi.FightingGame.Character
             Vector2 velocity = new Vector2(Vx * -(int)side, Vy);
 
             _rigidbody.velocity = velocity;
+        }
+
+        public void ThrowInside(Side side)
+        {
+            Stop();
+            SetEnterGravityScale();
+            Flip(side);
+            ProjectMotion(side);
         }
 
         public void Teleport(Vector2 position)

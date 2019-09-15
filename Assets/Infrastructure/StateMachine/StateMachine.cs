@@ -1,67 +1,64 @@
 ﻿using UnityEngine;
-using Assets.Infrastructure.Scripts.CQRS;
 
-public class StateMachine : IEventHandler<OnStateMachineReset>
+namespace Infrastructure.StateMachine
 {
-    public StateMachine(IMessageBus messageBus)
+    public class StateMachine
     {
-        SetupMessages(messageBus);
-    }
-
-    private void SetupMessages(IMessageBus messageBus)
-    {
-        messageBus.AddRule(MessageRouteRule.Create<OnStateMachineReset, StateMachine>(string.Empty, false));
-        messageBus.Subscribe<StateMachine, OnStateMachineReset>(this, new MessageHandlerActionExecutor<OnStateMachineReset>(Handle));
-    }
-
-    public void Start(IStateMachineContext context)
-    {
-        ChangeState(null, context.StartState, context);
-    }
-
-    public void Update(IStateMachineContext context)
-    {
-        if (!context.UpdateStateMachine)
-            return;
-
-        if (context.CurrentState != null) context.CurrentState.Update(this, context);
-    }
-
-    public void FixedUpdate(IStateMachineContext context)
-    {
-        if (!context.UpdateStateMachine)
-            return;
-
-        if (context.CurrentState != null) context.CurrentState.FixedUpdate(this, context);
-    }
-
-    private void ChangeState(IState newState, IStateMachineContext context)
-    {
-        //Debug.Log(context.GO.name + "  " + context.GetType().Name + "  " + newState.GetType().Name);
-
-        if (context.CurrentState != null) context.CurrentState.Exit(context);
-        context.CurrentState = newState;
-        if (context.CurrentState != null) context.CurrentState.Enter(context);
-    }
-
-    public void ChangeState(object sender, IState newState, IStateMachineContext context)
-    {
-        if (!context.UpdateStateMachine && sender != null)
-            return;
-
-        if (sender == context.CurrentState)
+        public void Start(IStateMachineContext context)
         {
-            ChangeState(newState, context);
+            ChangeState(null, context.StartState, context);
         }
-    }
 
-    public void Reset(IStateMachineContext context)
-    {
-        ChangeState(context.StartState, context);
-    }
+        public void Update(float deltaTime, IStateMachineContext context)
+        {
+            if (!context.IsActive)
+                return;
 
-    public void Handle(OnStateMachineReset @event)
-    {
-        Reset(@event.Context);
+            if (context.CurrentState != null) context.CurrentState.Update(deltaTime, this, context);
+        }
+
+        public void FixedUpdate(float deltaTime, IStateMachineContext context)
+        {
+            if (!context.IsActive)
+                return;
+
+            if (context.CurrentState != null) context.CurrentState.FixedUpdate(deltaTime, this, context);
+        }
+
+        public void LateUpdate(float deltaTime, IStateMachineContext context)
+        {
+            if (!context.IsActive)
+                return;
+
+            if (context.CurrentState != null) context.CurrentState.LateUpdate(deltaTime, this, context);
+        }
+
+        private void ChangeState(IState newState, IStateMachineContext context)
+        {
+            if (context.DebugStateMachine)
+            {
+                Debug.Log(context.GO.name + " " + context.GetType().Name + " " + newState.GetType().Name);
+            }
+
+            if (context.CurrentState != null) context.CurrentState.Exit(context);
+            context.CurrentState = newState;
+            if (context.CurrentState != null) context.CurrentState.Enter(context);
+        }
+
+        public void ChangeState(object sender, IState newState, IStateMachineContext context)
+        {
+            if (!context.IsActive && sender != null)
+                return;
+
+            if (sender == context.CurrentState)
+            {
+                ChangeState(newState, context);
+            }
+        }
+
+        public void Reset(IStateMachineContext context)
+        {
+            ChangeState(context.StartState, context);
+        }
     }
 }

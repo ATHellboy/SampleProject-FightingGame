@@ -1,9 +1,7 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Behavior.Powerup;
 using AlirezaTarahomi.FightingGame.Character.Event;
-using AlirezaTarahomi.FightingGame.Player.Event;
-using AlirezaTarahomi.FightingGame.Player.Validator;
+using AlirezaTarahomi.FightingGame.Character.Validator;
 using Assets.Infrastructure.Scripts.CQRS;
-using Assets.Infrastructure.Scripts.CQRS.Validators;
 using ScriptableObjectDropdown;
 using UnityEngine;
 using Zenject;
@@ -12,16 +10,15 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
 {
     [CreateAssetMenu(menuName = "Powerups/FlyOverPowerup")]
     public class FlyOverPowerup : ScriptableObject, IPowerup,
-        IEventHandler<OnPushForwardEnded>, IPlayerIdProperty, IScriptableObjectProperty
+        IEventHandler<OnFlyOverEnded>, ICharacterIdProperty
     {
         [ScriptableObjectDropdown(typeof(FlyOverAttackBehavior))]
         public ScriptableObjectReference _powerupAttackBehavior;
         public ScriptableObject PowerupAttackBehavior { get { return _powerupAttackBehavior.value; } }
-        public int PlayerId { get { return _context.PlayerId; } }
+        public string CharacterId { get { return _context.CharacterId; } }
 
-        private static MessageRouteRule _rule = MessageRouteRule.Create<OnPushForwardEnded, FlyOverPowerup>(string.Empty, false,
-                new AndValidator<OnPushForwardEnded>(new EventPlayerIdValidator<OnPushForwardEnded>(),
-                new EventScriptableObjectValidator<OnPushForwardEnded>()));
+        private static MessageRouteRule _rule = MessageRouteRule.Create<OnFlyOverEnded, FlyOverPowerup>(string.Empty, false,
+                new EventCharacterIdValidator<OnFlyOverEnded>());
 
         private IMessageBus _messageBus;
         private CharacterPowerupContext _context;
@@ -49,7 +46,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
             if (_messageBus != null)
             {
                 _messageBus.AddRule(_rule);
-                _messageBus.Subscribe<FlyOverPowerup, OnPushForwardEnded>(this, new MessageHandlerActionExecutor<OnPushForwardEnded>(Handle));
+                _messageBus.Subscribe<FlyOverPowerup, OnFlyOverEnded>(this, new MessageHandlerActionExecutor<OnFlyOverEnded>(Handle));
             }
         }
 
@@ -63,23 +60,21 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
 
         public PowerType Active()
         {
-            _messageBus.RaiseEvent(new OnPowerupToggled(_context.PlayerId, _context.Stats, true));
+            _messageBus.RaiseEvent(new OnPowerupToggled(CharacterId, true));
             return PowerType.OneTime;
         }
 
         public void Disable()
         {
-            _messageBus.RaiseEvent(new OnPowerupToggled(_context.PlayerId, _context.Stats, false));
+            _messageBus.RaiseEvent(new OnPowerupToggled(CharacterId, false));
         }
 
-        public void Handle(OnPushForwardEnded @event)
+        /// <summary>
+        /// Handles the event when flying over attack behaivor is ended
+        /// </summary>
+        public void Handle(OnFlyOverEnded @event)
         {
             Disable();
-        }
-
-        public ScriptableObject GetScriptableObject()
-        {
-            return _context.Stats;
         }
     }
 }

@@ -138,7 +138,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: '[1]'
+    positiveButton: '[0]'
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
@@ -202,7 +202,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: '[3]'
+    positiveButton: '[2]'
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
@@ -217,7 +217,7 @@ InputManager:
     m_Name: Attack_P2
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: '[2]'
+    negativeButton: '[1]'
     positiveButton: 
     altNegativeButton: 
     altPositiveButton: 
@@ -233,7 +233,7 @@ InputManager:
     m_Name: Switch_P2
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: '[0]'
+    negativeButton: '[3]'
     positiveButton: 
     altNegativeButton: 
     altPositiveButton: 

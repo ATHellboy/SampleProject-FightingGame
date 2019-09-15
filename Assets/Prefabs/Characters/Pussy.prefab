@@ -367,7 +367,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66769abd20b9b6649a4e7d6fdb77d564, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 394cc4c588c2dfb4281584e68610de9a, type: 2}
+  _debugStateMachine: 0
+  _stats: {fileID: 11400000, guid: 394cc4c588c2dfb4281584e68610de9a, type: 2}
+  _throwingAngle: 30
 --- !u!114 &114270009735498418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,9 +382,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86d5e2f2ea38e4e45a4b0d7a30a1db57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementCollider: {fileID: 1418999281783954}
   _hitbox: {fileID: 0}
   isGrounded: 0
+  isJustEntered: 0
 --- !u!1 &1717290557911252
 GameObject:
   m_ObjectHideFlags: 0
@@ -465,7 +467,7 @@ GameObject:
   - component: {fileID: 61341445639396532}
   - component: {fileID: 114797583679025464}
   m_Layer: 12
-  m_Name: ColliderActivator
+  m_Name: MovementColliderActivator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -523,3 +525,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e885a1041d14ec44f9c773cf59280bd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _movementCollider: {fileID: 1418999281783954}

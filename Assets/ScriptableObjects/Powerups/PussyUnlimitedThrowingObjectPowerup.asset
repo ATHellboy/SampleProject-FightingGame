@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c1aae2142c774b4f83ab6372b05aaae, type: 3}
   m_Name: PussyUnlimitedThrowingObjectPowerup
   m_EditorClassIdentifier: 
-  time: 5
+  _time: 3

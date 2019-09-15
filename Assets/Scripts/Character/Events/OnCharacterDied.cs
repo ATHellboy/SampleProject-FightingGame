@@ -5,22 +5,16 @@ using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.Event
 {
-    public class OnCharacterDied : IEvent, IPlayerIdProperty, IScriptableObjectProperty
+    public class OnCharacterDied : IEvent, IPlayerIdProperty
     {
         public string EntityId { get; }
         public DateTime UtcOccureTime { get; }
         public int PlayerId { get; }
-        public CharacterStats Type { get; }
 
-        public OnCharacterDied(int playerId, CharacterStats type)
+        public OnCharacterDied(string entityId, int playerId)
         {
+            EntityId = entityId;
             PlayerId = playerId;
-            Type = type;
-        }
-
-        public ScriptableObject GetScriptableObject()
-        {
-            return Type;
         }
     }
 }

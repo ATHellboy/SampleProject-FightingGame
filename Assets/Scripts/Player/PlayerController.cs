@@ -5,17 +5,14 @@ using AlirezaTarahomi.FightingGame.Character.Event;
 using AlirezaTarahomi.FightingGame.InputSystem;
 using AlirezaTarahomi.FightingGame.Player.Event;
 using AlirezaTarahomi.FightingGame.Player.Validator;
-using AlirezaTarahomi.FightingGame.Game.Event;
 using System.Collections;
 using UniRx;
 
 namespace AlirezaTarahomi.FightingGame.Player
 {
     public class PlayerController : MonoBehaviour, IEventHandler<OnCharacterDied>, IEventHandler<OnAttackToggled>,
-        IEventHandler<OnGrounded>, IPlayerIdProperty
+        IPlayerIdProperty
     {
-        [SerializeField] private float _switchingCoolDown = 2.0f;
-
         [HideInInspector] public Transform currentCharacter;
         [HideInInspector] public Side side;
 
@@ -25,8 +22,8 @@ namespace AlirezaTarahomi.FightingGame.Player
         private InputManager _inputManager;
         private CharactersSwitchingHandler _charactersSwitchingHandler;
         private PlayerSideDetector _playerSideDetector;
+        private float _switchingCoolDown;
         private bool _canSwitch = true;
-        private bool _isOnGround = true;
         private int _numOfChars;
         private int _numOfRemainedChars;
         private static MessageRouteRule[] _rules = new MessageRouteRule[]
@@ -34,20 +31,20 @@ namespace AlirezaTarahomi.FightingGame.Player
         MessageRouteRule.Create<OnCharacterDied, PlayerController>(string.Empty, false,
             new EventPlayerIdValidator<OnCharacterDied>()),
         MessageRouteRule.Create<OnAttackToggled, PlayerController>(string.Empty, false,
-            new EventPlayerIdValidator<OnAttackToggled>()),
-        MessageRouteRule.Create<OnGrounded, PlayerController>(string.Empty, false,
-            new EventPlayerIdValidator<OnGrounded>())
+            new EventPlayerIdValidator<OnAttackToggled>())
         };
 
         [Inject]
         public void Construct(InputManager inputManager, CharactersSwitchingHandler charactersSwitchingHandler,
-            PlayerSideDetector playerSideDetector, IMessageBus messageBus, [Inject(Id = "id")] int id)
+            PlayerSideDetector playerSideDetector, IMessageBus messageBus, [Inject(Id = "playerId")] int playerId,
+            [Inject(Id = "switchingCoolDown")] float switchingCoolDown)
         {
             _inputManager = inputManager;
             _messageBus = messageBus;
             _charactersSwitchingHandler = charactersSwitchingHandler;
             _playerSideDetector = playerSideDetector;
-            PlayerId = id;
+            PlayerId = playerId;
+            _switchingCoolDown = switchingCoolDown;
         }
 
         void OnEnable()
@@ -67,47 +64,45 @@ namespace AlirezaTarahomi.FightingGame.Player
 
             _messageBus.AddRule(_rules[1]);
             _messageBus.Subscribe<PlayerController, OnAttackToggled>(this, new MessageHandlerActionExecutor<OnAttackToggled>(Handle));
-
-            _messageBus.AddRule(_rules[2]);
-            _messageBus.Subscribe<PlayerController, OnGrounded>(this, new MessageHandlerActionExecutor<OnGrounded>(Handle));
         }
 
         private void UnsubscribeEvents()
         {
             _messageBus.Unsubscribe<PlayerController, OnCharacterDied>(this);
             _messageBus.Unsubscribe<PlayerController, OnAttackToggled>(this);
-            _messageBus.Unsubscribe<PlayerController, OnGrounded>(this);
         }
 
         void Awake()
         {
-            foreach (Transform child in transform)
-            {
-                _numOfChars++;
-                _charactersSwitchingHandler.EnqueueCharacter(child.GetComponent<Character.CharacterController>());
-            }
-
+            GetCharacters();
             _numOfRemainedChars = _numOfChars;
-
             currentCharacter = _charactersSwitchingHandler.ConfigCharacters();
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (_inputManager.IsDown("Switch_P" + PlayerId) && _numOfRemainedChars > 1 && _canSwitch && _isOnGround)
+            if (_inputManager.IsDown("Switch_P" + PlayerId) && _numOfRemainedChars > 1 && _canSwitch)
             {
-                _canSwitch = false;
-                _isOnGround = false;
-                Observable.FromCoroutine(_ => SwitchingTimer()).Subscribe();
-                _charactersSwitchingHandler.ExitCurrentCharacter();
-                currentCharacter = _charactersSwitchingHandler.EnterNextCharacter();
+                Switch();
             }
         }
 
-        private void CreateCharacters()
+        private void GetCharacters()
         {
-            
+            foreach (Transform child in transform)
+            {
+                _numOfChars++;
+                _charactersSwitchingHandler.EnqueueCharacter(child.GetComponent<Character.CharacterController>());
+            }
+        }
+
+        private void Switch()
+        {
+            _canSwitch = false;
+            Observable.FromCoroutine(_ => SwitchingTimer()).Subscribe();
+            _charactersSwitchingHandler.ExitCurrentCharacter();
+            currentCharacter = _charactersSwitchingHandler.EnterNextCharacter();
         }
 
         IEnumerator SwitchingTimer()
@@ -116,6 +111,9 @@ namespace AlirezaTarahomi.FightingGame.Player
             _canSwitch = true;
         }
 
+        /// <summary>
+        /// Handles the event when each character dies
+        /// </summary>
         public void Handle(OnCharacterDied @event)
         {
             _numOfRemainedChars--;
@@ -130,9 +128,12 @@ namespace AlirezaTarahomi.FightingGame.Player
             }
         }
 
+        /// <summary>
+        /// Handles the event when character attack is toggled (attack is started or ended)
+        /// </summary>
         public void Handle(OnAttackToggled @event)
         {
-            if (@event.Enter)
+            if (@event.Enable)
             {
                 _canSwitch = false;
             }
@@ -141,16 +142,5 @@ namespace AlirezaTarahomi.FightingGame.Player
                 _canSwitch = true;
             }
         }
-
-        public void Handle(OnGrounded @event)
-        {
-            _isOnGround = true;
-        }
-    }
-
-    public enum Side
-    {
-        Left = -1,
-        Right = 1
     }
 }

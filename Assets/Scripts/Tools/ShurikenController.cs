@@ -8,26 +8,27 @@ using Assets.Infrastructure.Scripts.CQRS.Validators;
 namespace AlirezaTarahomi.FightingGame.Tool
 {
     public class ShurikenController : MonoBehaviour, IThrowableObject, IPooledObject, IGameObjectProperty,
-        IEventHandler<OnThrowableObjectPicked>
+        IEventHandler<OnThrowableObjectPickedUp>
     {
         [SerializeField] private float _rotatingSpeed = 1;
-        [SerializeField] private Sprite _mainShurikenSprite;
-        [SerializeField] private Sprite _stuckShurikenSprite = default;
-
-        [HideInInspector] public bool isIllusion;
+        [SerializeField] private Sprite _mainSprite = default;
+        [SerializeField] private Sprite _illusionSprite = default;
+        [SerializeField] private Sprite _stuckSprite = default;
 
         public GameObject GameObject { get { return gameObject; } }
         public bool IsDeadly { get; private set; } = true;
         public PooledObjectStats PooledObjectStats { get; set; }
-        public bool IsStuck { get; private set; }
+        public bool CanPick { get; private set; }
+
+        private static MessageRouteRule _rule = MessageRouteRule.Create<OnThrowableObjectPickedUp,
+            ShurikenController>(string.Empty, false, new EventGameObjectValidator<OnThrowableObjectPickedUp>());
 
         private IMessageBus _messageBus;
         private PoolSystem _poolSystem;
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rigidbody;
         private bool _canRotate;
-        private static MessageRouteRule _rule = MessageRouteRule.Create<OnThrowableObjectPicked,
-            ShurikenController>(string.Empty, false, new EventGameObjectValidator<OnThrowableObjectPicked>());
+        private bool _isIllusion;
 
         [Inject]
         public void Construct(IMessageBus messageBus, PoolSystem poolSystem)
@@ -49,12 +50,12 @@ namespace AlirezaTarahomi.FightingGame.Tool
         private void InitializeEvents()
         {
             _messageBus.AddRule(_rule);
-            _messageBus.Subscribe<ShurikenController, OnThrowableObjectPicked>(this, new MessageHandlerActionExecutor<OnThrowableObjectPicked>(Handle));
+            _messageBus.Subscribe<ShurikenController, OnThrowableObjectPickedUp>(this, new MessageHandlerActionExecutor<OnThrowableObjectPickedUp>(Handle));
         }
 
         private void UnsubscribeEvents()
         {
-            _messageBus.Unsubscribe<ShurikenController, OnThrowableObjectPicked>(this);
+            _messageBus.Unsubscribe<ShurikenController, OnThrowableObjectPickedUp>(this);
         }
 
         // Use this for initialization
@@ -76,24 +77,19 @@ namespace AlirezaTarahomi.FightingGame.Tool
         {
             if (collision.CompareTag("Destroyer"))
             {
-                _canRotate = false;
-                Destroy(gameObject);
+                _poolSystem.Despawn(PooledObjectStats, transform);
             }
 
             if (collision.CompareTag("Ground") || collision.CompareTag("Wall"))
             {
-                if (isIllusion)
+                if (_isIllusion)
                 {
-                    _canRotate = false;
-                    Destroy(gameObject);
+                    _isIllusion = false;
+                    _poolSystem.Despawn(PooledObjectStats, transform);
                 }
                 else
                 {
-                    _canRotate = false;
-                    IsStuck = true;
-                    IsDeadly = false;
-                    _spriteRenderer.sprite = _stuckShurikenSprite;
-                    _rigidbody.velocity = Vector2.zero;
+                    MakeItStuck();
                 }
             }
         }
@@ -109,14 +105,33 @@ namespace AlirezaTarahomi.FightingGame.Tool
             transform.Rotate(Vector3.forward, _rotatingSpeed * 1000 * Time.deltaTime);
         }
 
-        public void ReInitialize()
+        public void MakeItStuck()
         {
-            IsStuck = false;
-            IsDeadly = true;
-            _spriteRenderer.sprite = _mainShurikenSprite;
+            _canRotate = false;
+            CanPick = true;
+            IsDeadly = false;
+            _spriteRenderer.sprite = _stuckSprite;
+            _rigidbody.velocity = Vector2.zero;
         }
 
-        public void Handle(OnThrowableObjectPicked @event)
+        public void PrepareForPowerup()
+        {
+            _isIllusion = true;
+            _spriteRenderer.sprite = _illusionSprite;
+        }
+
+        public void ReInitialize()
+        {
+            _canRotate = false;
+            CanPick = false;
+            IsDeadly = true;
+            _spriteRenderer.sprite = _mainSprite;
+        }
+
+        /// <summary>
+        /// Handles the event when the throwable object is picked up
+        /// </summary>
+        public void Handle(OnThrowableObjectPickedUp @event)
         {
             _poolSystem.Despawn(PooledObjectStats, transform);
         }

@@ -10,6 +10,8 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
     [CreateAssetMenu(menuName = "Attacks/Normal Attacks/MeleeAttackBehavior")]
     public class MeleeAttackBehavior : ScriptableObject, INormalAttackBehavior
     {
+        [SerializeField] private float _duration = 0.2f;
+
         private IMessageBus _messageBus;
         private CharacterBehaviorContext _context;
 
@@ -24,29 +26,35 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
             _context = context;
         }
 
-        public Status Behave()
+        public Status BehaviorCondition
         {
-            if (_context.isGrounded)
+            get
             {
-                _context.hitboxCollider.enabled = true;
-                _context.AnimatorController.ToggleAttacking(true);
-                Observable.FromCoroutine(_ => AttackTime()).Subscribe();
-                return Status.Success;
+                if (_context.isGrounded)
+                {
+                    return Status.Success;
+                }
+                return Status.Fail;
             }
-            return Status.Fail;
         }
 
-        public Status EndBehavior()
+        public void Behave()
+        {
+            _context.hitboxCollider.enabled = true;
+            _context.AnimatorController.ToggleAttacking(true);
+            Observable.FromCoroutine(_ => AttackTime()).Subscribe();
+        }
+
+        public void EndBehavior()
         {
             _context.hitboxCollider.enabled = false;
             _context.AnimatorController.ToggleAttacking(false);
-            return Status.Success;
         }
 
         IEnumerator AttackTime()
         {
-            yield return new WaitForSeconds(0.2f);
-            _messageBus.RaiseEvent(new OnAttackToggled(_context.PlayerId, _context.Stats, false));
+            yield return new WaitForSeconds(_duration);
+            _messageBus.RaiseEvent(new OnAttackToggled(_context.CharacterId, _context.PlayerId, false));
         }
     }
 }

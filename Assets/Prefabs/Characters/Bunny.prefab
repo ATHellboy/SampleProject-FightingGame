@@ -156,7 +156,7 @@ GameObject:
   - component: {fileID: 61436828200744910}
   - component: {fileID: 114544271699415582}
   m_Layer: 12
-  m_Name: ColliderActivator
+  m_Name: MovementColliderActivator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -214,6 +214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e885a1041d14ec44f9c773cf59280bd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _movementCollider: {fileID: 1051121297910152}
 --- !u!1 &1145554846297202
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,7 +375,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66769abd20b9b6649a4e7d6fdb77d564, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 26925a53f30441f468c7276e0837c70f, type: 2}
+  _debugStateMachine: 0
+  _stats: {fileID: 11400000, guid: 26925a53f30441f468c7276e0837c70f, type: 2}
+  _throwingAngle: 30
 --- !u!114 &114619753583823290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,9 +390,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86d5e2f2ea38e4e45a4b0d7a30a1db57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementCollider: {fileID: 1051121297910152}
   _hitbox: {fileID: 1056024545519770}
   isGrounded: 0
+  isJustEntered: 0
 --- !u!1 &1257590224626958
 GameObject:
   m_ObjectHideFlags: 0
