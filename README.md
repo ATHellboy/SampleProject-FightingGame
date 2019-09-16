@@ -7,7 +7,7 @@ There are some things which are good to check them out besides my coding knowled
 
 * Combat system which you can check out its brief doc [here](https://github.com/ATHellboy/SampleProject-FightingGame/blob/master/Docs/CombatSystem.pdf).
 
-* Message Bus system (WIP). There is no doc for it yet but I used it in the project massively and there is an UnitTest for it.(More update in future). This message bus system is built upon [UniRx](https://github.com/neuecc/UniRx)
+* Message Bus system (WIP). There is no doc for it yet but I used it in the project massively and there is an UnitTest for it.(More update in future). This message bus system is built upon [UniRx](https://github.com/neuecc/UniRx).
 
 * Object Pooling system. It is good to check out its brief doc [here](https://github.com/ATHellboy/SampleProject-FightingGame/blob/master/Docs/ObjectPoolingSystem.pdf).
 
