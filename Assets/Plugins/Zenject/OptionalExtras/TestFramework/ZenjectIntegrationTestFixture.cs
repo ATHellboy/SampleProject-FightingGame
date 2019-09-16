@@ -3,16 +3,13 @@ using System.Collections;
 using Zenject.Internal;
 using ModestTree;
 using Assert = ModestTree.Assert;
-#if UNITY_EDITOR
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using UnityEngine;
-#endif
 
 namespace Zenject
 {
-#if UNITY_EDITOR
     public abstract class ZenjectIntegrationTestFixture
     {
         SceneContext _sceneContext;
@@ -64,15 +61,15 @@ namespace Zenject
             Assert.That(!ProjectContext.HasInstance);
 
             var shouldValidate = CurrentTestHasAttribute<ValidateOnlyAttribute>();
-
             ProjectContext.ValidateOnNextRun = shouldValidate;
 
-            Assert.IsNull(_sceneContext);
+            Assert.That(_sceneContext == null);
 
             _sceneContext = SceneContext.Create();
             _sceneContext.Install();
 
             Assert.That(ProjectContext.HasInstance);
+
             Assert.IsEqual(shouldValidate, ProjectContext.Instance.Container.IsValidating);
             Assert.IsEqual(shouldValidate, _sceneContext.Container.IsValidating);
         }
@@ -155,42 +152,4 @@ namespace Zenject
             _hasEndedInstall = false;
         }
     }
-#else
-    public abstract class ZenjectIntegrationTestFixture
-    {
-        protected DiContainer Container
-        {
-            get
-            {
-                throw CreateException();
-            }
-        }
-
-        Exception CreateException()
-        {
-            return Assert.CreateException(
-                "ZenjectIntegrationTestFixture currently only supports running within unity editor");
-        }
-
-        protected void SkipInstall()
-        {
-            throw CreateException();
-        }
-
-        protected void PreInstall()
-        {
-            throw CreateException();
-        }
-
-        protected void PostInstall()
-        {
-            throw CreateException();
-        }
-
-        protected void DestroyAll()
-        {
-            throw CreateException();
-        }
-    }
-#endif
 }

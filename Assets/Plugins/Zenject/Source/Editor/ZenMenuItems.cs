@@ -192,7 +192,6 @@ namespace Zenject.Internal
         {
             var assetPath = ZenUnityEditorUtil.ConvertFullAbsolutePathToAssetPath(absoluteDir);
             var prefabPath = (Path.Combine(assetPath, ProjectContext.ProjectContextResourcePath) + ".prefab").Replace("\\", "/");
-            var emptyPrefab = PrefabUtility.CreateEmptyPrefab(prefabPath);
 
             var gameObject = new GameObject();
 
@@ -200,7 +199,11 @@ namespace Zenject.Internal
             {
                 gameObject.AddComponent<ProjectContext>();
 
-                var prefabObj = PrefabUtility.ReplacePrefab(gameObject, emptyPrefab);
+#if UNITY_2018_3_OR_NEWER
+                var prefabObj = PrefabUtility.SaveAsPrefabAsset(gameObject, prefabPath);
+#else
+                var prefabObj = PrefabUtility.ReplacePrefab(gameObject, PrefabUtility.CreateEmptyPrefab(prefabPath));
+#endif
 
                 Selection.activeObject = prefabObj;
             }

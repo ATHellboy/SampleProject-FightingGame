@@ -8,6 +8,7 @@ using ModestTree.Util;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Zenject.Internal;
+using UnityEngine.Events;
 
 namespace Zenject
 {
@@ -17,6 +18,11 @@ namespace Zenject
         public event Action PostInstall;
         public event Action PreResolve;
         public event Action PostResolve;
+
+        public UnityEvent OnPreInstall;
+        public UnityEvent OnPostInstall;
+        public UnityEvent OnPreResolve;
+        public UnityEvent OnPostResolve;
 
         public static Action<DiContainer> ExtraBindingsInstallMethod;
         public static Action<DiContainer> ExtraBindingsLateInstallMethod;
@@ -63,11 +69,7 @@ namespace Zenject
         {
             get
             {
-#if UNITY_EDITOR
                 return ProjectContext.Instance.Container.IsValidating;
-#else
-                return false;
-#endif
             }
         }
 
@@ -112,7 +114,6 @@ namespace Zenject
             }
         }
 
-#if UNITY_EDITOR
         public void Validate()
         {
             Assert.That(IsValidating);
@@ -120,7 +121,6 @@ namespace Zenject
             Install();
             Resolve();
         }
-#endif
 
         protected override void RunInternal()
         {
@@ -207,10 +207,6 @@ namespace Zenject
 
         public void Install()
         {
-#if !UNITY_EDITOR
-            Assert.That(!IsValidating);
-#endif
-
             Assert.That(!_hasInstalled);
             _hasInstalled = true;
 
@@ -226,6 +222,11 @@ namespace Zenject
             if (PreInstall != null)
             {
                 PreInstall();
+            }
+
+            if (OnPreInstall != null)
+            {
+                OnPreInstall.Invoke();
             }
 
             Assert.That(_decoratorContexts.IsEmpty());
@@ -272,6 +273,11 @@ namespace Zenject
             {
                 PostInstall();
             }
+
+            if (OnPostInstall != null)
+            {
+                OnPostInstall.Invoke();
+            }
         }
 
         public void Resolve()
@@ -279,6 +285,11 @@ namespace Zenject
             if (PreResolve != null)
             {
                 PreResolve();
+            }
+
+            if (OnPreResolve != null)
+            {
+                OnPreResolve.Invoke();
             }
 
             Assert.That(_hasInstalled);
@@ -290,6 +301,11 @@ namespace Zenject
             if (PostResolve != null)
             {
                 PostResolve();
+            }
+
+            if (OnPostResolve != null)
+            {
+                OnPostResolve.Invoke();
             }
         }
 

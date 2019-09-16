@@ -4,8 +4,6 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - asteroid
-  - ship
   - Ground
   - Platform
   - Destroyer

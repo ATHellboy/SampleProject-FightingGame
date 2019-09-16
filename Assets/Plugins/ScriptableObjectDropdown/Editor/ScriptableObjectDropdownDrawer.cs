@@ -7,10 +7,12 @@ using System.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ScriptableObjectDropdown.Extension;
 
 namespace ScriptableObjectDropdown.Editor
 {
     // TODO: Mixed value (-) for selecting multi objects
+    // TODO: Don't clear the ScriptableObjects list when it is unselected
     [CustomPropertyDrawer(typeof(ScriptableObjectDropdownAttribute))]
     [CustomPropertyDrawer(typeof(ScriptableObjectReference))]
     public class ScriptableObjectDropdownDrawer : PropertyDrawer
@@ -94,7 +96,7 @@ namespace ScriptableObjectDropdown.Editor
         }
 
         /// <summary>
-        /// Gets ScriptableObjects just when it is a first time or new ScriptableObject added to the project
+        /// Gets ScriptableObjects just when it is selected or new ScriptableObject added to the project
         /// </summary>
         private void GetScriptableObjects(ScriptableObjectDropdownAttribute attribute)
         {

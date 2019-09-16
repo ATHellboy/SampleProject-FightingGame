@@ -39,6 +39,16 @@ namespace Zenject
             return new ScopeConcreteIdArgConditionCopyNonLazyBinder(_bindInfo);
         }
 
+        public ScopeConcreteIdArgConditionCopyNonLazyBinder ByInstanceGetter(
+            Func<InjectContext, DiContainer> subContainerGetter)
+        {
+            SubFinalizer = new SubContainerBindingFinalizer(
+                _bindInfo, _subIdentifier, _resolveAll,
+                (_) => new SubContainerCreatorByInstanceGetter(subContainerGetter));
+
+            return new ScopeConcreteIdArgConditionCopyNonLazyBinder(_bindInfo);
+        }
+
         public
 #if NOT_UNITY3D
             WithKernelScopeConcreteIdArgConditionCopyNonLazyBinder

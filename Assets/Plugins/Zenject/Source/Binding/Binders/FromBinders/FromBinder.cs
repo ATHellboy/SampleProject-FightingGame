@@ -434,6 +434,31 @@ namespace Zenject
             return new NameTransformScopeConcreteIdArgConditionCopyNonLazyBinder(BindInfo, gameObjectInfo);
         }
 
+        public ScopeConcreteIdArgConditionCopyNonLazyBinder FromNewScriptableObject(ScriptableObject resource)
+        {
+            return FromScriptableObjectInternal(resource, true);
+        }
+
+        public ScopeConcreteIdArgConditionCopyNonLazyBinder FromScriptableObject(ScriptableObject resource)
+        {
+            return FromScriptableObjectInternal(resource, false);
+        }
+
+        ScopeConcreteIdArgConditionCopyNonLazyBinder FromScriptableObjectInternal(
+            ScriptableObject resource, bool createNew)
+        {
+            BindingUtil.AssertIsInterfaceOrScriptableObject(AllParentTypes);
+
+            BindInfo.RequireExplicitScope = true;
+            SubFinalizer = new ScopableBindingFinalizer(
+                BindInfo,
+                (container, type) => new ScriptableObjectInstanceProvider(
+                    resource, type, container, BindInfo.Arguments, createNew,
+                    BindInfo.ConcreteIdentifier, BindInfo.InstantiatedCallback));
+
+            return new ScopeConcreteIdArgConditionCopyNonLazyBinder(BindInfo);
+        }
+
         public ScopeConcreteIdArgConditionCopyNonLazyBinder FromNewScriptableObjectResource(string resourcePath)
         {
             return FromScriptableObjectResourceInternal(resourcePath, true);

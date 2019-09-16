@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace ScriptableObjectDropdown
+namespace ScriptableObjectDropdown.Extension
 {
     public static class TypeExtension
     {

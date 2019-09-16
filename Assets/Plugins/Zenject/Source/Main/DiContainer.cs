@@ -436,10 +436,6 @@ namespace Zenject
             Assert.That(!_hasResolvedRoots);
             Assert.That(IsValidating);
 
-#if !NOT_UNITY3D && !ZEN_TESTS_OUTSIDE_UNITY
-            Assert.That(Application.isEditor);
-#endif
-
             var validatables = new List<IValidatable>();
 
             // Repeatedly flush the validation queue until it's empty, to account for
@@ -848,7 +844,7 @@ namespace Zenject
                 return;
             }
 #endif
-            if (TypeAnalyzer.ShouldAllowDuringValidation(context.MemberType))
+            if (IsValidating && TypeAnalyzer.ShouldAllowDuringValidation(context.MemberType))
             {
                 return;
             }
@@ -1293,7 +1289,7 @@ namespace Zenject
 
             Assert.IsNotNull(typeInfo, "Tried to create type '{0}' but could not find type information", concreteType);
 
-            bool allowDuringValidation = TypeAnalyzer.ShouldAllowDuringValidation(concreteType);
+            bool allowDuringValidation = IsValidating && TypeAnalyzer.ShouldAllowDuringValidation(concreteType);
 
             object newObj;
 
@@ -1385,7 +1381,7 @@ namespace Zenject
             {
                 InjectExplicit(newObj, concreteType, extraArgs, context, concreteIdentifier);
 
-                if (extraArgs.Count > 0)
+                if (extraArgs.Count > 0 && !(newObj is ValidationMarker))
                 {
                     throw Assert.CreateException(
                         "Passed unnecessary parameters when injecting into type '{0}'. \nExtra Parameters: {1}\nObject graph:\n{2}",
@@ -1615,7 +1611,7 @@ namespace Zenject
                 return;
             }
 
-            var allowDuringValidation = TypeAnalyzer.ShouldAllowDuringValidation(injectableType);
+            var allowDuringValidation = IsValidating && TypeAnalyzer.ShouldAllowDuringValidation(injectableType);
 
             // Installers are the only things that we instantiate/inject on during validation
             var isDryRun = IsValidating && !allowDuringValidation;

@@ -33,12 +33,21 @@ namespace Zenject.Internal
             return new T[length];
         }
 
+        public static HashSet<T> SpawnHashSet<T>()
+        {
+            return new HashSet<T>();
+        }
+
         public static Dictionary<TKey, TValue> SpawnDictionary<TKey, TValue>()
         {
             return new Dictionary<TKey, TValue>();
         }
 
         public static void DespawnDictionary<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
+        {
+        }
+
+        public static void DespawnHashSet<T>(HashSet<T> set)
         {
         }
 
@@ -74,6 +83,11 @@ namespace Zenject.Internal
         static readonly StaticMemoryPool<BindInfo> _bindInfoPool = new StaticMemoryPool<BindInfo>();
         static readonly StaticMemoryPool<BindStatement> _bindStatementPool = new StaticMemoryPool<BindStatement>();
 
+        public static HashSet<T> SpawnHashSet<T>()
+        {
+            return HashSetPool<T>.Instance.Spawn();
+        }
+
         public static Dictionary<TKey, TValue> SpawnDictionary<TKey, TValue>()
         {
             return DictionaryPool<TKey, TValue>.Instance.Spawn();
@@ -104,6 +118,11 @@ namespace Zenject.Internal
         public static void DespawnDictionary<TKey, TValue>(Dictionary<TKey, TValue> dictionary)
         {
             DictionaryPool<TKey, TValue>.Instance.Despawn(dictionary);
+        }
+
+        public static void DespawnHashSet<T>(HashSet<T> set)
+        {
+            HashSetPool<T>.Instance.Despawn(set);
         }
 
         public static LookupId SpawnLookupId(IProvider provider, BindingId bindingId)

@@ -72,9 +72,13 @@ namespace Zenject
             {
                 var gameObj = ((Component)context.ObjectInstance).gameObject;
 
-                instance = gameObj.GetComponent(_componentType);
+                var componentInstance = gameObj.GetComponent(_componentType);
+                instance = componentInstance;
 
-                if (instance != null)
+                // Use componentInstance so that it triggers unity's overloaded comparison operator
+                // So if the component is there but missing then it returns null
+                // (https://github.com/svermeulen/Zenject/issues/582)
+                if (componentInstance != null)
                 {
                     injectAction = null;
                     buffer.Add(instance);

@@ -41,7 +41,7 @@ namespace Zenject
         {
             Assert.IsNotNull(context);
 
-            var gameObject = _prefabInstantiator.Instantiate(args, out injectAction);
+            var gameObject = _prefabInstantiator.Instantiate(context, args, out injectAction);
 
             var component = gameObject.AddComponent(_componentType);
 

@@ -250,7 +250,7 @@ namespace Zenject.Internal
             // It seems that for readonly fields, we have to use the slower approach below
             // As discussed here: https://www.productiverage.com/trying-to-set-a-readonly-autoproperty-value-externally-plus-a-little-benchmarkdotnet
             // We have to skip value types because those can only be set by reference using an lambda expression
-            if (!parentType.IsValueType() && (fieldInfo == null || !fieldInfo.IsInitOnly))
+            if (!parentType.IsValueType() && (fieldInfo == null || !fieldInfo.IsInitOnly) && (propInfo == null || propInfo.CanWrite))
             {
                 Type memberType = fieldInfo != null
                     ? fieldInfo.FieldType : propInfo.PropertyType;

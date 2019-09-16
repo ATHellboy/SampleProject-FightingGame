@@ -56,6 +56,7 @@ namespace Zenject
                                     container,
                                     _gameObjectBindInfo,
                                     concreteType,
+                                    concreteTypes,
                                     BindInfo.Arguments,
                                     new PrefabProvider(_prefab),
                                     BindInfo.InstantiatedCallback)));
@@ -76,6 +77,7 @@ namespace Zenject
                             container,
                             _gameObjectBindInfo,
                             argumentTarget,
+                            concreteTypes,
                             BindInfo.Arguments,
                             new PrefabProvider(_prefab),
                             BindInfo.InstantiatedCallback));
@@ -111,6 +113,7 @@ namespace Zenject
                                     container,
                                     _gameObjectBindInfo,
                                     contractType,
+                                    BindInfo.ContractTypes,
                                     BindInfo.Arguments,
                                     new PrefabProvider(_prefab),
                                     BindInfo.InstantiatedCallback)));
@@ -131,6 +134,7 @@ namespace Zenject
                             container,
                             _gameObjectBindInfo,
                             argumentTarget,
+                            BindInfo.ContractTypes,
                             BindInfo.Arguments,
                             new PrefabProvider(_prefab),
                             BindInfo.InstantiatedCallback));

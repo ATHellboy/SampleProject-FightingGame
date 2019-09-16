@@ -43,7 +43,7 @@ namespace Zenject
         {
             Assert.IsNotNull(context);
 
-            var gameObject = _prefabInstantiator.Instantiate(args, out injectAction);
+            var gameObject = _prefabInstantiator.Instantiate(context, args, out injectAction);
 
             // NOTE: Need to set includeInactive to true here, because prefabs are always
             // instantiated as disabled until injection occurs, so that Awake / OnEnabled is executed
