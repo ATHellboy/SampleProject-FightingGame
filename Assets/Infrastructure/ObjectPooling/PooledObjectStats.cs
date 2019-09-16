@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿// Copyright (c) ATHellboy (Alireza Tarahomi) Limited. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root.
 
-namespace Infrastructure.ObjectPool
+using UnityEngine;
+
+namespace Infrastructure.ObjectPooling
 {
     [CreateAssetMenu(menuName = "PooledObject")]
     public class PooledObjectStats : ScriptableObject

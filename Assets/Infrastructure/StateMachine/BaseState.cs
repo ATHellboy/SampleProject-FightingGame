@@ -1,11 +1,12 @@
-﻿using System;
+﻿// Copyright (c) ATHellboy (Alireza Tarahomi) Limited. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root.
+
+using System;
 
 namespace Infrastructure.StateMachine
 {
     public abstract class BaseState<TContext> : IState where TContext : IStateMachineContext
     {
-        public IState NextState { get; protected set; }
-
         private readonly Type _contextType;
 
         protected BaseState()

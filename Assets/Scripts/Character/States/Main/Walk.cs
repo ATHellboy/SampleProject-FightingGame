@@ -16,14 +16,12 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Main
         {
             if (context.isInjured)
             {
-                NextState = context.RelatedStates.die;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.die, context);
             }
 
             if (context.MoveAxes == Vector2.zero)
             {
-                NextState = context.RelatedStates.idle;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.idle, context);
             }
         }
 

@@ -3,7 +3,7 @@ using Zenject;
 using Assets.Infrastructure.Scripts.CQRS;
 using AlirezaTarahomi.FightingGame.Character.Event;
 using AlirezaTarahomi.FightingGame.Tool;
-using Infrastructure.ObjectPool;
+using Infrastructure.ObjectPooling;
 using AlirezaTarahomi.FightingGame.Tool.Event;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior
@@ -18,11 +18,11 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
         [HideInInspector] public int counter;
 
         private IMessageBus _messageBus;
-        private PoolSystem _poolSystem;
+        private PoolingSystem _poolSystem;
         private CharacterBehaviorContext _context;
 
         [Inject]
-        public void Construct(IMessageBus messageBus, PoolSystem poolSystem)
+        public void Construct(IMessageBus messageBus, PoolingSystem poolSystem)
         {
             _messageBus = messageBus;
             _poolSystem = poolSystem;

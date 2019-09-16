@@ -30,16 +30,14 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
             if (CheckAttackCondition(context))
             {
-                NextState = context.RelatedStates.attack;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.attack, context);
             }
 
             if (CheckPowerupCondition(context))
             {
                 if (context.powerup.Active() == PowerType.OneTime)
                 {
-                    NextState = context.RelatedStates.attack;
-                    stateMachine.ChangeState(this, NextState, context);
+                    stateMachine.ChangeState(this, context.RelatedStates.attack, context);
                 }
             }
         }

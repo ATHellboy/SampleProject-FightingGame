@@ -24,8 +24,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
         {
             if (context.isFlying)
             {
-                NextState = context.RelatedStates.fly;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.fly, context);
             }
 
             if (!context.CanControl)
@@ -34,8 +33,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
             if (context.InputManager.IsDown("Jump_P" + context.PlayerId))
             {
                 context.jumpHeight = context.Stats.airMovementValues.jumpHeight;
-                NextState = context.RelatedStates.jump;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.jump, context);
             }
         }
 
@@ -43,8 +41,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
         {
             if (!context.isGrounded)
             {
-                NextState = context.RelatedStates.fall;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.fall, context);
             }
         }
 

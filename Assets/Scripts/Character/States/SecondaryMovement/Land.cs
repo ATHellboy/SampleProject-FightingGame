@@ -14,8 +14,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
 
         public override void Update(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
         {
-            NextState = context.RelatedStates.none;
-            stateMachine.ChangeState(this, NextState, context);
+            stateMachine.ChangeState(this, context.RelatedStates.none, context);
         }
 
         public override void FixedUpdate(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)

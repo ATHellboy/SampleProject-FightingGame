@@ -15,8 +15,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
         {
             if (!context.isFlying)
             {
-                NextState = context.RelatedStates.none;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.none, context);
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Infrastructure.ObjectPool;
+using Infrastructure.ObjectPooling;
 using Zenject;
 using AlirezaTarahomi.FightingGame.Tool.Event;
 using Assets.Infrastructure.Scripts.CQRS;
@@ -24,14 +24,14 @@ namespace AlirezaTarahomi.FightingGame.Tool
             ShurikenController>(string.Empty, false, new EventGameObjectValidator<OnThrowableObjectPickedUp>());
 
         private IMessageBus _messageBus;
-        private PoolSystem _poolSystem;
+        private PoolingSystem _poolSystem;
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rigidbody;
         private bool _canRotate;
         private bool _isIllusion;
 
         [Inject]
-        public void Construct(IMessageBus messageBus, PoolSystem poolSystem)
+        public void Construct(IMessageBus messageBus, PoolingSystem poolSystem)
         {
             _messageBus = messageBus;
             _poolSystem = poolSystem;

@@ -28,8 +28,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
             if (context.isAttackingEnded || _currentBehavior == null)
             {
                 context.isAttackingEnded = false;
-                NextState = context.RelatedStates.none;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.none, context);
             }
         }
 

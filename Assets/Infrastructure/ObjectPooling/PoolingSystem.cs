@@ -1,12 +1,14 @@
-﻿using Infrastructure.Factory;
-using System.Collections;
+﻿// Copyright (c) ATHellboy (Alireza Tarahomi) Limited. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root.
+
+using Infrastructure.Factory;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-namespace Infrastructure.ObjectPool
+namespace Infrastructure.ObjectPooling
 {
-    public class PoolSystem : MonoBehaviour
+    public class PoolingSystem : MonoBehaviour
     {
         private const int YPOS = 9999;
 
@@ -76,25 +78,22 @@ namespace Infrastructure.ObjectPool
         {
             Queue<Transform> queue = _poolDictionary[stats];
 
-            Transform spawnedObject = queue.Dequeue();
-
-            if (spawnedObject == null)
+            if (queue.Count == 0)
             {
-                spawnedObject = Create(queue, stats, 1);
+                queue.Enqueue(Create(queue, stats, 1));
 
                 if (stats.expandBy == ExpandBy.Doubling)
                 {
                     for (int j = 0; j < stats.number - 1; j++)
                     {
-                        Transform pooledObject = Create(queue, stats, j);
-                        queue.Enqueue(pooledObject);
+                        queue.Enqueue(Create(queue, stats, j));
                     }
                 }
             }
 
+            Transform spawnedObject = queue.Dequeue();
             spawnedObject.gameObject.SetActive(true);
-
-            StartCoroutine(ReInitializeAtTheEndofFrame(spawnedObject));
+            ReInitialize(spawnedObject);
 
             return spawnedObject;
         }
@@ -109,10 +108,8 @@ namespace Infrastructure.ObjectPool
             return spawnedObject;
         }
 
-        // TODO: It may placeholder
-        IEnumerator ReInitializeAtTheEndofFrame(Transform spawnedObject)
+        private void ReInitialize(Transform spawnedObject)
         {
-            yield return new WaitForEndOfFrame();
             IPooledObject pooledObjectComponent = spawnedObject.GetComponent<IPooledObject>();
             if (pooledObjectComponent != null)
             {

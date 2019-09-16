@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38697ce8ef1b20d43a83d728c173662e, type: 3}
   m_Name: PussyThrowingObjectBehavior
   m_EditorClassIdentifier: 
-  maxObjectNumber: 9
-  throwingForce: 1.5
-  counter: 0
+  _maxObjectNumber: 9
+  _throwingForce: 1.5
   _throwableObjectPoolStats: {fileID: 11400000, guid: 55e2b2fcfdc7d0140a6408ec5df04a49,
     type: 2}
+  counter: 0

@@ -6,7 +6,7 @@ using Assets.Infrastructure.MessageBusImplementations.UniRx;
 using AlirezaTarahomi.FightingGame.CameraSystem;
 using AlirezaTarahomi.FightingGame.InputSystem;
 using Infrastructure.Factory;
-using Infrastructure.ObjectPool;
+using Infrastructure.ObjectPooling;
 using Infrastructure.StateMachine;
 
 namespace AlirezaTarahomi.FightingGame.Installers
@@ -19,7 +19,7 @@ namespace AlirezaTarahomi.FightingGame.Installers
             Container.Bind<Canvas>().FromComponentInHierarchy().AsSingle();
             Container.Bind<MainCameraController>().FromComponentInHierarchy().AsSingle();
             Container.Bind<CinemachineTargetGroup>().FromComponentInHierarchy().AsSingle();
-            Container.Bind<PoolSystem>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<PoolingSystem>().FromComponentInHierarchy().AsSingle();
 
             Container.Bind<TargetGroupController>().AsSingle().NonLazy();
             Container.Bind<InputManager>().To<UnityInputManager>().AsSingle().NonLazy();

@@ -1,9 +1,10 @@
-﻿namespace Infrastructure.StateMachine
+﻿// Copyright (c) ATHellboy (Alireza Tarahomi) Limited. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root.
+
+namespace Infrastructure.StateMachine
 {
     public interface IState
     {
-        IState NextState { get; }
-
         void Enter(IStateMachineContext context);
 
         void Update(float deltaTime, StateMachine stateMachine, IStateMachineContext context);

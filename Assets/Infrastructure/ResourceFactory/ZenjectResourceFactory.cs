@@ -1,6 +1,9 @@
-﻿using Infrastructure.Factory;
+﻿// Copyright (c) ATHellboy (Alireza Tarahomi) Limited. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root.
+
 using UnityEngine;
 using Zenject;
+
 namespace Infrastructure.Factory
 {
     // TODO: More option for instantiating like Unity

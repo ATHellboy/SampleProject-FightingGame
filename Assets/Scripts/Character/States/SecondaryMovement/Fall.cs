@@ -17,15 +17,13 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
         {
             if (context.isFlying)
             {
-                NextState = context.RelatedStates.fly;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.fly, context);
             }
 
             if (context.CheckNextJumpCondition())
             {
                 context.jumpHeight = context.Stats.airMovementValues.lessJumpHeight;
-                NextState = context.RelatedStates.jump;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.jump, context);
             }
 
             if (context.jumpCounter > 1)
@@ -38,8 +36,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
         {
             if (context.isGrounded)
             {
-                NextState = context.RelatedStates.land;
-                stateMachine.ChangeState(this, NextState, context);
+                stateMachine.ChangeState(this, context.RelatedStates.land, context);
             }
         }
 
