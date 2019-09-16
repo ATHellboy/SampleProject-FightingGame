@@ -15,4 +15,4 @@ There are some things which are good to check them out besides my coding knowled
 
 * It is not a big deal but don't forget to check my State Machine too. Its brief doc is [here](https://github.com/ATHellboy/SampleProject-FightingGame/blob/master/Docs/StateMachine.pdf).
 
-I love IOC and DI so I used [Extenject](https://github.com/svermeulen/Extenject) by the great man, [Steve](https://github.com/svermeulen) in this project.
+I love IOC and DI so I used [Extenject](https://github.com/svermeulen/Extenject) (Zenject) by the great man, [Steve](https://github.com/svermeulen) in this project.
