@@ -3,6 +3,8 @@ It is a sample project to show my coding approaches and knowledge, also some arc
 
 You can check the project docs [here](https://github.com/ATHellboy/SampleProject-FightingGame/tree/master/Docs).
 
+I didn't make custom character controller for characters and I used Unity Physics and Rigidbody because of time.
+
 There are some things which are good to check them out besides my coding knowledge. They are:
 
 * Combat system which you can check out its brief doc [here](https://github.com/ATHellboy/SampleProject-FightingGame/blob/master/Docs/CombatSystem.pdf).
