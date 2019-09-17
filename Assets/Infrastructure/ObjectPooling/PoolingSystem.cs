@@ -33,10 +33,9 @@ namespace Infrastructure.ObjectPooling
             CreateAll();
         }
 
-        private Transform Create(Queue<Transform> queue, PooledObjectStats stats, int index)
+        private Transform Create(Queue<Transform> queue, PooledObjectStats stats)
         {
             Transform pooledObject = _resourceFactory.Instantiate(stats.prefab, new Vector3(0, YPOS, 0), stats.parent);
-            pooledObject.name += " " + index;
             IPooledObject pooledObjectComponent = pooledObject.GetComponent<IPooledObject>();
             if (pooledObjectComponent != null)
                 pooledObjectComponent.PooledObjectStats = stats;
@@ -67,7 +66,7 @@ namespace Infrastructure.ObjectPooling
 
                 for (int j = 0; j < _pooledObjectsStats[i].number; j++)
                 {
-                    Transform pooledObject = Create(queue, stats, j);
+                    Transform pooledObject = Create(queue, stats);
                     queue.Enqueue(pooledObject);
                 }
                 _poolDictionary.Add(_pooledObjectsStats[i], queue);
@@ -80,13 +79,13 @@ namespace Infrastructure.ObjectPooling
 
             if (queue.Count == 0)
             {
-                queue.Enqueue(Create(queue, stats, 1));
+                queue.Enqueue(Create(queue, stats));
 
                 if (stats.expandBy == ExpandBy.Doubling)
                 {
                     for (int j = 0; j < stats.number - 1; j++)
                     {
-                        queue.Enqueue(Create(queue, stats, j));
+                        queue.Enqueue(Create(queue, stats));
                     }
                 }
             }
