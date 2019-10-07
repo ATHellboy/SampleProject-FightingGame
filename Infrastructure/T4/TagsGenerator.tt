@@ -1,0 +1,16 @@
+﻿<#@ template language="C#" linePragmas="false" #>
+<#@ parameter name="m_ClassName" type="System.String"#>
+<#@ parameter name="m_UnityTags" type="System.String[]"#>
+public static class <#= m_ClassName #>
+{
+<#
+	// Create a public constant for each memeber in m_UnityTags.
+	// We Also want to strip all spaces that is not valid syntax in C#.
+	for (int i = 0; i < m_UnityTags.Length; i++)
+	{
+#>
+	public const string <#= m_UnityTags[i].Replace(" ", "") #> = "<#= m_UnityTags[i] #>";
+<#
+	}
+#>
+}

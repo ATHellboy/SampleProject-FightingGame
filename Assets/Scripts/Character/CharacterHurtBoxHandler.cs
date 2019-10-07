@@ -31,12 +31,12 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag("CharactersTrigger"))
+            if (collision.CompareTag(Tags.CharactersTrigger))
             {
                 _locomotionHandler.Stop();
             }
 
-            if (collision.CompareTag("Hitbox"))
+            if (collision.CompareTag(Tags.Hitbox))
             {
                 if (GetInjured(collision))
                 {

@@ -37,7 +37,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
 
         public void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag("Hitbox"))
+            if (collision.CompareTag(Tags.Hitbox))
             {
                 if (_context.OwnershipService.Contains(collision.gameObject))
                 {
