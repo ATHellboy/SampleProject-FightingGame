@@ -7,10 +7,8 @@ using AlirezaTarahomi.FightingGame.Character.State.Main;
 using AlirezaTarahomi.FightingGame.InputSystem;
 using AlirezaTarahomi.FightingGame.Player;
 using AlirezaTarahomi.FightingGame.Player.Event;
-using AlirezaTarahomi.FightingGame.Player.Validator;
 using AlirezaTarahomi.FightingGame.Service;
 using Assets.Infrastructure.Scripts.CQRS;
-using Assets.Infrastructure.Scripts.CQRS.Validators;
 using Infrastructure.Factory;
 using Infrastructure.StateMachine;
 using UnityEngine;
@@ -31,30 +29,6 @@ namespace AlirezaTarahomi.FightingGame.Character
         public string EntityId { get; private set; }
         public CharacterStats Stats { get; private set; }
         public int PlayerId { get; private set; }
-
-        private static MessageRouteRule[] _rules = new MessageRouteRule[]
-        {
-        MessageRouteRule.Create<OnPowerupToggled, CharacterController>(string.Empty, false,
-            new EventEntityIdValidator<OnPowerupToggled>()),
-        MessageRouteRule.Create<OnControlToggled, CharacterController>(string.Empty, false,
-            new EventEntityIdValidator<OnControlToggled>()),
-        MessageRouteRule.Create<OnCharacterArrivalToggled, CharacterController>(string.Empty, false,
-            new EventEntityIdValidator<OnCharacterArrivalToggled>()),
-        MessageRouteRule.Create<OnOtherDisabled, CharacterController>(string.Empty, false,
-            new AndValidator<OnOtherDisabled>(new EventPlayerIdValidator<OnOtherDisabled>(),
-            new NotValidator<OnOtherDisabled>((new EventEntityIdValidator<OnOtherDisabled>())))),
-        MessageRouteRule.Create<OnGrounded, CharacterController>(string.Empty, false,
-            new EventEntityIdValidator<OnGrounded>()),
-        MessageRouteRule.Create<OnCharacterDied, CharacterController>(string.Empty, false,
-            new EventEntityIdValidator<OnCharacterDied>()),
-        MessageRouteRule.Create<OnAttackToggled, CharacterController>(string.Empty, false,
-            new AndValidator<OnAttackToggled>(new EventEntityIdValidator<OnAttackToggled>(),
-                                              new EventPlayerIdValidator<OnAttackToggled>())),
-        MessageRouteRule.Create<OnSecondaryMovementNoneStateEntered, CharacterController>(string.Empty, false,
-            new EventEntityIdValidator<OnSecondaryMovementNoneStateEntered>()),
-        MessageRouteRule.Create<OnCharacterFlownToggled, CharacterController>(string.Empty, false,
-            new EventEntityIdValidator<OnCharacterFlownToggled>())
-        };
 
         private InputManager _inputManager;
         private IMessageBus _messageBus;
@@ -128,31 +102,14 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void InitializeEvents()
         {
-            _messageBus.AddRule(_rules[0]);
             _messageBus.Subscribe<CharacterController, OnPowerupToggled>(this, new MessageHandlerActionExecutor<OnPowerupToggled>(Handle));
-
-            _messageBus.AddRule(_rules[1]);
             _messageBus.Subscribe<CharacterController, OnControlToggled>(this, new MessageHandlerActionExecutor<OnControlToggled>(Handle));
-
-            _messageBus.AddRule(_rules[2]);
             _messageBus.Subscribe<CharacterController, OnCharacterArrivalToggled>(this, new MessageHandlerActionExecutor<OnCharacterArrivalToggled>(Handle));
-
-            _messageBus.AddRule(_rules[3]);
             _messageBus.Subscribe<CharacterController, OnOtherDisabled>(this, new MessageHandlerActionExecutor<OnOtherDisabled>(Handle));
-
-            _messageBus.AddRule(_rules[4]);
             _messageBus.Subscribe<CharacterController, OnGrounded>(this, new MessageHandlerActionExecutor<OnGrounded>(Handle));
-
-            _messageBus.AddRule(_rules[5]);
             _messageBus.Subscribe<CharacterController, OnCharacterDied>(this, new MessageHandlerActionExecutor<OnCharacterDied>(Handle));
-
-            _messageBus.AddRule(_rules[6]);
             _messageBus.Subscribe<CharacterController, OnAttackToggled>(this, new MessageHandlerActionExecutor<OnAttackToggled>(Handle));
-
-            _messageBus.AddRule(_rules[7]);
             _messageBus.Subscribe<CharacterController, OnSecondaryMovementNoneStateEntered>(this, new MessageHandlerActionExecutor<OnSecondaryMovementNoneStateEntered>(Handle));
-
-            _messageBus.AddRule(_rules[8]);
             _messageBus.Subscribe<CharacterController, OnCharacterFlownToggled>(this, new MessageHandlerActionExecutor<OnCharacterFlownToggled>(Handle));
         }
 

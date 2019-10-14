@@ -20,9 +20,6 @@ namespace AlirezaTarahomi.FightingGame.Tool
         public PooledObjectStats PooledObjectStats { get; set; }
         public bool CanPick { get; private set; }
 
-        private static MessageRouteRule _rule = MessageRouteRule.Create<OnThrowableObjectPickedUp,
-            ShurikenController>(string.Empty, false, new EventGameObjectValidator<OnThrowableObjectPickedUp>());
-
         private IMessageBus _messageBus;
         private PoolingSystem _poolSystem;
         private SpriteRenderer _spriteRenderer;
@@ -49,7 +46,6 @@ namespace AlirezaTarahomi.FightingGame.Tool
 
         private void InitializeEvents()
         {
-            _messageBus.AddRule(_rule);
             _messageBus.Subscribe<ShurikenController, OnThrowableObjectPickedUp>(this, new MessageHandlerActionExecutor<OnThrowableObjectPickedUp>(Handle));
         }
 

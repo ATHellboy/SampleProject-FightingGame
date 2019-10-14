@@ -1,6 +1,5 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Behavior.Powerup;
 using AlirezaTarahomi.FightingGame.Character.Event;
-using AlirezaTarahomi.FightingGame.Character.Validator;
 using Assets.Infrastructure.Scripts.CQRS;
 using ScriptableObjectDropdown;
 using UnityEngine;
@@ -16,9 +15,6 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
         public ScriptableObjectReference _powerupAttackBehavior;
         public ScriptableObject PowerupAttackBehavior { get { return _powerupAttackBehavior.value; } }
         public string CharacterId { get { return _context.CharacterId; } }
-
-        private static MessageRouteRule _rule = MessageRouteRule.Create<OnFlyOverEnded, FlyOverPowerup>(string.Empty, false,
-                new EventCharacterIdValidator<OnFlyOverEnded>());
 
         private IMessageBus _messageBus;
         private CharacterPowerupContext _context;
@@ -36,27 +32,26 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
             _context = context;
         }
 
-        //void OnDestroy()
-        //{
-        //    UnsubscribeEvents();
-        //}
+        void OnDestroy()
+        {
+            //UnsubscribeEvents();
+        }
 
         private void InitializeEvents()
         {
             if (_messageBus != null)
             {
-                _messageBus.AddRule(_rule);
                 _messageBus.Subscribe<FlyOverPowerup, OnFlyOverEnded>(this, new MessageHandlerActionExecutor<OnFlyOverEnded>(Handle));
             }
         }
 
-        //private void UnsubscribeEvents()
-        //{
-        //    if (_messageBus != null)
-        //    {
-        //        _messageBus.Unsubscribe<FlyOverPowerup, OnPushForwardEnded>(this);
-        //    }
-        //}
+        private void UnsubscribeEvents()
+        {
+            if (_messageBus != null)
+            {
+                _messageBus.Unsubscribe<FlyOverPowerup, OnFlyOverEnded>(this);
+            }
+        }
 
         public PowerType Active()
         {

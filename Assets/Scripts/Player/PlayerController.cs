@@ -26,13 +26,6 @@ namespace AlirezaTarahomi.FightingGame.Player
         private bool _canSwitch = true;
         private int _numOfChars;
         private int _numOfRemainedChars;
-        private static MessageRouteRule[] _rules = new MessageRouteRule[]
-        {
-        MessageRouteRule.Create<OnCharacterDied, PlayerController>(string.Empty, false,
-            new EventPlayerIdValidator<OnCharacterDied>()),
-        MessageRouteRule.Create<OnAttackToggled, PlayerController>(string.Empty, false,
-            new EventPlayerIdValidator<OnAttackToggled>())
-        };
 
         [Inject]
         public void Construct(InputManager inputManager, CharactersSwitchingHandler charactersSwitchingHandler,
@@ -59,10 +52,7 @@ namespace AlirezaTarahomi.FightingGame.Player
 
         private void InitializeEvents()
         {
-            _messageBus.AddRule(_rules[0]);
             _messageBus.Subscribe<PlayerController, OnCharacterDied>(this, new MessageHandlerActionExecutor<OnCharacterDied>(Handle));
-
-            _messageBus.AddRule(_rules[1]);
             _messageBus.Subscribe<PlayerController, OnAttackToggled>(this, new MessageHandlerActionExecutor<OnAttackToggled>(Handle));
         }
 

@@ -30,7 +30,6 @@ namespace AlirezaTarahomi.FightingGame.UI
 
         private void InitializeEvents()
         {
-            _messageBus.AddRule(MessageRouteRule.Create<OnGameOvered, UIGameOverPanel>(string.Empty, false));
             _messageBus.Subscribe<UIGameOverPanel, OnGameOvered>(this, new MessageHandlerActionExecutor<OnGameOvered>(Handle));
         }
 
