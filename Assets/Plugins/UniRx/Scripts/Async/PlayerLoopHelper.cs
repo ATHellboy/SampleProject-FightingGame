@@ -4,7 +4,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Experimental.LowLevel;
+
 using UniRx.Async.Internal;
 using System.Threading;
 
@@ -57,21 +57,21 @@ namespace UniRx.Async
         static ContinuationQueue[] yielders;
         static PlayerLoopRunner[] runners;
 
-        static PlayerLoopSystem[] InsertRunner(PlayerLoopSystem loopSystem, Type loopRunnerYieldType, ContinuationQueue cq, Type loopRunnerType, PlayerLoopRunner runner)
+        static UnityEngine.LowLevel.PlayerLoopSystem[] InsertRunner(UnityEngine.LowLevel.PlayerLoopSystem loopSystem, Type loopRunnerYieldType, ContinuationQueue cq, Type loopRunnerType, PlayerLoopRunner runner)
         {
-            var yieldLoop = new PlayerLoopSystem
+            var yieldLoop = new UnityEngine.LowLevel.PlayerLoopSystem
             {
                 type = loopRunnerYieldType,
                 updateDelegate = cq.Run
             };
 
-            var runnerLoop = new PlayerLoopSystem
+            var runnerLoop = new UnityEngine.LowLevel.PlayerLoopSystem
             {
                 type = loopRunnerType,
                 updateDelegate = runner.Run
             };
 
-            var dest = new PlayerLoopSystem[loopSystem.subSystemList.Length + 2];
+            var dest = new UnityEngine.LowLevel.PlayerLoopSystem[loopSystem.subSystemList.Length + 2];
             Array.Copy(loopSystem.subSystemList, 0, dest, 2, loopSystem.subSystemList.Length);
             dest[0] = yieldLoop;
             dest[1] = runnerLoop;
@@ -87,11 +87,11 @@ namespace UniRx.Async
 
             if (runners != null) return; // already initialized
 
-            var playerLoop = PlayerLoop.GetDefaultPlayerLoop();
+            var playerLoop = UnityEngine.LowLevel.PlayerLoop.GetDefaultPlayerLoop();
             Initialize(ref playerLoop);
         }
 
-        public static void Initialize(ref PlayerLoopSystem playerLoop)
+        public static void Initialize(ref UnityEngine.LowLevel.PlayerLoopSystem playerLoop)
         {
             yielders = new ContinuationQueue[7];
             runners = new PlayerLoopRunner[7];
@@ -107,7 +107,7 @@ namespace UniRx.Async
             copyList[6].subSystemList = InsertRunner(copyList[6], typeof(UniTaskLoopRunners.UniTaskLoopRunnerYieldPostLateUpdate), yielders[6] = new ContinuationQueue(), typeof(UniTaskLoopRunners.UniTaskLoopRunnerPostLateUpdate), runners[6] = new PlayerLoopRunner());
 
             playerLoop.subSystemList = copyList;
-            PlayerLoop.SetPlayerLoop(playerLoop);
+            UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(playerLoop);
         }
 
         public static void AddAction(PlayerLoopTiming timing, IPlayerLoopItem action)
