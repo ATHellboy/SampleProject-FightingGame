@@ -58,9 +58,19 @@ namespace Zenject
                 };
                 installersList.drawElementCallback += (rect, index, active, focused) =>
                 {
+                    var installerProperty = installersProperty.GetArrayElementAtIndex(index);
+                    var leafInstaller = installerProperty.objectReferenceValue as IInstaller;
+
+                    bool isValid = leafInstaller.ValidateAsComposite();
+
+                    if (!isValid) { GUI.color = Color.red; }
+
                     rect.width -= 40;
                     rect.x += 20;
                     EditorGUI.PropertyField(rect, installersProperty.GetArrayElementAtIndex(index), GUIContent.none, true);
+                    if (!isValid) { EditorGUI.LabelField(rect, new GUIContent("", CompositeInstallerEditorDescriptions.ErrorTooltip)); }
+
+                    GUI.color = Color.white;
                 };
             }
         }

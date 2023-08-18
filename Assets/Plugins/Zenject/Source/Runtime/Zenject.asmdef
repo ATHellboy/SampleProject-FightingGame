@@ -1,0 +1,24 @@
+{
+    "name": "Zenject",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.modules.uielements",
+            "expression": "1.0.0",
+            "define": "USE_UI_ELEMENTS_MODULE"
+        },
+        {
+            "name": "com.unity.ui",
+            "expression": "1.0.0",
+            "define": "USE_UI_ELEMENTS_PACKAGE"
+        }
+    ],
+    "noEngineReferences": false
+}

@@ -1,5 +1,7 @@
 #if !NOT_UNITY3D
 
+#pragma warning disable 649
+
 using ModestTree;
 using UnityEngine;
 
@@ -16,6 +18,9 @@ namespace Zenject
         [InjectLocal]
         DisposableManager _disposablesManager = null;
 
+        [InjectOptional] 
+        private IDecoratableMonoKernel decoratableMonoKernel;
+
         bool _hasInitialized;
         bool _isDestroyed;
 
@@ -26,7 +31,10 @@ namespace Zenject
 
         public virtual void Start()
         {
-            Initialize();
+            if (decoratableMonoKernel?.ShouldInitializeOnStart()??true)
+            {
+                Initialize();
+            }
         }
 
         public void Initialize()
@@ -35,7 +43,15 @@ namespace Zenject
             if (!_hasInitialized)
             {
                 _hasInitialized = true;
-                _initializableManager.Initialize();
+
+                if (decoratableMonoKernel != null)
+                {
+                    decoratableMonoKernel.Initialize();
+                }
+                else
+                {
+                    _initializableManager.Initialize();
+                }
             }
         }
 
@@ -44,7 +60,14 @@ namespace Zenject
             // Don't spam the log every frame if initialization fails and leaves it as null
             if (_tickableManager != null)
             {
-                _tickableManager.Update();
+                if (decoratableMonoKernel != null)
+                {
+                    decoratableMonoKernel.Update();
+                }
+                else
+                {
+                    _tickableManager.Update();
+                }
             }
         }
 
@@ -53,7 +76,14 @@ namespace Zenject
             // Don't spam the log every frame if initialization fails and leaves it as null
             if (_tickableManager != null)
             {
-                _tickableManager.FixedUpdate();
+                if (decoratableMonoKernel != null)
+                {
+                    decoratableMonoKernel.FixedUpdate();
+                }
+                else
+                {
+                    _tickableManager.FixedUpdate();
+                }
             }
         }
 
@@ -62,7 +92,14 @@ namespace Zenject
             // Don't spam the log every frame if initialization fails and leaves it as null
             if (_tickableManager != null)
             {
-                _tickableManager.LateUpdate();
+                if (decoratableMonoKernel != null)
+                {
+                    decoratableMonoKernel.LateUpdate();
+                }
+                else
+                {
+                    _tickableManager.LateUpdate();
+                }
             }
         }
 
@@ -74,8 +111,16 @@ namespace Zenject
                 Assert.That(!_isDestroyed);
                 _isDestroyed = true;
 
-                _disposablesManager.Dispose();
-                _disposablesManager.LateDispose();
+                if (decoratableMonoKernel != null)
+                {
+                    decoratableMonoKernel.Dispose();
+                    decoratableMonoKernel.LateDispose();
+                }
+                else
+                {
+                    _disposablesManager.Dispose();
+                    _disposablesManager.LateDispose();
+                }
             }
         }
     }
