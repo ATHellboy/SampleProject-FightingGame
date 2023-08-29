@@ -1,17 +1,7 @@
-﻿using Assets.Infrastructure.Scripts.CQRS;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace AlirezaTarahomi.FightingGame.Character.Event
 {
-    public class OnGrounded : IEvent
-    {
-        public string EntityId { get; }
-        public DateTime UtcOccureTime { get; }
-
-        public OnGrounded(string entityId)
-        {
-            EntityId = entityId;
-        }
-    }
+    public class OnGrounded : UnityEvent<bool> { }
 }

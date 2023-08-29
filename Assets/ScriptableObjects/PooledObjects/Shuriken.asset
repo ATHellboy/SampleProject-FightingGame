@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Shuriken
   m_EditorClassIdentifier: 
   prefab: {fileID: 4709808579339924, guid: 47e219dcf944ccd40a581635c8c00fbe, type: 3}
-  number: 10
+  number: 20
   expandBy: 0
   parent: {fileID: 0}

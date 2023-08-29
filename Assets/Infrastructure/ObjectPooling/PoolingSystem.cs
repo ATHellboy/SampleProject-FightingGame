@@ -10,26 +10,22 @@ namespace Infrastructure.ObjectPooling
 {
     public class PoolingSystem : MonoBehaviour
     {
+        [SerializeField] private PooledObjectStats[] _pooledObjectsStats;
+
         private const int YPOS = 9999;
 
-        private PooledObjectStats[] _pooledObjectsStats;
         private IResourceFactory _resourceFactory;
-        private Dictionary<PooledObjectStats, Queue<Transform>> _poolDictionary = new Dictionary<PooledObjectStats, Queue<Transform>>();
-
-        // TODO: You may replace it with something better
-        private Canvas _canvas;
+        private Dictionary<PooledObjectStats, Queue<Transform>> _poolDictionary = new();
+        private Dictionary<PooledObjectStats, List<Transform>> _despawnDictionary = new();
 
         [Inject]
-        public void Construct(IResourceFactory resourceFactory, Canvas canvas)
+        public void Construct(IResourceFactory resourceFactory)
         {
             _resourceFactory = resourceFactory;
-            _canvas = canvas;
         }
 
         void Awake()
         {
-            _pooledObjectsStats = Resources.LoadAll<PooledObjectStats>("");
-
             CreateAll();
         }
 
@@ -48,20 +44,9 @@ namespace Infrastructure.ObjectPooling
             for (int i = 0; i < _pooledObjectsStats.Length; i++)
             {
                 PooledObjectStats stats = _pooledObjectsStats[i];
-                Queue<Transform> queue = new Queue<Transform>();
-                GameObject parent;
-
-                if (stats.prefab.GetComponent<RectTransform>() == null)
-                {
-                    parent = new GameObject(stats.name + "s");
-                    parent.transform.SetParent(transform);
-                }
-                else
-                {
-                    parent = new GameObject(stats.name + "s", typeof(RectTransform));
-                    parent.transform.SetParent(_canvas.transform);
-                    ResetRectTransform(parent);
-                }
+                Queue<Transform> queue = new();
+                GameObject parent = new(stats.name + "s");
+                parent.transform.SetParent(transform);
                 stats.parent = parent.transform;
 
                 for (int j = 0; j < _pooledObjectsStats[i].number; j++)
@@ -73,9 +58,16 @@ namespace Infrastructure.ObjectPooling
             }
         }
 
-        public Transform Spawn(PooledObjectStats stats)
+        private Transform Spawn(PooledObjectStats stats, Transform parent)
         {
             Queue<Transform> queue = _poolDictionary[stats];
+
+            if (!_despawnDictionary.ContainsKey(stats))
+            {
+                List<Transform> tempList = new();
+                _despawnDictionary.Add(stats, tempList);
+            }
+            List<Transform> list = _despawnDictionary[stats];
 
             if (queue.Count == 0)
             {
@@ -91,15 +83,20 @@ namespace Infrastructure.ObjectPooling
             }
 
             Transform spawnedObject = queue.Dequeue();
+            list.Add(spawnedObject);
+
             spawnedObject.gameObject.SetActive(true);
-            ReInitialize(spawnedObject);
+            if (parent != null)
+            {
+                spawnedObject.SetParent(parent);
+            }
 
             return spawnedObject;
         }
 
-        public Transform Spawn(PooledObjectStats stats, Vector3 position, Quaternion rotation)
+        public Transform Spawn(PooledObjectStats stats, Vector3 position, Quaternion rotation, Transform parent = null)
         {
-            Transform spawnedObject = Spawn(stats);
+            Transform spawnedObject = Spawn(stats, parent);
 
             spawnedObject.position = position;
             spawnedObject.rotation = rotation;
@@ -107,38 +104,45 @@ namespace Infrastructure.ObjectPooling
             return spawnedObject;
         }
 
-        private void ReInitialize(Transform spawnedObject)
-        {
-            IPooledObject pooledObjectComponent = spawnedObject.GetComponent<IPooledObject>();
-            if (pooledObjectComponent != null)
-            {
-                spawnedObject.GetComponent<IPooledObject>().ReInitialize();
-            }
-            else
-            {
-                Debug.LogWarning("Pooled object class should inherits IPooledObject to use ReInitialize usage");
-            }
-        }
-
         public void Despawn(PooledObjectStats stats, Transform despawnedObject)
         {
             Queue<Transform> queue = _poolDictionary[stats];
+            List<Transform> list = _despawnDictionary[stats];
 
+            if (despawnedObject.parent != stats.parent)
+            {
+                despawnedObject.SetParent(stats.parent);
+            }
             despawnedObject.position = new Vector3(0, YPOS, 0);
             despawnedObject.rotation = Quaternion.identity;
-            queue.Enqueue(despawnedObject);
+
+            ResetValues(despawnedObject);
             despawnedObject.gameObject.SetActive(false);
+
+            list.Remove(despawnedObject);
+            queue.Enqueue(despawnedObject);
         }
 
-        private void ResetRectTransform(GameObject @object)
+        private void ResetValues(Transform @object)
         {
-            RectTransform rectTransform = @object.GetComponent<RectTransform>();
-            rectTransform.anchoredPosition = Vector2.zero;
-            rectTransform.anchorMin = Vector2.zero;
-            rectTransform.anchorMax = Vector2.one;
-            rectTransform.pivot = new Vector2(0.5f, 0.5f);
-            rectTransform.sizeDelta = Vector2.zero;
-            rectTransform.localScale = Vector3.one;
+            IPooledObject pooledObjectComponent = @object.GetComponent<IPooledObject>();
+            if (pooledObjectComponent != null)
+            {
+                @object.GetComponent<IPooledObject>().ResetValues();
+            }
+            else
+            {
+                Debug.LogWarning("Pooled object class should inherits IPooledObject to use Reset usage");
+            }
+        }
+
+        public void DespawnAll(PooledObjectStats stats)
+        {
+            List<Transform> list = _despawnDictionary[stats];
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                Despawn(stats, list[i]);
+            }
         }
     }
 }

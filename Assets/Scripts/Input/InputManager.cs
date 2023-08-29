@@ -4,7 +4,7 @@ namespace AlirezaTarahomi.FightingGame.InputSystem
 {
     public interface InputManager
     {
-        bool IsDown(string action);
+        bool IsPressed(string action);
 
         bool IsHeld(string action);
 

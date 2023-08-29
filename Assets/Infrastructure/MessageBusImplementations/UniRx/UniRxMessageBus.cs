@@ -10,13 +10,13 @@ namespace Assets.Infrastructure.MessageBusImplementations.UniRx
 {
     public class UniRxMessageBus : IMessageBus
     {
-        public readonly Subject<IMessage> _messages = new Subject<IMessage>();
+        public readonly Subject<IMessage> _messages = new();
         public IObservable<IMessage> Messages => _messages;
 
-        public List<MessageRouteRule> Rules = new List<MessageRouteRule>();
-        public SubscriptionRegistery RuleSubscriptions = new SubscriptionRegistery();
+        public List<MessageRouteRule> Rules = new();
+        public SubscriptionRegistery RuleSubscriptions = new();
 
-        private readonly List<RegisteryItem> _subscribedHandlerWithoutRule = new List<RegisteryItem>();
+        private readonly List<RegisteryItem> _subscribedHandlerWithoutRule = new();
 
         public void RaiseEvent(IEvent evt)
         {
@@ -57,7 +57,7 @@ namespace Assets.Infrastructure.MessageBusImplementations.UniRx
 
             // TODO: Should find validators by validation or settings
 
-            return new List<IValidator>();
+            return new();
         }
 
         public void Subscribe<TMessageHandler, TMessage>(TMessageHandler handler, IMessageHandlerActionExecutor methodSelector)
@@ -110,7 +110,7 @@ namespace Assets.Infrastructure.MessageBusImplementations.UniRx
 
                         var subscription = observable.Subscribe(message => methodSelector.Execute(message));
 
-                        RuleSubscriptions.Add(new SubscriptionRegisteryItem()
+                        RuleSubscriptions.Add(new()
                         {
                             Route = rule,
                             handler = handler,

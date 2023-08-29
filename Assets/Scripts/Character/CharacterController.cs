@@ -4,11 +4,8 @@ using AlirezaTarahomi.FightingGame.Character.Context;
 using AlirezaTarahomi.FightingGame.Character.Event;
 using AlirezaTarahomi.FightingGame.Character.Powerup;
 using AlirezaTarahomi.FightingGame.Character.State.Main;
-using AlirezaTarahomi.FightingGame.InputSystem;
 using AlirezaTarahomi.FightingGame.Player;
-using AlirezaTarahomi.FightingGame.Player.Event;
 using AlirezaTarahomi.FightingGame.Service;
-using Assets.Infrastructure.Scripts.CQRS;
 using Infrastructure.Factory;
 using Infrastructure.StateMachine;
 using UnityEngine;
@@ -16,22 +13,19 @@ using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.Character
 {
-    public class CharacterController : MonoBehaviour, IEntityIdProperty, IEventHandler<OnPowerupToggled>,
-    IEventHandler<OnControlToggled>, IEventHandler<OnCharacterArrivalToggled>, IEventHandler<OnOtherDisabled>,
-    IEventHandler<OnGrounded>, IEventHandler<OnCharacterDied>, IEventHandler<OnCharacterFlownToggled>,
-    IEventHandler<OnAttackToggled>, IEventHandler<OnSecondaryMovementNoneStateEntered>, IPlayerIdProperty, IScriptableObjectProperty
+    public class CharacterController : MonoBehaviour
     {
+        public OnAttackStarted OnAttackStarted { get => _combatStateMachineContext.OnAttackStarted; }
+        public OnAttackEnded OnAttackEnded { get => _behaviorContext.OnAttackEnded; }
+        public OnDied OnDied { get => _mainStateMachineContext.OnDied; }
+
         [SerializeField] private GameObject _hitbox = default;
 
-        [HideInInspector] public bool isGrounded;
         [HideInInspector] public bool isJustEntered;
+        [HideInInspector] public Vector2 moveAxes;
 
-        public string EntityId { get; private set; }
         public CharacterStats Stats { get; private set; }
-        public int PlayerId { get; private set; }
 
-        private InputManager _inputManager;
-        private IMessageBus _messageBus;
         private IOwnershipService _ownershipService;
         private IResourceFactory _resourceFactory;
         private StateMachine _stateMachine;
@@ -44,39 +38,27 @@ namespace AlirezaTarahomi.FightingGame.Character
         private CharacterAnimatorController _animtorController;
         private CharacterHurtBoxHandler _hurtBoxHandler;
         private Collider2D _hitboxCollider;
-        private Camera _mainCamera;
-        private TargetGroupController _targetGroupController;
-        private PlayerController _playerController;
         private MainCameraController _mainCameraController;
         private GroundCheck _groundCheck;
         private MovementColliderActivator _movementColliderActivator;
         private ThrowingObjectBehavior _throwingObjectBehavior;
+        private bool _isGrounded;
 
         [Inject]
-        public void Construct(StateMachine stateMachine, InputManager inputManager, IMessageBus messageBus,
-            [Inject(Id = "id")] string entityId, [Inject(Id = "playerId")] int playerId, [Inject(Id = "stats")] CharacterStats stats,
+        public void Construct(StateMachine stateMachine, [Inject(Id = "stats")] CharacterStats stats, 
             CharacterMainStateMachineContext mainStateMachineContext,
             CharacterSecondaryMovementStateMachineContext secondaryMovementStateMachineContext,
             CharacterCombatStateMachineContext combatStateMachineContext,
             CharacterBehaviorContext behaviorContext, CharacterPowerupContext powerupContext,
             CharacterLocomotionHandler locomotionHandler, CharacterHurtBoxHandler hurtBoxHandler,
-            IOwnershipService ownershipService, Camera mainCamera,
-            TargetGroupController targetGroupController, PlayerController playerController,
-            MainCameraController mainCameraController, GroundCheck groundCheck, MovementColliderActivator colliderActivator,
-            IResourceFactory resourceFactory, CharacterAnimatorController animtorController)
+            IOwnershipService ownershipService, MainCameraController mainCameraController, GroundCheck groundCheck,
+            MovementColliderActivator colliderActivator, IResourceFactory resourceFactory, CharacterAnimatorController animtorController)
         {
             _stateMachine = stateMachine;
-            _inputManager = inputManager;
-            EntityId = entityId;
             Stats = stats;
-            PlayerId = playerId;
-            _messageBus = messageBus;
             _locomotionHandler = locomotionHandler;
             _hurtBoxHandler = hurtBoxHandler;
             _ownershipService = ownershipService;
-            _mainCamera = mainCamera;
-            _targetGroupController = targetGroupController;
-            _playerController = playerController;
             _mainCameraController = mainCameraController;
             _groundCheck = groundCheck;
             _movementColliderActivator = colliderActivator;
@@ -102,28 +84,58 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void InitializeEvents()
         {
-            _messageBus.Subscribe<CharacterController, OnPowerupToggled>(this, new MessageHandlerActionExecutor<OnPowerupToggled>(Handle));
-            _messageBus.Subscribe<CharacterController, OnControlToggled>(this, new MessageHandlerActionExecutor<OnControlToggled>(Handle));
-            _messageBus.Subscribe<CharacterController, OnCharacterArrivalToggled>(this, new MessageHandlerActionExecutor<OnCharacterArrivalToggled>(Handle));
-            _messageBus.Subscribe<CharacterController, OnOtherDisabled>(this, new MessageHandlerActionExecutor<OnOtherDisabled>(Handle));
-            _messageBus.Subscribe<CharacterController, OnGrounded>(this, new MessageHandlerActionExecutor<OnGrounded>(Handle));
-            _messageBus.Subscribe<CharacterController, OnCharacterDied>(this, new MessageHandlerActionExecutor<OnCharacterDied>(Handle));
-            _messageBus.Subscribe<CharacterController, OnAttackToggled>(this, new MessageHandlerActionExecutor<OnAttackToggled>(Handle));
-            _messageBus.Subscribe<CharacterController, OnSecondaryMovementNoneStateEntered>(this, new MessageHandlerActionExecutor<OnSecondaryMovementNoneStateEntered>(Handle));
-            _messageBus.Subscribe<CharacterController, OnCharacterFlownToggled>(this, new MessageHandlerActionExecutor<OnCharacterFlownToggled>(Handle));
+            _groundCheck.OnGrounded.AddListener(HandleOnGrounded);
+            _behaviorContext.OnAttackEnded.AddListener(HandleOnAttackEnded);
+            _behaviorContext.OnFlyingToggled.AddListener(HandleOnFlyingToggled);
+            _behaviorContext.OnFlyOverEnded.AddListener(HandleOnFlyOverEnded);
+            _powerupContext.OnPowerupToggled.AddListener(HandleOnPowerupToggled);
+            _mainStateMachineContext.OnDied.AddListener(HandleOnDied);
+            _secondaryMovementStateMachineContext.OnChangeMoveSpeedRequested.AddListener(HandleOnChangeMoveSpeedRequested);
         }
 
         private void UnsubscribeEvents()
         {
-            _messageBus.Unsubscribe<CharacterController, OnPowerupToggled>(this);
-            _messageBus.Unsubscribe<CharacterController, OnControlToggled>(this);
-            _messageBus.Unsubscribe<CharacterController, OnCharacterArrivalToggled>(this);
-            _messageBus.Unsubscribe<CharacterController, OnOtherDisabled>(this);
-            _messageBus.Unsubscribe<CharacterController, OnGrounded>(this);
-            _messageBus.Unsubscribe<CharacterController, OnCharacterDied>(this);
-            _messageBus.Unsubscribe<CharacterController, OnAttackToggled>(this);
-            _messageBus.Unsubscribe<CharacterController, OnSecondaryMovementNoneStateEntered>(this);
-            _messageBus.Unsubscribe<CharacterController, OnCharacterFlownToggled>(this);
+            _groundCheck.OnGrounded.RemoveListener(HandleOnGrounded);
+            _behaviorContext.OnAttackEnded.RemoveListener(HandleOnAttackEnded);
+            _behaviorContext.OnFlyingToggled.RemoveListener(HandleOnFlyingToggled);
+            _behaviorContext.OnFlyOverEnded.RemoveListener(HandleOnFlyOverEnded);
+            _powerupContext.OnPowerupToggled.RemoveListener(HandleOnPowerupToggled);
+            _mainStateMachineContext.OnDied.RemoveListener(HandleOnDied);
+            _secondaryMovementStateMachineContext.OnChangeMoveSpeedRequested.RemoveListener(HandleOnChangeMoveSpeedRequested);
+        }
+
+        public void HandleInputPressed(string inputName, bool isPressed)
+        {
+            switch (inputName)
+            {
+                case "Jump":
+                    _secondaryMovementStateMachineContext.isJumpedPressed = isPressed;
+                    break;
+                case "Attack":
+                    _combatStateMachineContext.isAttackedPressed = isPressed;
+                    break;
+                case "PowerupAttack":
+                    _combatStateMachineContext.isPowerupAttackedPressed = isPressed;
+                    break;
+            }
+        }
+
+        public void HandleInputReleased(string inputName, bool isReleased)
+        {
+            switch (inputName)
+            {
+                default:
+                    break;
+            }
+        }
+
+        public void HandleInputHeld(string inputName, bool isHeld)
+        {
+            switch (inputName)
+            {
+                default:
+                    break;
+            }
         }
 
         void Awake()
@@ -157,7 +169,7 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void InitThrowingBehaviour(ScriptableObject clone)
         {
-            IThrowingBehavior castedAsThrowingBehavior = clone as IThrowingBehavior;
+            var castedAsThrowingBehavior = clone as IThrowingBehavior;
             if (castedAsThrowingBehavior != null)
             {
                 _throwingObjectBehavior.Inject(_behaviorContext);
@@ -179,7 +191,7 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void InitPowerup(ScriptableObject powerup)
         {
-            ScriptableObject clone = _resourceFactory.Instantiate(powerup) as ScriptableObject;
+            var clone = _resourceFactory.Instantiate(powerup) as ScriptableObject;
             InitThrowingBehaviour(clone);
             _combatStateMachineContext.powerup = clone as IPowerup;
             _combatStateMachineContext.powerup.Inject(_powerupContext);
@@ -192,13 +204,17 @@ namespace AlirezaTarahomi.FightingGame.Character
             InitAttackBehavior(Stats.behaviors.complextAttack.value);
         }
 
-        public ScriptableObject GetScriptableObject()
+        public void Activate()
         {
-            return Stats;
+            _locomotionHandler.SetGroundGravityScale();
+            _movementColliderActivator.ToggleMovementColliders(true);
         }
-
+        
         void Start()
         {
+            _locomotionHandler.SetNoGravityScale();
+            _movementColliderActivator.ToggleMovementColliders(false);
+
             _stateMachine.Start(_mainStateMachineContext);
             _stateMachine.Start(_secondaryMovementStateMachineContext);
             _stateMachine.Start(_combatStateMachineContext);
@@ -220,7 +236,6 @@ namespace AlirezaTarahomi.FightingGame.Character
             _stateMachine.FixedUpdate(Time.deltaTime, _combatStateMachineContext);
         }
 
-
         void LateUpdate()
         {
             _stateMachine.LateUpdate(Time.deltaTime, _mainStateMachineContext);
@@ -230,9 +245,11 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void UpdateBetweenContexts()
         {
-            _secondaryMovementStateMachineContext.isGrounded = isGrounded;
-            _combatStateMachineContext.isGrounded = isGrounded;
-            _behaviorContext.isGrounded = isGrounded;
+            _mainStateMachineContext.moveAxes = moveAxes;
+
+            _secondaryMovementStateMachineContext.isGrounded = _isGrounded;
+            _combatStateMachineContext.isGrounded = _isGrounded;
+            _behaviorContext.isGrounded = _isGrounded;
 
             _behaviorContext.jumpCounter = _secondaryMovementStateMachineContext.jumpCounter;
         }
@@ -256,20 +273,19 @@ namespace AlirezaTarahomi.FightingGame.Character
             (_mainStateMachineContext.CurrentState as IMainState).ChangeMoveSpeed(_mainStateMachineContext);
         }
 
-        private void EnterStage()
+        public void EnterStage(Side side, Vector3 targetPos)
         {
             isJustEntered = true;
             _locomotionHandler.ChangeDetectionCollisionMode(CollisionDetectionMode2D.Continuous);
             _groundCheck.ToggleCollider(true);
             _movementColliderActivator.ToggleColliderActivator(true);
             Vector2 cameraSize = _mainCameraController.CameraSize;
-            _locomotionHandler.Teleport(new Vector2(_mainCamera.transform.position.x + (int)_playerController.side * cameraSize.x / 2, _mainCamera.transform.position.y));
-            _locomotionHandler.ThrowInside(_playerController.side);
-            _targetGroupController.SwitchTarget(PlayerId - 1,
-                new Cinemachine.CinemachineTargetGroup.Target { target = transform, radius = Stats.cameraValues.cameraRadius, weight = Stats.cameraValues.cameraWeight });
+            _locomotionHandler.Teleport(new Vector2(_mainCameraController.MainCamera.transform.position.x + (int)side * cameraSize.x / 2,
+                _mainCameraController.MainCamera.transform.position.y));
+            _locomotionHandler.ThrowInside(side, targetPos);
         }
 
-        private void ExitStage()
+        public void ExitStage(Side side)
         {
             _stateMachine.Reset(_mainStateMachineContext);
             _stateMachine.Reset(_secondaryMovementStateMachineContext);
@@ -278,74 +294,42 @@ namespace AlirezaTarahomi.FightingGame.Character
             _groundCheck.ToggleCollider(false);
             _movementColliderActivator.ToggleMovementColliders(false);
             ToggleStateMachineContexts(false);
-            _locomotionHandler.GoOutside(Stats.miscValues.exitVelocity, _playerController.side);
+            _locomotionHandler.GoOutside(Stats.miscValues.exitVelocity, side);
         }
 
         /// <summary>
         /// Handles the event when the character attack is ended
         /// </summary>
-        public void Handle(OnAttackToggled @event)
+        public void HandleOnAttackEnded()
         {
-            if (!@event.Enable)
-            {
-                _combatStateMachineContext.isAttackingEnded = true;
-            }
+            _combatStateMachineContext.isAttackingEnded = true;
         }
 
         /// <summary>
         /// Handles the event when the character powerup is toggled (activate or disabled)
         /// </summary>
-        public void Handle(OnPowerupToggled @event)
+        public void HandleOnPowerupToggled(bool active)
         {
-            if (@event.Active)
-            {
-                _behaviorContext.isPowerupActive = true;
-                _combatStateMachineContext.isPowerupActive = true;
-            }
-            else
-            {
-                _behaviorContext.isPowerupActive = false;
-                _combatStateMachineContext.isPowerupActive = false;
-            }
+            _behaviorContext.isPowerupActive = active;
+            _combatStateMachineContext.isPowerupActive = active;
         }
 
-        /// <summary>
-        /// Handles the event when the character controling by player is toggled (enables or disabled)
-        /// </summary>
-        public void Handle(OnControlToggled @event)
+        public void HandleOnFlyOverEnded()
         {
-            ToggleControls(@event.Enable);
-        }
-
-        /// <summary>
-        /// Handles the event when other characters of the player should be disabled (Some stuff are disabled by diffult)
-        /// </summary>
-        public void Handle(OnOtherDisabled @event)
-        {
-            _locomotionHandler.SetNoGravityScale();
-            _movementColliderActivator.ToggleMovementColliders(false);
-        }
-
-        /// <summary>
-        /// Hanldes the event for bringing the character in and out
-        /// </summary>
-        public void Handle(OnCharacterArrivalToggled @event)
-        {
-            if (@event.Enter)
-            {
-                EnterStage();
-            }
-            else
-            {
-                ExitStage();
-            }
+            _behaviorContext.isPowerupActive = false;
+            _combatStateMachineContext.isPowerupActive = false;
         }
 
         /// <summary>
         /// Handles the event when the character triggers the ground
         /// </summary>
-        public void Handle(OnGrounded @event)
+        public void HandleOnGrounded(bool isGrounded)
         {
+            _isGrounded = isGrounded;
+
+            if (!_isGrounded)
+                return;
+
             _locomotionHandler.ChangeDetectionCollisionMode(CollisionDetectionMode2D.Discrete);
             _locomotionHandler.SetGroundGravityScale();
             _locomotionHandler.Stop();
@@ -361,7 +345,7 @@ namespace AlirezaTarahomi.FightingGame.Character
         /// <summary>
         /// Handles the event when the character is dead
         /// </summary>
-        public void Handle(OnCharacterDied @event)
+        public void HandleOnDied()
         {
             _locomotionHandler.Stop();
             ToggleStateMachineContexts(false);
@@ -371,7 +355,7 @@ namespace AlirezaTarahomi.FightingGame.Character
         /// Handles the event when the character secondary movement state machine is changed to None
         /// (Retrieve correct movement speed)
         /// </summary>
-        public void Handle(OnSecondaryMovementNoneStateEntered @event)
+        public void HandleOnChangeMoveSpeedRequested()
         {
             ChangeMoveSpeed();
         }
@@ -379,9 +363,10 @@ namespace AlirezaTarahomi.FightingGame.Character
         /// <summary>
         /// Handles the event when the character flies or stops flying
         /// </summary>
-        public void Handle(OnCharacterFlownToggled @event)
+        public void HandleOnFlyingToggled(bool enable)
         {
-            _secondaryMovementStateMachineContext.isFlying = @event.Enable;
+            ToggleControls(!enable);
+            _secondaryMovementStateMachineContext.isFlying = enable;
         }
     }
 }

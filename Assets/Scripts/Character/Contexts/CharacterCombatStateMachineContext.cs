@@ -1,26 +1,26 @@
 ﻿using UnityEngine;
-using System;
 using Zenject;
 using AlirezaTarahomi.FightingGame.Character.State.Combat;
 using System.Collections.Generic;
 using AlirezaTarahomi.FightingGame.Character.Behavior;
 using AlirezaTarahomi.FightingGame.Character.Powerup;
 using Infrastructure.StateMachine;
+using AlirezaTarahomi.FightingGame.Character.Event;
 
 namespace AlirezaTarahomi.FightingGame.Character.Context
 {
     public class CharacterCombatStateMachineContext : BaseStateMachineContext
     {
+        public bool isAttackedPressed;
+        public bool isPowerupAttackedPressed;
         public IPowerup powerup;
         public bool isGrounded;
         public bool isAttackingEnded;
         public bool isPowerupActive;
 
-        public string CharacterId { get; private set; }
-        public int PlayerId { get; private set; }
+        public OnAttackStarted OnAttackStarted { get; private set; } = new();
         public CharacterStats Stats { get; private set; }
-        public CharacterAnimatorController AnimatorController { get; private set; }
-        public List<IAttackBehavior> AttackBehaviors { get; private set; } = new List<IAttackBehavior>();
+        public List<IAttackBehavior> AttackBehaviors { get; private set; } = new();
 
         public class States
         {
@@ -35,14 +35,10 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         }
         public States RelatedStates { get; }
 
-        public CharacterCombatStateMachineContext(GameObject go, IState startState, [Inject(Id = "id")] string characterId,
-            [Inject(Id = "playerId")] int playerId, [Inject(Id = "stats")] CharacterStats stats, [Inject(Id = "debug")] bool debug,
-            CharacterAnimatorController animatorController, None none, Attack attack) : base(go, startState, debug)
+        public CharacterCombatStateMachineContext(GameObject go, IState startState, [Inject(Id = "debug")] bool debug, 
+            [Inject(Id = "stats")] CharacterStats stats, None none, Attack attack) : base(go, startState, debug)
         {
-            CharacterId = characterId;
-            PlayerId = playerId;
             Stats = stats;
-            AnimatorController = animatorController;
             RelatedStates = new States(none, attack);
         }
 

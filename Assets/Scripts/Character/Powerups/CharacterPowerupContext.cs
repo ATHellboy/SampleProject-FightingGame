@@ -1,15 +1,10 @@
-﻿using UnityEngine;
-using Zenject;
+﻿using AlirezaTarahomi.FightingGame.Character.Event;
+using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.Powerup
 {
     public class CharacterPowerupContext
     {
-        public string CharacterId { get; private set; }
-
-        public CharacterPowerupContext([Inject(Id = "id")] string characterId)
-        {
-            CharacterId = characterId;
-        }
+        public OnPowerupToggled OnPowerupToggled { get; private set; } = new();
     }
 }

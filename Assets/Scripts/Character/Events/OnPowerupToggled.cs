@@ -1,20 +1,7 @@
-﻿using AlirezaTarahomi.FightingGame.Player.Event;
-using Assets.Infrastructure.Scripts.CQRS;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace AlirezaTarahomi.FightingGame.Character.Event
 {
-    public class OnPowerupToggled : IEvent
-    {
-        public string EntityId { get; }
-        public DateTime UtcOccureTime { get; }
-        public bool Active { get; }
-
-        public OnPowerupToggled(string entityId, bool active)
-        {
-            EntityId = entityId;
-            Active = active;
-        }
-    }
+    public class OnPowerupToggled : UnityEvent<bool> { }
 }

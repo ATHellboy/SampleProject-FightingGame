@@ -1,10 +1,6 @@
-﻿using AlirezaTarahomi.FightingGame.Character.Event;
-using AlirezaTarahomi.FightingGame.Player.Event;
-using Assets.Infrastructure.Scripts.CQRS;
-using System.Collections;
+﻿using System.Collections;
 using UniRx;
 using UnityEngine;
-using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
 {
@@ -13,14 +9,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
     {
         [SerializeField] private float _velocity = 50;
 
-        private IMessageBus _messageBus;
         private CharacterBehaviorContext _context;
-
-        [Inject]
-        public void Construct(IMessageBus messageBus)
-        {
-            _messageBus = messageBus;
-        }
 
         public void Inject(CharacterBehaviorContext context)
         {
@@ -41,16 +30,14 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
 
         public void Behave()
         {
-            _messageBus.RaiseEvent(new OnCharacterFlownToggled(_context.CharacterId, true));
-            _messageBus.RaiseEvent(new OnControlToggled(_context.CharacterId, false));
+            _context.OnFlyingToggled?.Invoke(true);
             _context.hitboxCollider.enabled = true;
             Observable.FromCoroutine(_ => FlyOver()).Subscribe();
         }
 
         public void EndBehavior()
         {
-            _messageBus.RaiseEvent(new OnCharacterFlownToggled(_context.CharacterId, false));
-            _messageBus.RaiseEvent(new OnControlToggled(_context.CharacterId, true));
+            _context.OnFlyingToggled?.Invoke(false);
             _context.hitboxCollider.enabled = false;
             _context.AnimatorController.ToggleAttacking(false);
         }
@@ -65,8 +52,8 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
                 yield return null;
             }
 
-            _messageBus.RaiseEvent(new OnFlyOverEnded(_context.CharacterId));
-            _messageBus.RaiseEvent(new OnAttackToggled(_context.CharacterId, _context.PlayerId, false));
+            _context.OnFlyOverEnded?.Invoke();
+            _context.OnAttackEnded?.Invoke();
         }
     }
 }

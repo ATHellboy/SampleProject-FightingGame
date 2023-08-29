@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
 using Zenject;
-using Assets.Infrastructure.Scripts.CQRS;
-using AlirezaTarahomi.FightingGame.Character.Event;
 using AlirezaTarahomi.FightingGame.Tool;
 using Infrastructure.ObjectPooling;
-using AlirezaTarahomi.FightingGame.Tool.Event;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior
 {
@@ -17,14 +14,12 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
 
         [HideInInspector] public int counter;
 
-        private IMessageBus _messageBus;
         private PoolingSystem _poolSystem;
         private CharacterBehaviorContext _context;
 
         [Inject]
-        public void Construct(IMessageBus messageBus, PoolingSystem poolSystem)
+        public void Construct(PoolingSystem poolSystem)
         {
-            _messageBus = messageBus;
             _poolSystem = poolSystem;
 
             counter = _maxObjectNumber;
@@ -33,21 +28,6 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
         public void Inject(CharacterBehaviorContext context)
         {
             _context = context;
-        }
-
-        public void OnTriggerEnter2D(Collider2D collision)
-        {
-            if (collision.CompareTag(Tags.Hitbox))
-            {
-                if (_context.OwnershipService.Contains(collision.gameObject))
-                {
-                    IThrowableObject throwableObject = collision.GetComponent<IThrowableObject>();
-                    if (throwableObject.CanPick)
-                    {
-                        PickUpObject(collision.gameObject);
-                    }
-                }
-            }
         }
 
         public void UseObject(Vector3 direction)
@@ -65,14 +45,24 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
                 }
                 throwableObject.Throw(_throwingForce, direction.normalized);
             }
-            _messageBus.RaiseEvent(new OnAttackToggled(_context.CharacterId, _context.PlayerId, false));
+            _context.OnAttackEnded?.Invoke();
         }
 
-        public void PickUpObject(GameObject obj)
+        public void PickUpObject(Collider2D collision)
         {
-            counter++;
-            _messageBus.RaiseEvent(new OnThrowableObjectPickedUp(obj));
-            _context.OwnershipService.Remove(obj);
+            if (collision.CompareTag(Tags.Hitbox))
+            {
+                if (_context.OwnershipService.Contains(collision.gameObject))
+                {
+                    IThrowableObject throwableObject = collision.GetComponent<IThrowableObject>();
+                    if (throwableObject.CanPick)
+                    {
+                        counter++;
+                        _poolSystem.Despawn(_throwableObjectPoolStats, collision.transform);
+                        _context.OwnershipService.Remove(collision.gameObject);
+                    }
+                }
+            }
         }
     }
 }

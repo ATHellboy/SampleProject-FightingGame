@@ -46,7 +46,7 @@ namespace AlirezaTarahomi.FightingGame.Character
 
             if (_throwingObjectBehavior != null)
             {
-                _throwingObjectBehavior.OnTriggerEnter2D(collision);
+                _throwingObjectBehavior.PickUpObject(collision);
             }
         }
 

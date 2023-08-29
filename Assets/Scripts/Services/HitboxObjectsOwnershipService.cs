@@ -5,7 +5,7 @@ namespace AlirezaTarahomi.FightingGame.Service
 {
     public class HitboxObjectsOwnershipService : IOwnershipService
     {
-        public List<GameObject> Objects { get; private set; } = new List<GameObject>();
+        public List<GameObject> Objects { get; private set; } = new();
 
         public void Add(GameObject GO)
         {

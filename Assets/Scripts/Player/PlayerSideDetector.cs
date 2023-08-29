@@ -17,7 +17,7 @@ namespace AlirezaTarahomi.FightingGame.Player
 
         public void UpdateSide()
         {
-            if (_player1.currentCharacter.position.x > _player2.currentCharacter.position.x)
+            if (_player1.currentCharacterController.transform.position.x > _player2.currentCharacterController.transform.position.x)
             {
                 _player1.side = Side.Right;
                 _player2.side = Side.Left;

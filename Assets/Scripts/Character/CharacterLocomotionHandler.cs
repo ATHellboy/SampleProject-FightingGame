@@ -9,19 +9,16 @@ namespace AlirezaTarahomi.FightingGame.Character
     {
         private Rigidbody2D _rigidbody;
         private Transform _transform;
-        private PlayerController _playerController;
         private CharacterStats _stats;
         private float _onAirGravityScale;
         private float _throwingAngle;
         private float _moveSpeed;
 
         public CharacterLocomotionHandler(Rigidbody2D rigidbody, Transform transform,
-            PlayerController playerController, [Inject(Id = "stats")] CharacterStats stats,
-            [Inject(Id = "throwingAngle")] float throwingAngle)
+           [Inject(Id = "stats")] CharacterStats stats, [Inject(Id = "throwingAngle")] float throwingAngle)
         {
             _rigidbody = rigidbody;
             _transform = transform;
-            _playerController = playerController;
             _stats = stats;
             _throwingAngle = throwingAngle;
 
@@ -55,9 +52,8 @@ namespace AlirezaTarahomi.FightingGame.Character
             _rigidbody.velocity = new Vector2(_transform.right.x * velocity, 0);
         }
 
-        private void ProjectMotion(Side side)
+        private void ProjectMotion(Side side, Vector3 targetPos)
         {
-            Vector3 targetPos = _playerController.currentCharacter.position;
             float d = Mathf.Abs(targetPos.x - _transform.position.x);
             float h = Mathf.Abs(_transform.position.y - targetPos.y);
             float v = (d * Mathf.Sqrt(-Physics2D.gravity.y * _rigidbody.gravityScale)) /
@@ -66,17 +62,17 @@ namespace AlirezaTarahomi.FightingGame.Character
 
             float Vx = v * Mathf.Cos(_throwingAngle * Mathf.Deg2Rad);
             float Vy = v * Mathf.Sin(_throwingAngle * Mathf.Deg2Rad);
-            Vector2 velocity = new Vector2(Vx * -(int)side, Vy);
+            Vector2 velocity = new(Vx * -(int)side, Vy);
 
             _rigidbody.velocity = velocity;
         }
 
-        public void ThrowInside(Side side)
+        public void ThrowInside(Side side, Vector3 targetPos)
         {
             Stop();
             SetEnterGravityScale();
             Flip(side);
-            ProjectMotion(side);
+            ProjectMotion(side, targetPos);
         }
 
         public void Teleport(Vector2 position)

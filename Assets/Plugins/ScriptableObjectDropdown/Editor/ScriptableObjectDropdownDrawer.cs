@@ -21,8 +21,8 @@ namespace ScriptableObjectDropdown.Editor
         private readonly int _controlHint = typeof(ScriptableObjectDropdownAttribute).GetHashCode();
 
         private ScriptableObject _selectedScriptableObject;
-        private List<ScriptableObject> _scriptableObjects = new List<ScriptableObject>();
-        private GUIContent _popupContent = new GUIContent();
+        private List<ScriptableObject> _scriptableObjects = new();
+        private GUIContent _popupContent = new();
         private int _selectedControlID;
         private bool _isChanged;
 

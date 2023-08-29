@@ -1,13 +1,15 @@
 ﻿using AlirezaTarahomi.FightingGame.Player.Event;
-using AlirezaTarahomi.FightingGame.Service;
+using AlirezaTarahomi.FightingGame.General;
 using Assets.Infrastructure.Scripts.CQRS;
 using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.UI
 {
-    public class UIRulesManager : RulesManager
+    public class UIMessageBusRules : MessageBusRules
     {
-        protected override void InitRules()
+        public UIMessageBusRules(IMessageBus messageBus) : base(messageBus) { }
+
+        public override void InitRules()
         {
             _rules = new MessageRouteRule[]
             {

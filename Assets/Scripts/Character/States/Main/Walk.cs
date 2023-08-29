@@ -19,7 +19,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Main
                 stateMachine.ChangeState(this, context.RelatedStates.die, context);
             }
 
-            if (context.MoveAxes == Vector2.zero)
+            if (context.moveAxes == Vector2.zero)
             {
                 stateMachine.ChangeState(this, context.RelatedStates.idle, context);
             }
@@ -30,7 +30,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Main
             if (!context.CanControl)
                 return;
 
-            context.LocomotionHandler.Move(context.MoveAxes);
+            context.LocomotionHandler.Move(context.moveAxes);
         }
 
         public override void LateUpdate(float deltaTime, StateMachine stateMachine, CharacterMainStateMachineContext context)

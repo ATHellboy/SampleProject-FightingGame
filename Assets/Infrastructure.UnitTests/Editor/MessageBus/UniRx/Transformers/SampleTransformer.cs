@@ -9,7 +9,7 @@ namespace Assets.Infrastructure.UnitTests.Editor.MessageBus.UniRx.Transformers
     {
         public override SomeMessage Transform(SomeOtherMessage message)
         {
-            return new SomeMessage(message.Message, message.EntityId, message.UtcOccureTime);
+            return new(message.Message, message.EntityId, message.UtcOccureTime);
         }
     }
 }

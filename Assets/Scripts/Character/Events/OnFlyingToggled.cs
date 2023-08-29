@@ -3,5 +3,5 @@ using UnityEngine.Events;
 
 namespace AlirezaTarahomi.FightingGame.Character.Event
 {
-    public class OnFlyOverEnded : UnityEvent { }
+    public class OnFlyingToggled : UnityEvent<bool> { }
 }

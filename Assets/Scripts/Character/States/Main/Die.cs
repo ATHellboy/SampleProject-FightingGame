@@ -1,6 +1,4 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Context;
-using AlirezaTarahomi.FightingGame.Character.Event;
-using Assets.Infrastructure.Scripts.CQRS;
 using Infrastructure.StateMachine;
 using UnityEngine;
 
@@ -8,16 +6,9 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Main
 {
     public class Die : BaseState<CharacterMainStateMachineContext>
     {
-        private IMessageBus _messageBus;
-
-        public Die(IMessageBus messageBus)
-        {
-            _messageBus = messageBus;
-        }
-
         public override void Enter(CharacterMainStateMachineContext context)
         {
-            _messageBus.RaiseEvent(new OnCharacterDied(context.CharacterId, context.PlayerId));
+            context.OnDied?.Invoke();
             context.AnimatorController.Die();
         }
 

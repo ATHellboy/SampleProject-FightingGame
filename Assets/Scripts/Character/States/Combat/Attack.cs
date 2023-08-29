@@ -1,7 +1,5 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Behavior;
 using AlirezaTarahomi.FightingGame.Character.Context;
-using AlirezaTarahomi.FightingGame.Character.Event;
-using Assets.Infrastructure.Scripts.CQRS;
 using Infrastructure.StateMachine;
 using UnityEngine;
 
@@ -10,16 +8,10 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
     public class Attack : BaseState<CharacterCombatStateMachineContext>
     {
         private IAttackBehavior _currentBehavior;
-        private IMessageBus _messageBus;
-
-        public Attack(IMessageBus messageBus)
-        {
-            _messageBus = messageBus;
-        }
 
         public override void Enter(CharacterCombatStateMachineContext context)
         {
-            _messageBus.RaiseEvent(new OnAttackToggled(context.CharacterId, context.PlayerId, true));
+            context.OnAttackStarted?.Invoke();
             ExecuteAttacking(context);
         }
 

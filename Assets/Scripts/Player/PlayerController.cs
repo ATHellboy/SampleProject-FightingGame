@@ -1,27 +1,28 @@
 ﻿using UnityEngine;
 using Zenject;
 using Assets.Infrastructure.Scripts.CQRS;
-using AlirezaTarahomi.FightingGame.Character.Event;
 using AlirezaTarahomi.FightingGame.InputSystem;
 using AlirezaTarahomi.FightingGame.Player.Event;
-using AlirezaTarahomi.FightingGame.Player.Validator;
 using System.Collections;
 using UniRx;
 
 namespace AlirezaTarahomi.FightingGame.Player
 {
-    public class PlayerController : MonoBehaviour, IEventHandler<OnCharacterDied>, IEventHandler<OnAttackToggled>,
-        IPlayerIdProperty
+    public class PlayerController : MonoBehaviour
     {
-        [HideInInspector] public Transform currentCharacter;
-        [HideInInspector] public Side side;
+        [HideInInspector] public Character.CharacterController currentCharacterController;
+        [HideInInspector]
+        public Side side
+        {
+            get => _charactersSwitchingHandler.side;
+            set => _charactersSwitchingHandler.side = value;
+        }
 
-        public int PlayerId { get; private set; }
+        private int _playerId;
 
         private IMessageBus _messageBus;
         private InputManager _inputManager;
         private CharactersSwitchingHandler _charactersSwitchingHandler;
-        private PlayerSideDetector _playerSideDetector;
         private float _switchingCoolDown;
         private bool _canSwitch = true;
         private int _numOfChars;
@@ -29,53 +30,41 @@ namespace AlirezaTarahomi.FightingGame.Player
 
         [Inject]
         public void Construct(InputManager inputManager, CharactersSwitchingHandler charactersSwitchingHandler,
-            PlayerSideDetector playerSideDetector, IMessageBus messageBus, [Inject(Id = "playerId")] int playerId,
-            [Inject(Id = "switchingCoolDown")] float switchingCoolDown)
+            IMessageBus messageBus, [Inject(Id = "playerId")] int playerId, [Inject(Id = "switchingCoolDown")] float switchingCoolDown)
         {
             _inputManager = inputManager;
             _messageBus = messageBus;
             _charactersSwitchingHandler = charactersSwitchingHandler;
-            _playerSideDetector = playerSideDetector;
-            PlayerId = playerId;
+            _playerId = playerId;
             _switchingCoolDown = switchingCoolDown;
-        }
-
-        void OnEnable()
-        {
-            InitializeEvents();
         }
 
         void OnDisable()
         {
-            UnsubscribeEvents();
-        }
 
-        private void InitializeEvents()
-        {
-            _messageBus.Subscribe<PlayerController, OnCharacterDied>(this, new MessageHandlerActionExecutor<OnCharacterDied>(Handle));
-            _messageBus.Subscribe<PlayerController, OnAttackToggled>(this, new MessageHandlerActionExecutor<OnAttackToggled>(Handle));
-        }
-
-        private void UnsubscribeEvents()
-        {
-            _messageBus.Unsubscribe<PlayerController, OnCharacterDied>(this);
-            _messageBus.Unsubscribe<PlayerController, OnAttackToggled>(this);
         }
 
         void Awake()
         {
             GetCharacters();
             _numOfRemainedChars = _numOfChars;
-            currentCharacter = _charactersSwitchingHandler.ConfigCharacters();
+            currentCharacterController = _charactersSwitchingHandler.ConfigCharacters();
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (_inputManager.IsDown("Switch_P" + PlayerId) && _numOfRemainedChars > 1 && _canSwitch)
+            if (_inputManager.IsPressed("Switch_P" + _playerId) && _numOfRemainedChars > 1 && _canSwitch)
             {
                 Switch();
             }
+
+            currentCharacterController.HandleInputPressed("Jump", _inputManager.IsPressed("Jump_P" + _playerId));
+            currentCharacterController.HandleInputPressed("Attack", _inputManager.IsPressed("Attack_P" + _playerId));
+            currentCharacterController.HandleInputPressed("PowerupAttack", _inputManager.IsPressed("PowerupAttack_P" + _playerId));
+
+            currentCharacterController.moveAxes = 
+                new Vector2(_inputManager.GetAxis("MoveHorizontal_P" + _playerId), _inputManager.GetAxis("MoveVertical_P" + _playerId));
         }
 
         private void GetCharacters()
@@ -83,7 +72,11 @@ namespace AlirezaTarahomi.FightingGame.Player
             foreach (Transform child in transform)
             {
                 _numOfChars++;
-                _charactersSwitchingHandler.EnqueueCharacter(child.GetComponent<Character.CharacterController>());
+                Character.CharacterController characterController = child.GetComponent<Character.CharacterController>();
+                _charactersSwitchingHandler.EnqueueCharacter(characterController);
+                characterController.OnAttackStarted.AddListener(HandleOnAttackStarted);
+                characterController.OnAttackEnded.AddListener(HandleOnAttackEnded);
+                characterController.OnDied.AddListener(HandleOnCharacterDied);
             }
         }
 
@@ -92,7 +85,7 @@ namespace AlirezaTarahomi.FightingGame.Player
             _canSwitch = false;
             Observable.FromCoroutine(_ => SwitchingTimer()).Subscribe();
             _charactersSwitchingHandler.ExitCurrentCharacter();
-            currentCharacter = _charactersSwitchingHandler.EnterNextCharacter();
+            currentCharacterController = _charactersSwitchingHandler.EnterNextCharacter();
         }
 
         IEnumerator SwitchingTimer()
@@ -104,7 +97,7 @@ namespace AlirezaTarahomi.FightingGame.Player
         /// <summary>
         /// Handles the event when each character dies
         /// </summary>
-        public void Handle(OnCharacterDied @event)
+        public void HandleOnCharacterDied()
         {
             _numOfRemainedChars--;
 
@@ -114,23 +107,24 @@ namespace AlirezaTarahomi.FightingGame.Player
             }
             else
             {
-                currentCharacter = _charactersSwitchingHandler.EnterNextCharacter();
+                currentCharacterController = _charactersSwitchingHandler.EnterNextCharacter();
             }
         }
 
         /// <summary>
-        /// Handles the event when character attack is toggled (attack is started or ended)
+        /// Handles the event when character attack is started
         /// </summary>
-        public void Handle(OnAttackToggled @event)
+        public void HandleOnAttackStarted()
         {
-            if (@event.Enable)
-            {
-                _canSwitch = false;
-            }
-            else
-            {
-                _canSwitch = true;
-            }
+            _canSwitch = false;
+        }
+
+        /// <summary>
+        /// Handles the event when character attack is ended
+        /// </summary>
+        public void HandleOnAttackEnded()
+        {
+            _canSwitch = true;
         }
     }
 }

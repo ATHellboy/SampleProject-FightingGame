@@ -11,8 +11,6 @@ namespace AlirezaTarahomi.FightingGame.Player
         {
             Container.BindInstance(_id).WithId("playerId");
 
-            Container.Bind<PlayerController>().FromComponentInHierarchy().AsSingle();
-
             Container.Bind<CharactersSwitchingHandler>().AsSingle().NonLazy();
         }
     }

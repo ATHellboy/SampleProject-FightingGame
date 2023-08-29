@@ -16,7 +16,7 @@ namespace Assets.Infrastructure.UnitTests.Editor.MessageBus.UniRx.Handlers
         public SomeDrivedMessageHandler(string name)
         {
             Name = name;
-            _handledMessages = new Queue<SomeDrivedMessage>();
+            _handledMessages = new();
         }
 
         public void Handle(SomeDrivedMessage message)

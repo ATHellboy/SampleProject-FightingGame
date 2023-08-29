@@ -15,7 +15,6 @@ namespace AlirezaTarahomi.FightingGame.Installers
     {
         public override void InstallBindings()
         {
-            Container.Bind<Camera>().FromComponentInHierarchy().AsSingle();
             Container.Bind<Canvas>().FromComponentInHierarchy().AsSingle();
             Container.Bind<MainCameraController>().FromComponentInHierarchy().AsSingle();
             Container.Bind<CinemachineTargetGroup>().FromComponentInHierarchy().AsSingle();

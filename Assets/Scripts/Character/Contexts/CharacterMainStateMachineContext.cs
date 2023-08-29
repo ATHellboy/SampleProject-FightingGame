@@ -1,29 +1,20 @@
 ﻿using UnityEngine;
 using Zenject;
 using AlirezaTarahomi.FightingGame.Character.State.Main;
-using AlirezaTarahomi.FightingGame.InputSystem;
 using Infrastructure.StateMachine;
+using AlirezaTarahomi.FightingGame.Character.Event;
 
 namespace AlirezaTarahomi.FightingGame.Character.Context
 {
     public class CharacterMainStateMachineContext : BaseStateMachineContext
     {
+        public Vector2 moveAxes;
         public bool isInjured;
 
-        public InputManager InputManager { get; private set; }
+        public OnDied OnDied { get; private set; } = new();
         public CharacterLocomotionHandler LocomotionHandler { get; private set; }
         public CharacterAnimatorController AnimatorController { get; private set; }
-        public string CharacterId { get; private set; }
-        public int PlayerId { get; private set; }
         public CharacterStats Stats { get; private set; }
-        public Vector2 MoveAxes
-        {
-            get
-            {
-                return new Vector2(InputManager.GetAxis("MoveHorizontal_P" + PlayerId),
-                    InputManager.GetAxis("MoveVertical_P" + PlayerId));
-            }
-        }
 
         public class States
         {
@@ -40,14 +31,11 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         }
         public States RelatedStates { get; }
 
-        public CharacterMainStateMachineContext(InputManager inputManager, GameObject go, IState startState,
-            [Inject(Id = "id")] string characterId, [Inject(Id = "playerId")] int playerId, [Inject(Id = "stats")] CharacterStats stats, [Inject(Id = "debug")] bool debug,
+        public CharacterMainStateMachineContext(GameObject go, IState startState,
+            [Inject(Id = "debug")] bool debug, [Inject(Id = "stats")] CharacterStats stats, 
             CharacterLocomotionHandler locomotionHandler, CharacterAnimatorController animatorController,
             Idle idle, Walk walk, Die die) : base(go, startState, debug)
         {
-            InputManager = inputManager;
-            CharacterId = characterId;
-            PlayerId = playerId;
             Stats = stats;
             LocomotionHandler = locomotionHandler;
             AnimatorController = animatorController;

@@ -21,7 +21,7 @@ namespace Infrastructure.T4
 
             generator.Session["m_ClassName"] = className;
 
-            List<string> tags = new List<string>(InternalEditorUtility.tags);
+            List<string> tags = new(InternalEditorUtility.tags);
 
             for (int i = tags.Count - 1; i >= 0; i--)
             {

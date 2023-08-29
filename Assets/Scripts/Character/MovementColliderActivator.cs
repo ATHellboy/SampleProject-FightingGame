@@ -1,7 +1,4 @@
-﻿using AlirezaTarahomi.FightingGame.Character.Event;
-using Assets.Infrastructure.Scripts.CQRS;
-using UnityEngine;
-using Zenject;
+﻿using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character
 {
@@ -9,17 +6,8 @@ namespace AlirezaTarahomi.FightingGame.Character
     {
         [SerializeField] private GameObject _movementCollider = default;
 
-        private string _characterId;
-        private IMessageBus _messageBus;
         private Collider2D _colliderActivator;
         private Collider2D[] _movementColliders;
-
-        [Inject]
-        public void Construct(IMessageBus messageBus, [Inject(Id = "id")] string characterId)
-        {
-            _messageBus = messageBus;
-            _characterId = characterId;
-        }
 
         void Awake()
         {

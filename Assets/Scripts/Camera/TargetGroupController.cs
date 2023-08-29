@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using Cinemachine;
-using static Cinemachine.CinemachineTargetGroup;
 
 namespace AlirezaTarahomi.FightingGame.CameraSystem
 {
@@ -13,9 +12,9 @@ namespace AlirezaTarahomi.FightingGame.CameraSystem
             _targetGroup = targetGroup;
         }
 
-        public void SwitchTarget(int index, Target target)
+        public void AssignTarget(int index, Transform target, float radius, float weight)
         {
-            _targetGroup.m_Targets[index] = target;
+            _targetGroup.m_Targets[index] = new CinemachineTargetGroup.Target { target = target, radius = radius, weight = weight };
         }
     }
 }

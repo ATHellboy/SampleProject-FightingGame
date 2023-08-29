@@ -22,7 +22,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Main
             if (!context.CanControl)
                 return;
 
-            if (context.MoveAxes != Vector2.zero)
+            if (context.moveAxes != Vector2.zero)
             {
                 stateMachine.ChangeState(this, context.RelatedStates.walk, context);
             }

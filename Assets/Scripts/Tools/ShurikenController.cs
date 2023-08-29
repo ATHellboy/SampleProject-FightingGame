@@ -1,26 +1,20 @@
 ﻿using UnityEngine;
 using Infrastructure.ObjectPooling;
 using Zenject;
-using AlirezaTarahomi.FightingGame.Tool.Event;
-using Assets.Infrastructure.Scripts.CQRS;
-using Assets.Infrastructure.Scripts.CQRS.Validators;
 
 namespace AlirezaTarahomi.FightingGame.Tool
 {
-    public class ShurikenController : MonoBehaviour, IThrowableObject, IPooledObject, IGameObjectProperty,
-        IEventHandler<OnThrowableObjectPickedUp>
+    public class ShurikenController : MonoBehaviour, IThrowableObject, IPooledObject
     {
         [SerializeField] private float _rotatingSpeed = 1;
         [SerializeField] private Sprite _mainSprite = default;
         [SerializeField] private Sprite _illusionSprite = default;
         [SerializeField] private Sprite _stuckSprite = default;
 
-        public GameObject GameObject { get { return gameObject; } }
         public bool IsDeadly { get; private set; } = true;
         public PooledObjectStats PooledObjectStats { get; set; }
         public bool CanPick { get; private set; }
 
-        private IMessageBus _messageBus;
         private PoolingSystem _poolSystem;
         private SpriteRenderer _spriteRenderer;
         private Rigidbody2D _rigidbody;
@@ -28,30 +22,9 @@ namespace AlirezaTarahomi.FightingGame.Tool
         private bool _isIllusion;
 
         [Inject]
-        public void Construct(IMessageBus messageBus, PoolingSystem poolSystem)
+        public void Construct(PoolingSystem poolSystem)
         {
-            _messageBus = messageBus;
             _poolSystem = poolSystem;
-        }
-
-        void OnEnable()
-        {
-            InitializeEvents();
-        }
-
-        void OnDisable()
-        {
-            //UnsubscribeEvents();
-        }
-
-        private void InitializeEvents()
-        {
-            _messageBus.Subscribe<ShurikenController, OnThrowableObjectPickedUp>(this, new MessageHandlerActionExecutor<OnThrowableObjectPickedUp>(Handle));
-        }
-
-        private void UnsubscribeEvents()
-        {
-            _messageBus.Unsubscribe<ShurikenController, OnThrowableObjectPickedUp>(this);
         }
 
         // Use this for initialization
@@ -116,20 +89,12 @@ namespace AlirezaTarahomi.FightingGame.Tool
             _spriteRenderer.sprite = _illusionSprite;
         }
 
-        public void ReInitialize()
+        public void ResetValues()
         {
             _canRotate = false;
             CanPick = false;
             IsDeadly = true;
             _spriteRenderer.sprite = _mainSprite;
-        }
-
-        /// <summary>
-        /// Handles the event when the throwable object is picked up
-        /// </summary>
-        public void Handle(OnThrowableObjectPickedUp @event)
-        {
-            _poolSystem.Despawn(PooledObjectStats, transform);
         }
     }
 }

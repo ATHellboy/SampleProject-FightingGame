@@ -1,10 +1,7 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Behavior;
-using AlirezaTarahomi.FightingGame.Character.Event;
-using Assets.Infrastructure.Scripts.CQRS;
 using System.Collections;
 using UniRx;
 using UnityEngine;
-using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.Character.Powerup
 {
@@ -18,15 +15,8 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
 
         private const int INFINITE = 99999;
 
-        private IMessageBus _messageBus;
         private CharacterPowerupContext _context;
         private int _lastObjectNumber;
-
-        [Inject]
-        public void Contruct(IMessageBus messageBus)
-        {
-            _messageBus = messageBus;
-        }
 
         public void Inject(CharacterPowerupContext context)
         {
@@ -43,14 +33,14 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
             _lastObjectNumber = ThrowingObjectBehavior.counter;
             ThrowingObjectBehavior.counter = INFINITE;
             Observable.FromCoroutine(_ => Timer()).Subscribe();
-            _messageBus.RaiseEvent(new OnPowerupToggled(_context.CharacterId, true));
+            _context.OnPowerupToggled?.Invoke(true);
             return PowerType.TimeBased;
         }
 
         public void Disable()
         {
             ThrowingObjectBehavior.counter = _lastObjectNumber;
-            _messageBus.RaiseEvent(new OnPowerupToggled(_context.CharacterId, false));
+            _context.OnPowerupToggled?.Invoke(false);
         }
 
         IEnumerator Timer()

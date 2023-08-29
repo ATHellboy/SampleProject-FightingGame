@@ -1,24 +1,22 @@
 ﻿using UnityEngine;
 using Zenject;
 using AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement;
-using AlirezaTarahomi.FightingGame.InputSystem;
 using Infrastructure.StateMachine;
+using AlirezaTarahomi.FightingGame.Character.Event;
 
 namespace AlirezaTarahomi.FightingGame.Character.Context
 {
     public class CharacterSecondaryMovementStateMachineContext : BaseStateMachineContext
     {
-        public Vector2 moveAxes;
+        public bool isJumpedPressed;
         public bool isGrounded;
         public float jumpHeight;
         public int jumpCounter;
         public bool isFlying;
 
-        public InputManager InputManager { get; private set; }
+        public OnChangeMoveSpeedRequested OnChangeMoveSpeedRequested { get; private set; } = new();
         public CharacterLocomotionHandler LocomotionHandler { get; private set; }
         public CharacterAnimatorController AnimatorController { get; private set; }
-        public string CharacterId { get; private set; }
-        public int PlayerId { get; private set; }
         public CharacterStats Stats { get; private set; }
 
         public class States
@@ -40,14 +38,11 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         }
         public States RelatedStates { get; }
 
-        public CharacterSecondaryMovementStateMachineContext(InputManager inputManager, GameObject go, IState startState,
-            [Inject(Id = "id")] string characterId, [Inject(Id = "playerId")] int playerId, [Inject(Id = "stats")] CharacterStats stats, [Inject(Id = "debug")] bool debug,
+        public CharacterSecondaryMovementStateMachineContext(GameObject go, IState startState,
+            [Inject(Id = "debug")] bool debug, [Inject(Id = "stats")] CharacterStats stats,
             CharacterLocomotionHandler locomotionHandler, CharacterAnimatorController animatorController,
             None none, Jump jump, Fall fall, Land land, Fly fly) : base(go, startState, debug)
         {
-            InputManager = inputManager;
-            CharacterId = characterId;
-            PlayerId = playerId;
             Stats = stats;
             LocomotionHandler = locomotionHandler;
             AnimatorController = animatorController;
@@ -59,8 +54,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
             if (!CanControl)
                 return false;
 
-            if (jumpCounter < Stats.airMovementValues.jumpNumber &&
-                InputManager.IsDown("Jump_P" + PlayerId))
+            if (jumpCounter < Stats.airMovementValues.jumpNumber && isJumpedPressed)
             {
                 return true;
             }

@@ -1,4 +1,5 @@
-﻿using AlirezaTarahomi.FightingGame.Character.Event;
+﻿using AlirezaTarahomi.FightingGame.CameraSystem;
+using AlirezaTarahomi.FightingGame.Character;
 using Assets.Infrastructure.Scripts.CQRS;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,14 +9,19 @@ namespace AlirezaTarahomi.FightingGame.Player
 {
     public class CharactersSwitchingHandler
     {
+        public Side side;
+
         private IMessageBus _messageBus;
+        private TargetGroupController _targetGroupController;
         private int _id;
-        private Queue<Character.CharacterController> _characters = new Queue<Character.CharacterController>();
+        private Queue<Character.CharacterController> _characters = new();
+        private Character.CharacterController _preCharacterController;
         private Character.CharacterController _currentCharacterController;
 
-        public CharactersSwitchingHandler(IMessageBus messageBus, [Inject(Id = "playerId")] int id)
+        public CharactersSwitchingHandler(IMessageBus messageBus, TargetGroupController targetGroupController, [Inject(Id = "playerId")] int id)
         {
             _messageBus = messageBus;
+            _targetGroupController = targetGroupController;
             _id = id;
         }
 
@@ -29,25 +35,29 @@ namespace AlirezaTarahomi.FightingGame.Player
             _characters.Enqueue(controller);
         }
 
-        public Transform ConfigCharacters()
+        public Character.CharacterController ConfigCharacters()
         {
             _currentCharacterController = DequeueCharacter();
+            _preCharacterController = _currentCharacterController;
             _currentCharacterController.isJustEntered = true;
-            _messageBus.RaiseEvent(new OnOtherDisabled(_currentCharacterController.EntityId, _id));
-            return _currentCharacterController.transform;
+            _currentCharacterController.Activate();
+            return _currentCharacterController;
         }
 
-        public Transform EnterNextCharacter()
+        public Character.CharacterController EnterNextCharacter()
         {
             _currentCharacterController = DequeueCharacter();
-            _messageBus.RaiseEvent(new OnCharacterArrivalToggled(_currentCharacterController.EntityId, true));
-            return _currentCharacterController.transform;
+            _currentCharacterController.EnterStage(side, _preCharacterController.transform.position);
+            CameraValues cameraValues = _currentCharacterController.Stats.cameraValues;
+            _targetGroupController.AssignTarget(_id - 1, _currentCharacterController.transform, cameraValues.cameraRadius, cameraValues.cameraWeight);
+            _preCharacterController = _currentCharacterController;
+            return _currentCharacterController;
         }
 
         public void ExitCurrentCharacter()
         {
             EnqueueCharacter(_currentCharacterController);
-            _messageBus.RaiseEvent(new OnCharacterArrivalToggled(_currentCharacterController.EntityId, false));
+            _currentCharacterController.ExitStage(side);
         }
     }
 }

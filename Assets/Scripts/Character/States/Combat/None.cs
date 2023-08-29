@@ -3,20 +3,13 @@ using UnityEngine;
 using UniRx;
 using AlirezaTarahomi.FightingGame.Character.Powerup;
 using AlirezaTarahomi.FightingGame.Character.Context;
-using AlirezaTarahomi.FightingGame.InputSystem;
 using Infrastructure.StateMachine;
 
 namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 {
     public class None : BaseState<CharacterCombatStateMachineContext>
     {
-        private InputManager _inputManager;
         private bool _canAttack;
-
-        public None(InputManager inputManager)
-        {
-            _inputManager = inputManager;
-        }
 
         public override void Enter(CharacterCombatStateMachineContext context)
         {
@@ -65,7 +58,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
         private bool CheckAttackCondition(CharacterCombatStateMachineContext context)
         {
-            if (_inputManager.IsDown("Attack_P" + context.PlayerId) && _canAttack)
+            if (context.isAttackedPressed && _canAttack)
             {
                 return true;
             }
@@ -74,7 +67,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
         private bool CheckPowerupCondition(CharacterCombatStateMachineContext context)
         {
-            if (_inputManager.IsDown("PowerupAttack_P" + context.PlayerId) && !context.isPowerupActive)
+            if (context.isPowerupAttackedPressed && !context.isPowerupActive)
             {
                 return true;
             }

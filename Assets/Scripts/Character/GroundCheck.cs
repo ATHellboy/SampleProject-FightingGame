@@ -1,37 +1,27 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Event;
-using Assets.Infrastructure.Scripts.CQRS;
 using UnityEngine;
-using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.Character
 {
     public class GroundCheck : MonoBehaviour
     {
-        private IMessageBus _messageBus;
-        private string _characterId;
-        private CharacterController _controller;
+        public OnGrounded OnGrounded { get; private set; } = new();
+
         private Collider2D _collider;
 
-        [Inject]
-        public void Construct(IMessageBus messageBus, [Inject(Id = "stats")] CharacterStats stats,
-            [Inject(Id = "id")] string characterId)
+        void Awake()
         {
-            _messageBus = messageBus;
-            _characterId = characterId;
-
-            _controller = GetComponentInParent<CharacterController>();
             _collider = GetComponent<Collider2D>();
         }
 
         void OnTriggerEnter2D(Collider2D collision)
         {
-            _controller.isGrounded = true;
-            _messageBus.RaiseEvent(new OnGrounded(_characterId));
+            OnGrounded?.Invoke(true);
         }
 
         void OnTriggerExit2D(Collider2D collision)
         {
-            _controller.isGrounded = false;
+            OnGrounded?.Invoke(false);
         }
 
         public void ToggleCollider(bool active)

@@ -1,23 +1,14 @@
 ﻿using UnityEngine;
 using AlirezaTarahomi.FightingGame.Character.Context;
-using Assets.Infrastructure.Scripts.CQRS;
-using AlirezaTarahomi.FightingGame.Character.Event;
 using Infrastructure.StateMachine;
 
 namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
 {
     public class None : BaseState<CharacterSecondaryMovementStateMachineContext>
     {
-        private IMessageBus _messageBus;
-
-        public None(IMessageBus messageBus)
-        {
-            _messageBus = messageBus;
-        }
-
         public override void Enter(CharacterSecondaryMovementStateMachineContext context)
         {
-            _messageBus.RaiseEvent(new OnSecondaryMovementNoneStateEntered(context.CharacterId));
+            context.OnChangeMoveSpeedRequested?.Invoke();
         }
 
         public override void Update(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
@@ -30,7 +21,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
             if (!context.CanControl)
                 return;
 
-            if (context.InputManager.IsDown("Jump_P" + context.PlayerId))
+            if (context.isJumpedPressed)
             {
                 context.jumpHeight = context.Stats.airMovementValues.jumpHeight;
                 stateMachine.ChangeState(this, context.RelatedStates.jump, context);

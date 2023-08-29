@@ -4,7 +4,7 @@ namespace AlirezaTarahomi.FightingGame.InputSystem
 {
     public class UnityInputManager : InputManager
     {
-        public bool IsDown(string action)
+        public bool IsPressed(string action)
         {
             return Input.GetButtonDown(action);
         }

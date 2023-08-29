@@ -9,6 +9,6 @@ namespace Infrastructure.ObjectPooling
     {
         PooledObjectStats PooledObjectStats { get; set; }
 
-        void ReInitialize();
+        void ResetValues();
     }
 }

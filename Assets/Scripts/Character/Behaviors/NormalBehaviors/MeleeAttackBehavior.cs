@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
-using Zenject;
 using System.Collections;
-using Assets.Infrastructure.Scripts.CQRS;
-using AlirezaTarahomi.FightingGame.Character.Event;
 using UniRx;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
@@ -12,14 +9,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
     {
         [SerializeField] private float _duration = 0.2f;
 
-        private IMessageBus _messageBus;
         private CharacterBehaviorContext _context;
-
-        [Inject]
-        public void Construct(IMessageBus messageBus)
-        {
-            _messageBus = messageBus;
-        }
 
         public void Inject(CharacterBehaviorContext context)
         {
@@ -54,7 +44,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
         IEnumerator AttackTime()
         {
             yield return new WaitForSeconds(_duration);
-            _messageBus.RaiseEvent(new OnAttackToggled(_context.CharacterId, _context.PlayerId, false));
+            _context.OnAttackEnded?.Invoke();
         }
     }
 }
