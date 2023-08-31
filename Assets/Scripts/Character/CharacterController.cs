@@ -210,11 +210,19 @@ namespace AlirezaTarahomi.FightingGame.Character
             _movementColliderActivator.ToggleMovementColliders(true);
         }
         
-        void Start()
+        public void Deactivate()
         {
             _locomotionHandler.SetNoGravityScale();
             _movementColliderActivator.ToggleMovementColliders(false);
+        }
 
+        public void InitCharacterFace(Side side)
+        {
+            _locomotionHandler.Flip(side);
+        }
+
+        void Start()
+        {
             _stateMachine.Start(_mainStateMachineContext);
             _stateMachine.Start(_secondaryMovementStateMachineContext);
             _stateMachine.Start(_combatStateMachineContext);

@@ -13,8 +13,6 @@ namespace AlirezaTarahomi.FightingGame.Player
         {
             BindInstances();
 
-            Container.Bind<PlayersManager>().FromComponentInHierarchy().AsSingle();
-
             Container.Bind<PlayerSideDetector>().AsSingle().NonLazy();
         }
 

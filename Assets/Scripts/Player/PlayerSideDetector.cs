@@ -7,26 +7,42 @@ namespace AlirezaTarahomi.FightingGame.Player
     {
         private PlayerController _player1;
         private PlayerController _player2;
+        private bool _isAllPlayersConfigured = false;
 
         public PlayerSideDetector([Inject(Id = "player1")] PlayerController player1,
             [Inject(Id = "player2")] PlayerController player2)
         {
             _player1 = player1;
             _player2 = player2;
+
+            _player1.OnCharactersConfigured.AddListener(HandleOnCharactersConfigured);
+            _player2.OnCharactersConfigured.AddListener(HandleOnCharactersConfigured);
         }
 
         public void UpdateSide()
         {
             if (_player1.currentCharacterController.transform.position.x > _player2.currentCharacterController.transform.position.x)
             {
-                _player1.side = Side.Right;
-                _player2.side = Side.Left;
+                _player1.Side = Side.Right;
+                _player2.Side = Side.Left;
             }
             else
             {
-                _player1.side = Side.Left;
-                _player2.side = Side.Right;
+                _player1.Side = Side.Left;
+                _player2.Side = Side.Right;
             }
+        }
+
+        public void HandleOnCharactersConfigured()
+        {
+            if (_isAllPlayersConfigured)
+            {
+                UpdateSide();
+                _player1.InitCharacterFace();
+                _player2.InitCharacterFace();
+            }
+
+            _isAllPlayersConfigured = true;
         }
     }
 

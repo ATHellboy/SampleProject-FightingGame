@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07783d7247b8d864582ac7d2edaccff2, type: 3}
   m_Name: Bunny
   m_EditorClassIdentifier: 
+  prefab: {fileID: 4323936049195956478, guid: 995e9cb7aa375c345a70932618038562, type: 3}
   groundMovementValues:
     walkSpeed: 10
   airMovementValues:

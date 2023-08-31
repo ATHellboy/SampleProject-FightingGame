@@ -11,6 +11,7 @@ namespace AlirezaTarahomi.FightingGame.Character
     [CreateAssetMenu(menuName = "CharacterStats")]
     public class CharacterStats : ScriptableObject
     {
+        public Transform prefab;
         public GroundMovementValues groundMovementValues;
         public AirMovementValues airMovementValues;
         public CameraValues cameraValues;
