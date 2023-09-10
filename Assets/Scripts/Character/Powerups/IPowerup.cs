@@ -6,14 +6,16 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
     {
         ScriptableObject PowerupAttackBehavior { get; }
 
-        PowerType Active();
+        float PowerupCooldown { get; }
+
+        PowerupType Active();
 
         void Disable();
 
         void Inject(CharacterPowerupContext context);
     }
 
-    public enum PowerType
+    public enum PowerupType
     {
         OneTime,
         TimeBased

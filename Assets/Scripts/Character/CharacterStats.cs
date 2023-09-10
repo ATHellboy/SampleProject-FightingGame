@@ -2,7 +2,6 @@
 using AlirezaTarahomi.FightingGame.Character.Behavior.Normal;
 using AlirezaTarahomi.FightingGame.Character.Behavior.Complex;
 using System;
-using AlirezaTarahomi.FightingGame.Character.Behavior;
 using ScriptableObjectDropdown;
 using AlirezaTarahomi.FightingGame.Character.Powerup;
 
@@ -44,8 +43,6 @@ namespace AlirezaTarahomi.FightingGame.Character
         public ScriptableObjectReference complextAttack;
         [ScriptableObjectDropdown(typeof(IPowerup))]
         public ScriptableObjectReference powerup;
-        [ScriptableObjectDropdown(typeof(ThrowingObjectBehavior))]
-        public ScriptableObjectReference throwingObjectBehavior;
     }
 
     [Serializable]

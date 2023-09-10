@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using Infrastructure.ObjectPooling;
 using Zenject;
+using AlirezaTarahomi.FightingGame.General.Variable;
 
 namespace AlirezaTarahomi.FightingGame.Tool
 {
     public class ShurikenController : MonoBehaviour, IThrowableObject, IPooledObject
     {
+        [SerializeField] private IntVariable _objectCounter;
         [SerializeField] private float _rotatingSpeed = 1;
         [SerializeField] private Sprite _mainSprite = default;
         [SerializeField] private Sprite _illusionSprite = default;
@@ -14,6 +16,11 @@ namespace AlirezaTarahomi.FightingGame.Tool
         public bool IsDeadly { get; private set; } = true;
         public PooledObjectStats PooledObjectStats { get; set; }
         public bool CanPick { get; private set; }
+        public IntVariable ObjectCounter
+        {
+            get => _objectCounter;
+            private set => _objectCounter = value;
+        }
 
         private PoolingSystem _poolSystem;
         private SpriteRenderer _spriteRenderer;

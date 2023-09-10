@@ -3,23 +3,9 @@
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
 {
     [CreateAssetMenu(menuName = "Attacks/Complex Attacks/ThreeDirectionThrowingBehavior")]
-    public class ThreeDirectionThrowingBehavior : ScriptableObject, IComplexAttackBehavior, IThrowingBehavior
+    public class ThreeDirectionThrowingBehavior : ThrowingObjectBehavior, IComplexAttackBehavior
     {
         [SerializeField] private float _offsetDegree = 20;
-
-        public ThrowingObjectBehavior ThrowingObjectBehavior { get; private set; }
-
-        private CharacterBehaviorContext _context;
-
-        public void Inject(CharacterBehaviorContext context)
-        {
-            _context = context;
-        }
-
-        public void AssignThrowingObjectBehavior(ThrowingObjectBehavior throwingObjectBehavior)
-        {
-            ThrowingObjectBehavior = throwingObjectBehavior;
-        }
 
         public Status BehaviorCondition
         {
@@ -36,10 +22,10 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
         public void Behave()
         {
             Vector3 angleUnit = (_context.Transform.right - _context.Transform.up) / 90;
-            ThrowingObjectBehavior.UseObject(-_context.Transform.up + _offsetDegree * angleUnit);
-            ThrowingObjectBehavior.UseObject(((-_context.Transform.up +
+            UseObject(-_context.Transform.up + _offsetDegree * angleUnit);
+            UseObject(((-_context.Transform.up +
                 (_context.Transform.right - _context.Transform.up) / 2) / 2) + _offsetDegree * angleUnit);
-            ThrowingObjectBehavior.UseObject(((_context.Transform.right - _context.Transform.up) / 2) +
+            UseObject(((_context.Transform.right - _context.Transform.up) / 2) +
                 _offsetDegree * angleUnit);
         }
 

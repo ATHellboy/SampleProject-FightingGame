@@ -1,4 +1,4 @@
-﻿using AlirezaTarahomi.FightingGame.Character.Behavior;
+﻿using AlirezaTarahomi.FightingGame.General.Variable;
 using System.Collections;
 using UniRx;
 using UnityEngine;
@@ -6,12 +6,14 @@ using UnityEngine;
 namespace AlirezaTarahomi.FightingGame.Character.Powerup
 {
     [CreateAssetMenu(menuName = "Powerups/UnlimitedThrowingObjectPowerup")]
-    public class UnlimitedThrowingObjectPowerup : ScriptableObject, IPowerup, IThrowingBehavior
+    public class UnlimitedThrowingObjectPowerup : ScriptableObject, IPowerup
     {
+        [SerializeField] private IntVariable _objectCounter;
         [SerializeField] private float _time = 2.5f;
+        [SerializeField] private float _powerupCooldown = 1.0f;
+        public float PowerupCooldown { get => _powerupCooldown; }
 
         public ScriptableObject PowerupAttackBehavior { get; }
-        public ThrowingObjectBehavior ThrowingObjectBehavior { get; private set; }
 
         private const int INFINITE = 99999;
 
@@ -23,23 +25,18 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
             _context = context;
         }
 
-        public void AssignThrowingObjectBehavior(ThrowingObjectBehavior throwingObjectBehavior)
+        public PowerupType Active()
         {
-            ThrowingObjectBehavior = throwingObjectBehavior;
-        }
-
-        public PowerType Active()
-        {
-            _lastObjectNumber = ThrowingObjectBehavior.counter;
-            ThrowingObjectBehavior.counter = INFINITE;
+            _lastObjectNumber = _objectCounter.value;
+            _objectCounter.value = INFINITE;
             Observable.FromCoroutine(_ => Timer()).Subscribe();
             _context.OnPowerupToggled?.Invoke(true);
-            return PowerType.TimeBased;
+            return PowerupType.TimeBased;
         }
 
         public void Disable()
         {
-            ThrowingObjectBehavior.counter = _lastObjectNumber;
+            _objectCounter.value = _lastObjectNumber;
             _context.OnPowerupToggled?.Invoke(false);
         }
 

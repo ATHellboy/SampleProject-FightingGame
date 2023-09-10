@@ -10,8 +10,6 @@ namespace Assets.Infrastructure.Scripts.CQRS.Validators {
 				return ValidationResult.Rejected;
 			}
 			var result = scriptableObjectHandler.GetScriptableObject() == message.GetScriptableObject() ? ValidationResult.Accepted : ValidationResult.Rejected;
-            //if (message.GetType() == typeof(OnAttackToggled))
-            //    Debug.Log(handler + "  " + message + "  " + scriptableObjectHandler.GetScriptableObject() + "  " + message.GetScriptableObject() +"  " + result);
             return result;
         }
 	}

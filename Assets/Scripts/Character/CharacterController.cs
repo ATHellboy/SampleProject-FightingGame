@@ -41,7 +41,6 @@ namespace AlirezaTarahomi.FightingGame.Character
         private MainCameraController _mainCameraController;
         private GroundCheck _groundCheck;
         private MovementColliderActivator _movementColliderActivator;
-        private ThrowingObjectBehavior _throwingObjectBehavior;
         private bool _isGrounded;
 
         [Inject]
@@ -141,8 +140,6 @@ namespace AlirezaTarahomi.FightingGame.Character
         void Awake()
         {
             GetHitBox();
-            CreateThrowingBehaviorInstance();
-            _hurtBoxHandler.Inject(_throwingObjectBehavior);
             InitPowerup(Stats.behaviors.powerup.value);
             InitAttackBehaviors();
         }
@@ -158,23 +155,11 @@ namespace AlirezaTarahomi.FightingGame.Character
             }
         }
 
-        private void CreateThrowingBehaviorInstance()
+        private void InitPowerup(ScriptableObject powerup)
         {
-            ScriptableObject scriptableObject = Stats.behaviors.throwingObjectBehavior.value;
-            if (scriptableObject != null)
-            {
-                _throwingObjectBehavior = _resourceFactory.Instantiate(scriptableObject) as ThrowingObjectBehavior;
-            }
-        }
-
-        private void InitThrowingBehaviour(ScriptableObject clone)
-        {
-            var castedAsThrowingBehavior = clone as IThrowingBehavior;
-            if (castedAsThrowingBehavior != null)
-            {
-                _throwingObjectBehavior.Inject(_behaviorContext);
-                castedAsThrowingBehavior.AssignThrowingObjectBehavior(_throwingObjectBehavior);
-            }
+            var clone = _resourceFactory.Instantiate(powerup) as ScriptableObject;
+            _combatStateMachineContext.powerup = clone as IPowerup;
+            _combatStateMachineContext.powerup.Inject(_powerupContext);
         }
 
         private void InitAttackBehavior(ScriptableObject attackBehavior)
@@ -182,19 +167,10 @@ namespace AlirezaTarahomi.FightingGame.Character
             if (attackBehavior != null)
             {
                 ScriptableObject clone = _resourceFactory.Instantiate(attackBehavior) as ScriptableObject;
-                InitThrowingBehaviour(clone);
                 IAttackBehavior clonedAttackBehavior = clone as IAttackBehavior;
                 clonedAttackBehavior.Inject(_behaviorContext);
                 _combatStateMachineContext.AddAttackBehavior(clonedAttackBehavior);
             }
-        }
-
-        private void InitPowerup(ScriptableObject powerup)
-        {
-            var clone = _resourceFactory.Instantiate(powerup) as ScriptableObject;
-            InitThrowingBehaviour(clone);
-            _combatStateMachineContext.powerup = clone as IPowerup;
-            _combatStateMachineContext.powerup.Inject(_powerupContext);
         }
 
         private void InitAttackBehaviors()
@@ -322,6 +298,15 @@ namespace AlirezaTarahomi.FightingGame.Character
             _combatStateMachineContext.isPowerupActive = active;
         }
 
+        /// <summary>
+        /// Handles the event when the character flies or stops flying
+        /// </summary>
+        public void HandleOnFlyingToggled(bool enable)
+        {
+            ToggleControls(!enable);
+            _secondaryMovementStateMachineContext.isFlying = enable;
+        }
+
         public void HandleOnFlyOverEnded()
         {
             _behaviorContext.isPowerupActive = false;
@@ -366,15 +351,6 @@ namespace AlirezaTarahomi.FightingGame.Character
         public void HandleOnChangeMoveSpeedRequested()
         {
             ChangeMoveSpeed();
-        }
-
-        /// <summary>
-        /// Handles the event when the character flies or stops flying
-        /// </summary>
-        public void HandleOnFlyingToggled(bool enable)
-        {
-            ToggleControls(!enable);
-            _secondaryMovementStateMachineContext.isFlying = enable;
         }
     }
 }

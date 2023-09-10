@@ -9,11 +9,12 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 {
     public class None : BaseState<CharacterCombatStateMachineContext>
     {
-        private bool _canAttack;
+        private bool _canAttack = true;
+        private bool _isPowerupInCooldown = false;
 
         public override void Enter(CharacterCombatStateMachineContext context)
         {
-            Observable.FromCoroutine(_ => AttackTimer(context)).Subscribe();
+            
         }
 
         public override void Update(float deltaTime, StateMachine stateMachine, CharacterCombatStateMachineContext context)
@@ -23,12 +24,17 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
             if (CheckAttackCondition(context))
             {
+                _canAttack = false;
+                Observable.FromCoroutine(_ => AttackTimer(context)).Subscribe();
                 stateMachine.ChangeState(this, context.RelatedStates.attack, context);
             }
 
             if (CheckPowerupCondition(context))
             {
-                if (context.powerup.Active() == PowerType.OneTime)
+                PowerupType powerupType = context.powerup.Active();
+                _isPowerupInCooldown = true;
+                Observable.FromCoroutine(_ => PowerupCooldownTimer(context)).Subscribe();
+                if (powerupType == PowerupType.OneTime)
                 {
                     stateMachine.ChangeState(this, context.RelatedStates.attack, context);
                 }
@@ -47,13 +53,19 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
         public override void Exit(CharacterCombatStateMachineContext context)
         {
-            _canAttack = false;
+            
         }
 
         IEnumerator AttackTimer(CharacterCombatStateMachineContext context)
         {
             yield return new WaitForSeconds(context.Stats.miscValues.attackRate);
             _canAttack = true;
+        }
+
+        IEnumerator PowerupCooldownTimer(CharacterCombatStateMachineContext context)
+        {
+            yield return new WaitForSeconds((context.Stats.behaviors.powerup.value as IPowerup).PowerupCooldown);
+            _isPowerupInCooldown = false;
         }
 
         private bool CheckAttackCondition(CharacterCombatStateMachineContext context)
@@ -67,7 +79,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
         private bool CheckPowerupCondition(CharacterCombatStateMachineContext context)
         {
-            if (context.isPowerupAttackedPressed && !context.isPowerupActive)
+            if (context.isPowerupAttackedPressed && !context.isPowerupActive && !_isPowerupInCooldown)
             {
                 return true;
             }

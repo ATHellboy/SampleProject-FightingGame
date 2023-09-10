@@ -26,8 +26,8 @@ namespace AlirezaTarahomi.FightingGame.Character
             BindInstances();
             BindComponents();
             BindContexts();
-            InitStartStates();
             BindStates();
+            InitStartStates();
         }
 
         private void SetId()
@@ -68,19 +68,9 @@ namespace AlirezaTarahomi.FightingGame.Character
             Container.Bind<CharacterPowerupContext>().AsSingle().NonLazy();
         }
 
-        private void InitStartStates()
-        {
-            Container.Bind<IState>().To<Idle>().When(context => string.Equals("startState", context.MemberName)
-                && context.ObjectType == typeof(CharacterMainStateMachineContext));
-            Container.Bind<IState>().To<State.SecondaryMovement.None>().When(context => string.Equals("startState", context.MemberName)
-                && context.ObjectType == typeof(CharacterSecondaryMovementStateMachineContext));
-            Container.Bind<IState>().To<State.Combat.None>().When(context => string.Equals("startState", context.MemberName)
-                && context.ObjectType == typeof(CharacterCombatStateMachineContext));
-        }
-
         private void BindStates()
         {
-            Container.Bind<Idle>().AsCached().NonLazy();
+            Container.Bind<Idle>().AsSingle().NonLazy();
             Container.Bind<Walk>().AsSingle().NonLazy();
             Container.Bind<Die>().AsSingle().NonLazy();
 
@@ -88,10 +78,20 @@ namespace AlirezaTarahomi.FightingGame.Character
             Container.Bind<Fall>().AsSingle().NonLazy();
             Container.Bind<Land>().AsSingle().NonLazy();
             Container.Bind<Fly>().AsSingle().NonLazy();
-            Container.Bind<State.SecondaryMovement.None>().AsCached().NonLazy();
+            Container.Bind<State.SecondaryMovement.None>().AsSingle().NonLazy();
 
-            Container.Bind<State.Combat.None>().AsCached().NonLazy();
+            Container.Bind<State.Combat.None>().AsSingle().NonLazy();
             Container.Bind<Attack>().AsSingle().NonLazy();
+        }
+
+        private void InitStartStates()
+        {
+            Container.Bind<IState>().To<Idle>().FromResolve().When(context => string.Equals("startState", context.MemberName)
+                && context.ObjectType == typeof(CharacterMainStateMachineContext));
+            Container.Bind<IState>().To<State.SecondaryMovement.None>().FromResolve().When(context => string.Equals("startState", context.MemberName)
+                && context.ObjectType == typeof(CharacterSecondaryMovementStateMachineContext));
+            Container.Bind<IState>().To<State.Combat.None>().FromResolve().When(context => string.Equals("startState", context.MemberName)
+                && context.ObjectType == typeof(CharacterCombatStateMachineContext));
         }
     }
 }

@@ -11,6 +11,9 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
         public ScriptableObjectReference _powerupAttackBehavior;
         public ScriptableObject PowerupAttackBehavior { get { return _powerupAttackBehavior.value; } }
 
+        [SerializeField] private float _powerupCooldown = 1.0f;
+        public float PowerupCooldown { get => _powerupCooldown; }
+
         private CharacterPowerupContext _context;
 
         public void Inject(CharacterPowerupContext context)
@@ -18,10 +21,10 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
             _context = context;
         }
 
-        public PowerType Active()
+        public PowerupType Active()
         {
             _context.OnPowerupToggled?.Invoke(true);
-            return PowerType.OneTime;
+            return PowerupType.OneTime;
         }
 
         public void Disable()

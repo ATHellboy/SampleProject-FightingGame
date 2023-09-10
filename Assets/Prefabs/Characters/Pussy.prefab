@@ -31,7 +31,7 @@ PrefabInstance:
     - target: {fileID: 3195965606867918218, guid: 39b641a584be8f34b9bbf8f83d466a54,
         type: 3}
       propertyPath: m_Name
-      value: Pussy 1
+      value: Pussy
       objectReference: {fileID: 0}
     - target: {fileID: 4567817176265838095, guid: 39b641a584be8f34b9bbf8f83d466a54,
         type: 3}
@@ -89,6 +89,18 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5478082693183000744, guid: 39b641a584be8f34b9bbf8f83d466a54,
+        type: 3}
+      propertyPath: _objectCounter
+      value: 
+      objectReference: {fileID: 11400000, guid: 1e636000e75c9ec4e8e37e9f6459b928,
+        type: 2}
+    - target: {fileID: 5478082693183000744, guid: 39b641a584be8f34b9bbf8f83d466a54,
+        type: 3}
+      propertyPath: _throwableObjectCounter
+      value: 
+      objectReference: {fileID: 11400000, guid: 1e636000e75c9ec4e8e37e9f6459b928,
+        type: 2}
     - target: {fileID: 5524410377966565557, guid: 39b641a584be8f34b9bbf8f83d466a54,
         type: 3}
       propertyPath: m_Points.m_Paths.Array.data[0].Array.size

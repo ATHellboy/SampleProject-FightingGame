@@ -35,5 +35,3 @@ MonoBehaviour:
       value: {fileID: 11400000, guid: eed8e17f61150c54081280418e57a71b, type: 2}
     powerup:
       value: {fileID: 11400000, guid: 23fee4e81344db84988acb07f97dc3bd, type: 2}
-    throwingObjectBehavior:
-      value: {fileID: 0}
