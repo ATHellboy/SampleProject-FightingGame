@@ -6,7 +6,7 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Pussy
+  m_Name: Kitty
   m_Controller: {fileID: 9100000, guid: 35a862e55eb35b5488b14578c8e11fda, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 7400000, guid: 393e1af87be0f134386cef9f66b209c9, type: 2}

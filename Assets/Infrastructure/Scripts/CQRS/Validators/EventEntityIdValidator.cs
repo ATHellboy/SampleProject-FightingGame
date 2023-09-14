@@ -3,12 +3,12 @@
     {
         public override ValidationResult Validate(IMessageHandler handler, TMessage message)
         {
-            var playerIdHandler = handler as IEntityIdProperty;
+            var entityIdHandler = handler as IEntityIdProperty;
             if (null == handler)
             {
                 return ValidationResult.Rejected;
             }
-            return message.EntityId == playerIdHandler.EntityId ? ValidationResult.Accepted : ValidationResult.Rejected;
+            return message.EntityId == entityIdHandler.EntityId ? ValidationResult.Accepted : ValidationResult.Rejected;
         }
     }
 }

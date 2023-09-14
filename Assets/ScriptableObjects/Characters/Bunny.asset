@@ -24,6 +24,9 @@ MonoBehaviour:
   cameraValues:
     cameraRadius: 5.1
     cameraWeight: 1
+  avatarCameraValues:
+    size: 0.8
+    offset: {x: 0, y: 0.15}
   miscValues:
     attackRate: 0.5
     enteringForce: 4

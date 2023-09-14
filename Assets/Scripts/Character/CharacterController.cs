@@ -281,6 +281,11 @@ namespace AlirezaTarahomi.FightingGame.Character
             _locomotionHandler.GoOutside(Stats.miscValues.exitVelocity, side);
         }
 
+        public void SetLayer(int layer)
+        {
+            gameObject.layer = layer;
+        }
+
         /// <summary>
         /// Handles the event when the character attack is ended
         /// </summary>

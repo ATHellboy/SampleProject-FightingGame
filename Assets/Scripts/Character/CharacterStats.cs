@@ -14,6 +14,7 @@ namespace AlirezaTarahomi.FightingGame.Character
         public GroundMovementValues groundMovementValues;
         public AirMovementValues airMovementValues;
         public CameraValues cameraValues;
+        public AvatarCameraValues avatarCameraValues;
         public MiscValues miscValues;
         public Behaviors behaviors;
     }
@@ -50,6 +51,13 @@ namespace AlirezaTarahomi.FightingGame.Character
     {
         public float cameraRadius = 5.1f;
         public float cameraWeight = 1f;
+    }
+
+    [Serializable]
+    public class AvatarCameraValues
+    {
+        public float size = 0.5f;
+        public Vector2 offset = Vector2.zero;
     }
 
     [Serializable]

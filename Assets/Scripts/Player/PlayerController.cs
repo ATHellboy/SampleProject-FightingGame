@@ -9,6 +9,7 @@ using AlirezaTarahomi.FightingGame.Character;
 using ScriptableObjectDropdown;
 using AlirezaTarahomi.FightingGame.CameraSystem;
 using Infrastructure.Factory;
+using Infrastructure.Extension;
 
 namespace AlirezaTarahomi.FightingGame.Player
 {
@@ -18,6 +19,8 @@ namespace AlirezaTarahomi.FightingGame.Player
 
         [SerializeField] private Vector2 initialInsidePos = Vector2.zero;
         [SerializeField] private Vector2 initialOutsidePos = Vector2.zero;
+        [SerializeField] private LayerMask _avatarLayerMask;
+        [SerializeField] private RenderTexture _avatarRenderTexture;
 
         [ScriptableObjectDropdown(typeof(CharacterStats))] public ScriptableObjectReference firstCharacter = default;
         [ScriptableObjectDropdown(typeof(CharacterStats))] public ScriptableObjectReference secondCharacter = default;
@@ -36,6 +39,7 @@ namespace AlirezaTarahomi.FightingGame.Player
         private IResourceFactory _resourceFactory;
         private CharactersSwitchingHandler _charactersSwitchingHandler;
         private TargetGroupController _targetGroupController;
+        private Camera _avatarCamera;
         private float _switchingCoolDown;
         private bool _canSwitch = true;
         private int _numOfRemainedChars = 2;
@@ -43,13 +47,14 @@ namespace AlirezaTarahomi.FightingGame.Player
         [Inject]
         public void Construct(InputManager inputManager, CharactersSwitchingHandler charactersSwitchingHandler, 
             IMessageBus messageBus, IResourceFactory resourceFactory, TargetGroupController targetGroupController, 
-            [Inject(Id = "playerId")] int playerId, [Inject(Id = "switchingCoolDown")] float switchingCoolDown)
+            Camera avatarCamera, [Inject(Id = "playerId")] int playerId, [Inject(Id = "switchingCoolDown")] float switchingCoolDown)
         {
             _inputManager = inputManager;
             _messageBus = messageBus;
             _resourceFactory = resourceFactory;
             _charactersSwitchingHandler = charactersSwitchingHandler;
             _targetGroupController = targetGroupController;
+            _avatarCamera = avatarCamera;
             _playerId = playerId;
             _switchingCoolDown = switchingCoolDown;
         }
@@ -60,6 +65,7 @@ namespace AlirezaTarahomi.FightingGame.Player
             InstantiateCharacter(secondCharacter, initialOutsidePos);
             _targetGroupController.AssignTarget(_playerId - 1, target, stats.cameraValues.cameraRadius, stats.cameraValues.cameraWeight);
             currentCharacterController = _charactersSwitchingHandler.ConfigCharacters();
+            InitAvatarCamera();
             OnCharactersConfigured?.Invoke();
         }
 
@@ -79,17 +85,33 @@ namespace AlirezaTarahomi.FightingGame.Player
                 new Vector2(_inputManager.GetAxis("MoveHorizontal_P" + _playerId), _inputManager.GetAxis("MoveVertical_P" + _playerId));
         }
 
+        void LateUpdate()
+        {
+            _avatarCamera.transform.SetXYPosition(
+                currentCharacterController.transform.position.x + currentCharacterController.Stats.avatarCameraValues.offset.x, 
+                currentCharacterController.transform.position.y + currentCharacterController.Stats.avatarCameraValues.offset.y);
+        }
+
         private (Transform, CharacterStats) InstantiateCharacter(ScriptableObjectReference characterStatsReference, Vector2 pos)
         {
             var characterStats = characterStatsReference.value as CharacterStats;
             Transform characterInstance = _resourceFactory.Instantiate(characterStats.prefab, pos, transform);
             var characterController = characterInstance.GetComponent<Character.CharacterController>();
             _charactersSwitchingHandler.EnqueueCharacter(characterController);
+            characterController.SetLayer(gameObject.layer);
             characterController.OnAttackStarted.AddListener(HandleOnAttackStarted);
             characterController.OnAttackEnded.AddListener(HandleOnAttackEnded);
             characterController.OnDied.AddListener(HandleOnCharacterDied);
             characterController.Deactivate();
             return (characterInstance, characterStats);
+        }
+
+        private void InitAvatarCamera()
+        {
+            _avatarCamera.cullingMask = _avatarLayerMask.value;
+            _avatarCamera.targetTexture = _avatarRenderTexture;
+            _avatarCamera.orthographicSize = currentCharacterController.Stats.avatarCameraValues.size;
+            _avatarCamera.enabled = true;
         }
 
         public void InitCharacterFace()
@@ -103,6 +125,7 @@ namespace AlirezaTarahomi.FightingGame.Player
             Observable.FromCoroutine(_ => SwitchingTimer()).Subscribe();
             _charactersSwitchingHandler.ExitCurrentCharacter();
             currentCharacterController = _charactersSwitchingHandler.EnterNextCharacter();
+            _avatarCamera.orthographicSize = currentCharacterController.Stats.avatarCameraValues.size;
         }
 
         IEnumerator SwitchingTimer()

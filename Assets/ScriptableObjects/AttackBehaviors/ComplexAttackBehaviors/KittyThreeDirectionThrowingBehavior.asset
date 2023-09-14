@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c2f9fed6a20afc48a02a5e61aa556f3, type: 3}
-  m_Name: PussyStraightLineThrowingBehavior
+  m_Script: {fileID: 11500000, guid: 4b2d5cd5636f96c44999f525d24bb90e, type: 3}
+  m_Name: KittyThreeDirectionThrowingBehavior
   m_EditorClassIdentifier: 
   _objectCounter: {fileID: 11400000, guid: 1e636000e75c9ec4e8e37e9f6459b928, type: 2}
   _throwingForce: 1.5
   _throwableObjectPoolStats: {fileID: 11400000, guid: 55e2b2fcfdc7d0140a6408ec5df04a49,
     type: 2}
+  _offsetDegree: 20

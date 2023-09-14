@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 07783d7247b8d864582ac7d2edaccff2, type: 3}
-  m_Name: Pussy
+  m_Name: Kitty
   m_EditorClassIdentifier: 
   prefab: {fileID: 9008039470835572715, guid: 220dc9839ff162343b8908e618e2f196, type: 3}
   groundMovementValues:
@@ -24,6 +24,9 @@ MonoBehaviour:
   cameraValues:
     cameraRadius: 5.46
     cameraWeight: 1
+  avatarCameraValues:
+    size: 0.85
+    offset: {x: 0, y: 0.3}
   miscValues:
     attackRate: 0.5
     enteringForce: 4
