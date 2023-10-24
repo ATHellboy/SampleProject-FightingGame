@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Infrastructure.ObjectPooling;
-using Zenject;
+using VContainer;
 using AlirezaTarahomi.FightingGame.General.Variable;
 
 namespace AlirezaTarahomi.FightingGame.Tool

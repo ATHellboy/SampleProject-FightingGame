@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3994558871135084100}
-  - component: {fileID: 4932556128888758982}
-  - component: {fileID: 2096338336026438339}
+  - component: {fileID: 3429364964624629607}
+  - component: {fileID: 5571215818426367924}
   - component: {fileID: 5505319800513481064}
   m_Layer: 0
   m_Name: PlayersManager
@@ -36,26 +36,7 @@ Transform:
   - {fileID: 3357153952465997189}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4932556128888758982
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3994558871135084102}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 2096338336026438339}
-  _installerPrefabs: []
-  _findSiblingMonoInstallers: 0
-  _autoRun: 1
-  _kernel: {fileID: 0}
---- !u!114 &2096338336026438339
+--- !u!114 &3429364964624629607
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -67,9 +48,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32ce963e126da5e46b188ae15d2dd519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player1: {fileID: 4322725673429985081}
-  _player2: {fileID: 3357153952465997188}
-  _switchingCoolDown: 3
+  parentReference:
+    TypeName: AlirezaTarahomi.FightingGame.General.ServicesLifetimeScope
+  autoRun: 1
+  autoInjectGameObjects: []
+--- !u!114 &5571215818426367924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3994558871135084102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6213ba35e85551b47ab8ea35d3dcaf9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  switchingCoolDown: 3
 --- !u!114 &5505319800513481064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82,6 +77,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 513d349a19e3f7e4b84b0ce2ec85b22d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player1: {fileID: 4322725673429985081}
+  _player2: {fileID: 3357153952465997188}
 --- !u!1001 &121120161862067463
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -182,12 +179,28 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 26925a53f30441f468c7276e0837c70f,
         type: 2}
+    - target: {fileID: 3402838536295409795, guid: bc1e9473d75aeed46a3832ef8ce8da80,
+        type: 3}
+      propertyPath: _avatarLayerMask.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 3402838536295409853, guid: bc1e9473d75aeed46a3832ef8ce8da80,
         type: 3}
       propertyPath: m_Name
       value: Player2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 3402838536295409853, guid: bc1e9473d75aeed46a3832ef8ce8da80,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6153693047454271152, guid: bc1e9473d75aeed46a3832ef8ce8da80,
+        type: 3}
+      propertyPath: index
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3402838536295409792, guid: bc1e9473d75aeed46a3832ef8ce8da80, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -310,12 +323,28 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 394cc4c588c2dfb4281584e68610de9a,
         type: 2}
+    - target: {fileID: 3402838536295409795, guid: bc1e9473d75aeed46a3832ef8ce8da80,
+        type: 3}
+      propertyPath: _avatarLayerMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 3402838536295409853, guid: bc1e9473d75aeed46a3832ef8ce8da80,
         type: 3}
       propertyPath: m_Name
       value: Player1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 3402838536295409853, guid: bc1e9473d75aeed46a3832ef8ce8da80,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6153693047454271152, guid: bc1e9473d75aeed46a3832ef8ce8da80,
+        type: 3}
+      propertyPath: index
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3402838536295409792, guid: bc1e9473d75aeed46a3832ef8ce8da80, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

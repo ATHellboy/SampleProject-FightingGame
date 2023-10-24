@@ -8,8 +8,8 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
     {
         public override void Enter(CharacterSecondaryMovementStateMachineContext context)
         {
-            context.LocomotionHandler.ChangeMoveSpeed(context.Stats.airMovementValues.inAirMoveSpeed);
-            ExecuteJumping(context.jumpHeight, context.Stats.airMovementValues.jumpSpeed, context);
+            context.LocomotionHandler.ChangeMoveSpeed(context.CharacterContext.stats.airMovementValues.inAirMoveSpeed);
+            ExecuteJumping(context.jumpHeight, context.CharacterContext.stats.airMovementValues.jumpSpeed, context);
             context.AnimatorController.ToggleJumping(true);
         }
 
@@ -22,8 +22,8 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
 
             if (context.CheckNextJumpCondition())
             {
-                context.jumpHeight = context.Stats.airMovementValues.lessJumpHeight;
-                ExecuteJumping(context.jumpHeight, context.Stats.airMovementValues.jumpSpeed, context);
+                context.jumpHeight = context.CharacterContext.stats.airMovementValues.lessJumpHeight;
+                ExecuteJumping(context.jumpHeight, context.CharacterContext.stats.airMovementValues.jumpSpeed, context);
             }
         }
 

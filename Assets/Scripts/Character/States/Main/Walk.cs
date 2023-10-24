@@ -45,7 +45,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Main
 
         public void ChangeMoveSpeed(CharacterMainStateMachineContext context)
         {
-            context.LocomotionHandler.ChangeMoveSpeed(context.Stats.groundMovementValues.walkSpeed);
+            context.LocomotionHandler.ChangeMoveSpeed(context.CharacterContext.stats.groundMovementValues.walkSpeed);
         }
     }
 }

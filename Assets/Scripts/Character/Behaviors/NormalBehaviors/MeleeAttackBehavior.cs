@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UniRx;
+using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
 {
@@ -11,7 +12,8 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
 
         private CharacterBehaviorContext _context;
 
-        public void Inject(CharacterBehaviorContext context)
+        [Inject]
+        public void Construct(CharacterBehaviorContext context)
         {
             _context = context;
         }

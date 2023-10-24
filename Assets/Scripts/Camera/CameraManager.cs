@@ -8,7 +8,7 @@ namespace AlirezaTarahomi.FightingGame.CameraSystem
         [SerializeField] private Transform _targetGroup = default;
         [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera = default;
 
-        private void Awake()
+        void Awake()
         {
             _cinemachineVirtualCamera.Follow = _targetGroup;
         }

@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3402838536295409794}
-  - component: {fileID: 3402838536295409793}
-  - component: {fileID: 3402838536295409792}
+  - component: {fileID: 5384572484545457978}
+  - component: {fileID: 6153693047454271152}
   - component: {fileID: 3402838536295409795}
   m_Layer: 0
   m_Name: Player
@@ -35,26 +35,7 @@ Transform:
   - {fileID: 4283601667330795406}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3402838536295409793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3402838536295409853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 3402838536295409792}
-  _installerPrefabs: []
-  _findSiblingMonoInstallers: 0
-  _autoRun: 1
-  _kernel: {fileID: 0}
---- !u!114 &3402838536295409792
+--- !u!114 &5384572484545457978
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -66,7 +47,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9ba3eea1e796ff4394d59f74fb57afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 0
+  parentReference:
+    TypeName: AlirezaTarahomi.FightingGame.Player.PlayersLifetimeScope
+  autoRun: 1
+  autoInjectGameObjects: []
+--- !u!114 &6153693047454271152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3402838536295409853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce6261f728052f148acb98992e7fd47f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: 0
 --- !u!114 &3402838536295409795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,8 +76,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1daa368901fdf542946c0695938078b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _characterLifetimeScope: {fileID: 1981878414556521149, guid: 09f14a95395b46748a65033dd206837e,
+    type: 3}
   initialInsidePos: {x: 0, y: 0}
   initialOutsidePos: {x: 0, y: 0}
+  _avatarLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
   _avatarRenderTexture: {fileID: 0}
   firstCharacter:
     value: {fileID: 0}

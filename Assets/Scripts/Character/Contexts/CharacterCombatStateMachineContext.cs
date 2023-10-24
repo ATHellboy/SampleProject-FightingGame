@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Zenject;
 using AlirezaTarahomi.FightingGame.Character.State.Combat;
 using System.Collections.Generic;
 using AlirezaTarahomi.FightingGame.Character.Behavior;
@@ -19,7 +18,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         public bool isPowerupActive;
 
         public OnAttackStarted OnAttackStarted { get; private set; } = new();
-        public CharacterStats Stats { get; private set; }
+        public CharacterContext CharacterContext { get; private set; }
         public List<IAttackBehavior> AttackBehaviors { get; private set; } = new();
 
         public class States
@@ -35,10 +34,10 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         }
         public States RelatedStates { get; }
 
-        public CharacterCombatStateMachineContext(GameObject go, IState startState, [Inject(Id = "debug")] bool debug, 
-            [Inject(Id = "stats")] CharacterStats stats, None none, Attack attack) : base(go, startState, debug)
+        public CharacterCombatStateMachineContext(Transform transform, CharacterContext characterContext, 
+            None none, Attack attack) : base(transform.gameObject, none, characterContext.debugStateMachine)
         {
-            Stats = stats;
+            CharacterContext = characterContext;
             RelatedStates = new States(none, attack);
         }
 

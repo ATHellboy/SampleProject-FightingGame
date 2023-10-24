@@ -6,10 +6,9 @@ using AlirezaTarahomi.FightingGame.Character.Powerup;
 using AlirezaTarahomi.FightingGame.Character.State.Main;
 using AlirezaTarahomi.FightingGame.Player;
 using AlirezaTarahomi.FightingGame.Service;
-using Infrastructure.Factory;
 using Infrastructure.StateMachine;
 using UnityEngine;
-using Zenject;
+using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character
 {
@@ -24,10 +23,10 @@ namespace AlirezaTarahomi.FightingGame.Character
         [HideInInspector] public bool isJustEntered;
         [HideInInspector] public Vector2 moveAxes;
 
-        public CharacterStats Stats { get; private set; }
+        public CharacterContext Context { get; private set; }
 
+        private IObjectResolver _container;
         private IOwnershipService _ownershipService;
-        private IResourceFactory _resourceFactory;
         private StateMachine _stateMachine;
         private CharacterMainStateMachineContext _mainStateMachineContext;
         private CharacterSecondaryMovementStateMachineContext _secondaryMovementStateMachineContext;
@@ -44,24 +43,23 @@ namespace AlirezaTarahomi.FightingGame.Character
         private bool _isGrounded;
 
         [Inject]
-        public void Construct(StateMachine stateMachine, [Inject(Id = "stats")] CharacterStats stats, 
-            CharacterMainStateMachineContext mainStateMachineContext,
+        public void Construct(IObjectResolver container, IOwnershipService ownershipService, StateMachine stateMachine, 
+            CharacterContext characterContext, CharacterMainStateMachineContext mainStateMachineContext,
             CharacterSecondaryMovementStateMachineContext secondaryMovementStateMachineContext,
-            CharacterCombatStateMachineContext combatStateMachineContext,
-            CharacterBehaviorContext behaviorContext, CharacterPowerupContext powerupContext,
-            CharacterLocomotionHandler locomotionHandler, CharacterHurtBoxHandler hurtBoxHandler,
-            IOwnershipService ownershipService, MainCameraController mainCameraController, GroundCheck groundCheck,
-            MovementColliderActivator colliderActivator, IResourceFactory resourceFactory, CharacterAnimatorController animtorController)
+            CharacterCombatStateMachineContext combatStateMachineContext, CharacterBehaviorContext behaviorContext, 
+            CharacterPowerupContext powerupContext, CharacterLocomotionHandler locomotionHandler, CharacterHurtBoxHandler hurtBoxHandler,
+            MainCameraController mainCameraController, GroundCheck groundCheck, MovementColliderActivator colliderActivator, 
+            CharacterAnimatorController animtorController)
         {
+            _container = container;
+            _ownershipService = ownershipService;
             _stateMachine = stateMachine;
-            Stats = stats;
+            Context = characterContext;
             _locomotionHandler = locomotionHandler;
             _hurtBoxHandler = hurtBoxHandler;
-            _ownershipService = ownershipService;
             _mainCameraController = mainCameraController;
             _groundCheck = groundCheck;
             _movementColliderActivator = colliderActivator;
-            _resourceFactory = resourceFactory;
             _animtorController = animtorController;
 
             _mainStateMachineContext = mainStateMachineContext;
@@ -140,7 +138,7 @@ namespace AlirezaTarahomi.FightingGame.Character
         void Awake()
         {
             GetHitBox();
-            InitPowerup(Stats.behaviors.powerup.value);
+            InitPowerup(Context.stats.behaviors.powerup.value);
             InitAttackBehaviors();
         }
 
@@ -157,27 +155,26 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void InitPowerup(ScriptableObject powerup)
         {
-            var clone = _resourceFactory.Instantiate(powerup) as ScriptableObject;
-            _combatStateMachineContext.powerup = clone as IPowerup;
-            _combatStateMachineContext.powerup.Inject(_powerupContext);
+            var clone = Instantiate(powerup) as IPowerup;
+            _container.Inject(clone);
+            _combatStateMachineContext.powerup = clone;
         }
 
         private void InitAttackBehavior(ScriptableObject attackBehavior)
         {
             if (attackBehavior != null)
             {
-                ScriptableObject clone = _resourceFactory.Instantiate(attackBehavior) as ScriptableObject;
-                IAttackBehavior clonedAttackBehavior = clone as IAttackBehavior;
-                clonedAttackBehavior.Inject(_behaviorContext);
-                _combatStateMachineContext.AddAttackBehavior(clonedAttackBehavior);
+                var clone = Instantiate(attackBehavior) as IAttackBehavior;
+                _container.Inject(clone);
+                _combatStateMachineContext.AddAttackBehavior(clone);
             }
         }
 
         private void InitAttackBehaviors()
         {
             InitAttackBehavior(_combatStateMachineContext.powerup.PowerupAttackBehavior);
-            InitAttackBehavior(Stats.behaviors.normalAttack.value);
-            InitAttackBehavior(Stats.behaviors.complextAttack.value);
+            InitAttackBehavior(Context.stats.behaviors.normalAttack.value);
+            InitAttackBehavior(Context.stats.behaviors.complextAttack.value);
         }
 
         public void Activate()
@@ -278,7 +275,7 @@ namespace AlirezaTarahomi.FightingGame.Character
             _groundCheck.ToggleCollider(false);
             _movementColliderActivator.ToggleMovementColliders(false);
             ToggleStateMachineContexts(false);
-            _locomotionHandler.GoOutside(Stats.miscValues.exitVelocity, side);
+            _locomotionHandler.GoOutside(Context.stats.miscValues.exitVelocity, side);
         }
 
         public void SetLayer(int layer)

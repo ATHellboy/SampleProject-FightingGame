@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 8278566711370899470}
   - component: {fileID: 4607657042133303062}
   - component: {fileID: 3658008236965195180}
-  - component: {fileID: 3721688321788623834}
-  - component: {fileID: 8196594034388121790}
+  - component: {fileID: -4538602646275653380}
+  - component: {fileID: 1552448879665905075}
   - component: {fileID: 4981043104269179970}
   m_Layer: 0
   m_Name: Character
@@ -141,26 +141,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &3721688321788623834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3195965606867918218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 8196594034388121790}
-  _installerPrefabs: []
-  _findSiblingMonoInstallers: 0
-  _autoRun: 1
-  _kernel: {fileID: 0}
---- !u!114 &8196594034388121790
+--- !u!114 &-4538602646275653380
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,9 +153,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66769abd20b9b6649a4e7d6fdb77d564, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _debugStateMachine: 0
-  _stats: {fileID: 0}
-  _throwingAngle: 30
+  parentReference:
+    TypeName: AlirezaTarahomi.FightingGame.Player.PlayerLifetimeScope
+  autoRun: 1
+  autoInjectGameObjects: []
+--- !u!114 &1552448879665905075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3195965606867918218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9558e38348af2f843924c1ae4b97b909, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugStateMachine: 0
+  stats: {fileID: 0}
+  throwingAngle: 30
 --- !u!114 &4981043104269179970
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Behavior.Powerup;
 using ScriptableObjectDropdown;
 using UnityEngine;
+using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character.Powerup
 {
@@ -16,7 +17,8 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
 
         private CharacterPowerupContext _context;
 
-        public void Inject(CharacterPowerupContext context)
+        [Inject]
+        public void Construct(CharacterPowerupContext context)
         {
             _context = context;
         }

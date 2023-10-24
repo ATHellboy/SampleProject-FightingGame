@@ -707,7 +707,6 @@ GameObject:
   - component: {fileID: 6531337390741284103}
   - component: {fileID: 6531337390741284102}
   - component: {fileID: 6531337390741284101}
-  - component: {fileID: 1464224167716819200}
   - component: {fileID: 8832467913580876138}
   m_Layer: 5
   m_Name: Canvas
@@ -801,25 +800,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &1464224167716819200
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6531337390741284100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 8832467913580876138}
-  _installerPrefabs: []
-  _findSiblingMonoInstallers: 0
-  _autoRun: 1
-  _kernel: {fileID: 0}
 --- !u!114 &8832467913580876138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -832,6 +812,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e89bb8478fd87ea41aa298b6c7199c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: AlirezaTarahomi.FightingGame.General.ServicesLifetimeScope
+  autoRun: 1
+  autoInjectGameObjects: []
 --- !u!1 &7150995375687319835
 GameObject:
   m_ObjectHideFlags: 0

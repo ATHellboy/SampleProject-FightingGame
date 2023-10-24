@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Zenject;
 using AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement;
 using Infrastructure.StateMachine;
 using AlirezaTarahomi.FightingGame.Character.Event;
@@ -17,7 +16,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         public OnChangeMoveSpeedRequested OnChangeMoveSpeedRequested { get; private set; } = new();
         public CharacterLocomotionHandler LocomotionHandler { get; private set; }
         public CharacterAnimatorController AnimatorController { get; private set; }
-        public CharacterStats Stats { get; private set; }
+        public CharacterContext CharacterContext { get; private set; }
 
         public class States
         {
@@ -38,12 +37,11 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         }
         public States RelatedStates { get; }
 
-        public CharacterSecondaryMovementStateMachineContext(GameObject go, IState startState,
-            [Inject(Id = "debug")] bool debug, [Inject(Id = "stats")] CharacterStats stats,
-            CharacterLocomotionHandler locomotionHandler, CharacterAnimatorController animatorController,
-            None none, Jump jump, Fall fall, Land land, Fly fly) : base(go, startState, debug)
+        public CharacterSecondaryMovementStateMachineContext(Transform transform, CharacterContext characterContext, 
+            CharacterLocomotionHandler locomotionHandler, CharacterAnimatorController animatorController, 
+            None none, Jump jump, Fall fall, Land land, Fly fly) : base(transform.gameObject, none, characterContext.debugStateMachine)
         {
-            Stats = stats;
+            CharacterContext = characterContext;
             LocomotionHandler = locomotionHandler;
             AnimatorController = animatorController;
             RelatedStates = new States(none, jump, fall, land, fly);
@@ -54,7 +52,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
             if (!CanControl)
                 return false;
 
-            if (jumpCounter < Stats.airMovementValues.jumpNumber && isJumpedPressed)
+            if (jumpCounter < CharacterContext.stats.airMovementValues.jumpNumber && isJumpedPressed)
             {
                 return true;
             }

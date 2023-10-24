@@ -2,7 +2,7 @@
 using Assets.Infrastructure.Scripts.CQRS;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Zenject;
+using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.UI
 {

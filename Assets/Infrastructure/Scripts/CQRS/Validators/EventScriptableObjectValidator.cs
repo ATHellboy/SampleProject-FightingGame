@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Infrastructure.Scripts.CQRS.Validators {
 	public class EventScriptableObjectValidator<TMessage> :
@@ -9,7 +8,8 @@ namespace Assets.Infrastructure.Scripts.CQRS.Validators {
 			if (null == handler) {
 				return ValidationResult.Rejected;
 			}
-			var result = scriptableObjectHandler.GetScriptableObject() == message.GetScriptableObject() ? ValidationResult.Accepted : ValidationResult.Rejected;
+			var result = 
+				scriptableObjectHandler.GetScriptableObject() == message.GetScriptableObject() ? ValidationResult.Accepted : ValidationResult.Rejected;
             return result;
         }
 	}

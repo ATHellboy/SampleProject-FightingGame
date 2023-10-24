@@ -11,8 +11,6 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
         PowerupType Active();
 
         void Disable();
-
-        void Inject(CharacterPowerupContext context);
     }
 
     public enum PowerupType

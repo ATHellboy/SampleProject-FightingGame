@@ -58,13 +58,13 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
         IEnumerator AttackTimer(CharacterCombatStateMachineContext context)
         {
-            yield return new WaitForSeconds(context.Stats.miscValues.attackRate);
+            yield return new WaitForSeconds(context.CharacterContext.stats.miscValues.attackRate);
             _canAttack = true;
         }
 
         IEnumerator PowerupCooldownTimer(CharacterCombatStateMachineContext context)
         {
-            yield return new WaitForSeconds((context.Stats.behaviors.powerup.value as IPowerup).PowerupCooldown);
+            yield return new WaitForSeconds((context.CharacterContext.stats.behaviors.powerup.value as IPowerup).PowerupCooldown);
             _isPowerupInCooldown = false;
         }
 

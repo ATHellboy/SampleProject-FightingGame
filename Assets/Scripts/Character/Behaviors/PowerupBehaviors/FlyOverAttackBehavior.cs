@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UniRx;
 using UnityEngine;
+using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
 {
@@ -11,7 +12,8 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
 
         private CharacterBehaviorContext _context;
 
-        public void Inject(CharacterBehaviorContext context)
+        [Inject]
+        public void Construct(CharacterBehaviorContext context)
         {
             _context = context;
         }

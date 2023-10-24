@@ -23,7 +23,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
 
             if (context.isJumpedPressed)
             {
-                context.jumpHeight = context.Stats.airMovementValues.jumpHeight;
+                context.jumpHeight = context.CharacterContext.stats.airMovementValues.jumpHeight;
                 stateMachine.ChangeState(this, context.RelatedStates.jump, context);
             }
         }

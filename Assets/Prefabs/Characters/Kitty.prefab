@@ -8,6 +8,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 633708752393117652, guid: 39b641a584be8f34b9bbf8f83d466a54,
+        type: 3}
+      propertyPath: stats
+      value: 
+      objectReference: {fileID: 11400000, guid: 394cc4c588c2dfb4281584e68610de9a,
+        type: 2}
     - target: {fileID: 1078038801695273077, guid: 39b641a584be8f34b9bbf8f83d466a54,
         type: 3}
       propertyPath: m_Size.x
@@ -28,10 +34,16 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -0.063355684
       objectReference: {fileID: 0}
+    - target: {fileID: 1552448879665905075, guid: 39b641a584be8f34b9bbf8f83d466a54,
+        type: 3}
+      propertyPath: stats
+      value: 
+      objectReference: {fileID: 11400000, guid: 394cc4c588c2dfb4281584e68610de9a,
+        type: 2}
     - target: {fileID: 3195965606867918218, guid: 39b641a584be8f34b9bbf8f83d466a54,
         type: 3}
       propertyPath: m_Name
-      value: Pussy
+      value: Kitty
       objectReference: {fileID: 0}
     - target: {fileID: 4567817176265838095, guid: 39b641a584be8f34b9bbf8f83d466a54,
         type: 3}

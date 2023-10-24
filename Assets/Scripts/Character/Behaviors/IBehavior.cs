@@ -9,8 +9,6 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
         void Behave();
 
         void EndBehavior();
-
-        void Inject(CharacterBehaviorContext context);
     }
 
     public enum Status

@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using Zenject;
+using VContainer;
 using AlirezaTarahomi.FightingGame.Service;
 using AlirezaTarahomi.FightingGame.Character.Context;
 using AlirezaTarahomi.FightingGame.Tool;
-using AlirezaTarahomi.FightingGame.General.Variable;
 using Infrastructure.ObjectPooling;
 
 namespace AlirezaTarahomi.FightingGame.Character

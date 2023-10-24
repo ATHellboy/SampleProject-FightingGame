@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
+using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.General
 {
     public class RulesManager : MonoBehaviour
     {
-        List<MessageBusRules> messageBusesRules = new();
+        IEnumerable<MessageBusRules> messageBusesRules = new List<MessageBusRules>();
 
         [Inject]
-        public void Constrcut(List<MessageBusRules> _messageBusesRules)
+        public void Constrcut(IEnumerable<MessageBusRules> _messageBusesRules)
         {
             messageBusesRules = _messageBusesRules;
         }

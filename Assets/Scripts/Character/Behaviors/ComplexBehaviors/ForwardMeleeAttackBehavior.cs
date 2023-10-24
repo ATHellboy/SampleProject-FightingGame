@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UniRx;
 using UnityEngine;
+using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
 {
@@ -11,8 +12,9 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
         [SerializeField] private float _distance = 8;
 
         private CharacterBehaviorContext _context;
-        
-        public void Inject(CharacterBehaviorContext context)
+
+        [Inject]
+        public void Construct(CharacterBehaviorContext context)
         {
             _context = context;
         }

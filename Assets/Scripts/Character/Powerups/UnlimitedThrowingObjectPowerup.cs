@@ -2,6 +2,7 @@
 using System.Collections;
 using UniRx;
 using UnityEngine;
+using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character.Powerup
 {
@@ -20,7 +21,8 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
         private CharacterPowerupContext _context;
         private int _lastObjectNumber;
 
-        public void Inject(CharacterPowerupContext context)
+        [Inject]
+        public void Construct(CharacterPowerupContext context)
         {
             _context = context;
         }

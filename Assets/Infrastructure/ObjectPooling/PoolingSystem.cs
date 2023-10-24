@@ -4,7 +4,7 @@
 using Infrastructure.Factory;
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
+using VContainer;
 
 namespace Infrastructure.ObjectPooling
 {

@@ -1,7 +1,5 @@
-using AlirezaTarahomi.FightingGame.Player;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.UI
 {

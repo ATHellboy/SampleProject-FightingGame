@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Zenject;
+using VContainer;
 using AlirezaTarahomi.FightingGame.Tool;
 using Infrastructure.ObjectPooling;
 using AlirezaTarahomi.FightingGame.General.Variable;
@@ -16,13 +16,9 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
         protected CharacterBehaviorContext _context;
 
         [Inject]
-        public void Construct(PoolingSystem poolSystem)
+        public void Construct(PoolingSystem poolSystem, CharacterBehaviorContext context)
         {
             _poolSystem = poolSystem;
-        }
-
-        public void Inject(CharacterBehaviorContext context)
-        {
             _context = context;
         }
 

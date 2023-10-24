@@ -1,7 +1,6 @@
 ﻿using AlirezaTarahomi.FightingGame.Player;
 using Infrastructure.Extension;
 using UnityEngine;
-using Zenject;
 
 namespace AlirezaTarahomi.FightingGame.Character
 {
@@ -9,20 +8,19 @@ namespace AlirezaTarahomi.FightingGame.Character
     {
         private Rigidbody2D _rigidbody;
         private Transform _transform;
-        private CharacterStats _stats;
+        private CharacterContext _characterContext;
         private float _onAirGravityScale;
         private float _throwingAngle;
         private float _moveSpeed;
 
-        public CharacterLocomotionHandler(Rigidbody2D rigidbody, Transform transform,
-           [Inject(Id = "stats")] CharacterStats stats, [Inject(Id = "throwingAngle")] float throwingAngle)
+        public CharacterLocomotionHandler(Rigidbody2D rigidbody, Transform transform, CharacterContext characterContext)
         {
             _rigidbody = rigidbody;
             _transform = transform;
-            _stats = stats;
-            _throwingAngle = throwingAngle;
+            _characterContext = characterContext;
 
-            _onAirGravityScale = (Mathf.Pow(_stats.airMovementValues.jumpSpeed, 2) / (2 * _stats.airMovementValues.jumpHeight)) / 9.81f;
+            _onAirGravityScale = (Mathf.Pow(
+                _characterContext.stats.airMovementValues.jumpSpeed, 2) / (2 * _characterContext.stats.airMovementValues.jumpHeight)) / 9.81f;
         }
 
         public void ChangeDetectionCollisionMode(CollisionDetectionMode2D mode)
@@ -57,8 +55,8 @@ namespace AlirezaTarahomi.FightingGame.Character
             float d = Mathf.Abs(targetPos.x - _transform.position.x);
             float h = Mathf.Abs(_transform.position.y - targetPos.y);
             float v = (d * Mathf.Sqrt(-Physics2D.gravity.y * _rigidbody.gravityScale)) /
-                Mathf.Sqrt(2 * Mathf.Cos(_throwingAngle * Mathf.Deg2Rad)
-                * (d * Mathf.Sin(_throwingAngle * Mathf.Deg2Rad) + h * Mathf.Cos(_throwingAngle * Mathf.Deg2Rad)));
+                Mathf.Sqrt(2 * Mathf.Cos(_throwingAngle * Mathf.Deg2Rad) *
+                (d * Mathf.Sin(_throwingAngle * Mathf.Deg2Rad) + h * Mathf.Cos(_throwingAngle * Mathf.Deg2Rad)));
 
             float Vx = v * Mathf.Cos(_throwingAngle * Mathf.Deg2Rad);
             float Vy = v * Mathf.Sin(_throwingAngle * Mathf.Deg2Rad);
