@@ -4,6 +4,7 @@ using AlirezaTarahomi.FightingGame.Character.Context;
 using AlirezaTarahomi.FightingGame.Character.Event;
 using AlirezaTarahomi.FightingGame.Character.Powerup;
 using AlirezaTarahomi.FightingGame.Character.State.Main;
+using AlirezaTarahomi.FightingGame.InputSystem;
 using AlirezaTarahomi.FightingGame.Player;
 using AlirezaTarahomi.FightingGame.Service;
 using Infrastructure.StateMachine;
@@ -105,13 +106,13 @@ namespace AlirezaTarahomi.FightingGame.Character
         {
             switch (inputName)
             {
-                case "Jump":
+                case InputStrings.InputJump:
                     _secondaryMovementStateMachineContext.isJumpedPressed = isPressed;
                     break;
-                case "Attack":
+                case InputStrings.InputAttack:
                     _combatStateMachineContext.isAttackedPressed = isPressed;
                     break;
-                case "PowerupAttack":
+                case InputStrings.InputPowerupAttack:
                     _combatStateMachineContext.isPowerupAttackedPressed = isPressed;
                     break;
             }

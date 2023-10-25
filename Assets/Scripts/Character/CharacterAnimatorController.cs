@@ -4,6 +4,14 @@ namespace AlirezaTarahomi.FightingGame.Character
 {
     public class CharacterAnimatorController
     {
+        private const string StopParameter = "isStopped";
+        private const string WalkParameter = "isWalked";
+        private const string JumpParameter = "isJumped";
+        private const string FallParameter = "isFallen";
+        private const string LandParameter = "isLanded";
+        private const string AttackParameter = "isAttacked";
+        private const string DieParameter = "isDied";
+
         private readonly Animator _animator;
 
         public CharacterAnimatorController(Animator animator)
@@ -13,37 +21,37 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         public void ToggleStopping(bool active)
         {
-            _animator.SetBool("isStopped", active);
+            _animator.SetBool(StopParameter, active);
         }
 
         public void ToggleWalking(bool active)
         {
-            _animator.SetBool("isWalked", active);
+            _animator.SetBool(WalkParameter, active);
         }
 
         public void ToggleJumping(bool active)
         {
-            _animator.SetBool("isJumped", active);
+            _animator.SetBool(JumpParameter, active);
         }
 
         public void ToggleFalling(bool active)
         {
-            _animator.SetBool("isFallen", active);
+            _animator.SetBool(FallParameter, active);
         }
 
         public void ToggleLanding(bool active)
         {
-            _animator.SetBool("isLanded", active);
+            _animator.SetBool(LandParameter, active);
         }
 
         public void ToggleAttacking(bool active)
         {
-            _animator.SetBool("isAttacked", active);
+            _animator.SetBool(AttackParameter, active);
         }
 
         public void Die()
         {
-            _animator.SetBool("isDied", true);
+            _animator.SetBool(DieParameter, true);
         }
 
         public void Reset()

@@ -33,6 +33,13 @@ namespace AlirezaTarahomi.FightingGame.Player
             set => _charactersSwitchingHandler.side = value;
         }
 
+        private const string PlayerInputSwitch = "Switch_P";
+        private const string PlayerInputJump = "Jump_P";
+        private const string PlayerInputAttack = "Attack_P";
+        private const string PlayerInputPowerAttack = "PowerupAttack_P";
+        private const string PlayerInputMoveHorizontal = "MoveHorizontal_P";
+        private const string PlayerInputMoveVertical = "MoveVertical_P";
+
         private IPublisher<OnGameOver> _gameOverPublisher;
 
         private InputManager _inputManager;
@@ -73,18 +80,18 @@ namespace AlirezaTarahomi.FightingGame.Player
 
         void Update()
         {
-            if (_inputManager.IsPressed("Switch_P" + _playerContext.index) && _numOfRemainedChars > 1 && _canSwitch)
+            if (_inputManager.IsPressed(PlayerInputSwitch + _playerContext.index) && _numOfRemainedChars > 1 && _canSwitch)
             {
                 Switch();
             }
 
-            currentCharacterController.HandleInputPressed("Jump", _inputManager.IsPressed("Jump_P" + _playerContext.index));
-            currentCharacterController.HandleInputPressed("Attack", _inputManager.IsPressed("Attack_P" + _playerContext.index));
-            currentCharacterController.HandleInputPressed("PowerupAttack", _inputManager.IsPressed("PowerupAttack_P" + _playerContext.index));
+            currentCharacterController.HandleInputPressed(InputStrings.InputJump, _inputManager.IsPressed(PlayerInputJump + _playerContext.index));
+            currentCharacterController.HandleInputPressed(InputStrings.InputAttack, _inputManager.IsPressed(PlayerInputAttack + _playerContext.index));
+            currentCharacterController.HandleInputPressed(InputStrings.InputPowerupAttack, _inputManager.IsPressed(PlayerInputPowerAttack + _playerContext.index));
 
             currentCharacterController.moveAxes =
                 new Vector2(
-                    _inputManager.GetAxis("MoveHorizontal_P" + _playerContext.index), _inputManager.GetAxis("MoveVertical_P" + _playerContext.index));
+                    _inputManager.GetAxis(PlayerInputMoveHorizontal + _playerContext.index), _inputManager.GetAxis(PlayerInputMoveVertical + _playerContext.index));
         }
 
         void LateUpdate()

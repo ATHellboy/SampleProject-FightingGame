@@ -45,7 +45,7 @@ namespace Infrastructure.ObjectPooling
             {
                 PooledObjectStats stats = _pooledObjectsStats[i];
                 Queue<Transform> queue = new();
-                GameObject parent = new(stats.name + "s");
+                GameObject parent = new($"{stats.name}s");
                 parent.transform.SetParent(transform);
                 stats.parent = parent.transform;
 

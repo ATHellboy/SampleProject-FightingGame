@@ -52,7 +52,7 @@ namespace Infrastructure.StateMachine
         {
             if (context.DebugStateMachine)
             {
-                Debug.Log(context.GO.name + " " + context.GetType().Name + " " + newState.GetType().Name);
+                Debug.Log($"{context.GO.name} {context.GetType().Name} {newState.GetType().Name}");
             }
 
             if (context.CurrentState != null) context.CurrentState.Exit(context);
