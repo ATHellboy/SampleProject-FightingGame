@@ -18,7 +18,7 @@ namespace AlirezaTarahomi.FightingGame.Character
         public OnAttackEnded OnAttackEnded { get => _behaviorContext.OnAttackEnded; }
         public OnDied OnDied { get => _mainStateMachineContext.OnDied; }
 
-        [SerializeField] private GameObject _hitbox = default;
+        [SerializeField] private GameObject _hitbox;
 
         [HideInInspector] public bool isJustEntered;
         [HideInInspector] public Vector2 moveAxes;

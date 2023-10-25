@@ -9,8 +9,9 @@ namespace AlirezaTarahomi.FightingGame.Player
     {
         public Side side;
 
-        private PlayerContext _playerContext;
-        private TargetGroupController _targetGroupController;
+        private readonly PlayerContext _playerContext;
+        private readonly TargetGroupController _targetGroupController;
+
         private Queue<Character.CharacterController> _characters = new();
         private Character.CharacterController _preCharacterController;
         private Character.CharacterController _currentCharacterController;

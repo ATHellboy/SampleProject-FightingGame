@@ -4,7 +4,7 @@ namespace AlirezaTarahomi.FightingGame.Character
 {
     public class CharacterAnimatorController
     {
-        private Animator _animator;
+        private readonly Animator _animator;
 
         public CharacterAnimatorController(Animator animator)
         {

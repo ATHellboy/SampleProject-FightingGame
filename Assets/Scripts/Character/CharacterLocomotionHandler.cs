@@ -6,9 +6,10 @@ namespace AlirezaTarahomi.FightingGame.Character
 {
     public class CharacterLocomotionHandler
     {
-        private Rigidbody2D _rigidbody;
-        private Transform _transform;
-        private CharacterContext _characterContext;
+        private readonly Rigidbody2D _rigidbody;
+        private readonly Transform _transform;
+        private readonly CharacterContext _characterContext;
+
         private float _onAirGravityScale;
         private float _throwingAngle;
         private float _moveSpeed;

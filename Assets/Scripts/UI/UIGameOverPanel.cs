@@ -18,6 +18,10 @@ namespace AlirezaTarahomi.FightingGame.UI
         public void Construct(ISubscriber<OnGameOver> gameOverSubscriber)
         {
             _gameOverSubscriber = gameOverSubscriber;
+        }
+
+        void Awake()
+        {
             _visibilityController = GetComponent<UIVisibilityController>(); 
         }
 

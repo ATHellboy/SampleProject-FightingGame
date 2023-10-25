@@ -5,8 +5,8 @@ namespace AlirezaTarahomi.FightingGame.CameraSystem
 {
     public class CameraManager : MonoBehaviour
     {
-        [SerializeField] private Transform _targetGroup = default;
-        [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera = default;
+        [SerializeField] private Transform _targetGroup;
+        [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
 
         void Awake()
         {

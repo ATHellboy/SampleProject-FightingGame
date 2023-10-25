@@ -4,8 +4,8 @@ namespace AlirezaTarahomi.FightingGame.Player
 {
     public class PlayersManager : MonoBehaviour
     {
-        [SerializeField] private PlayerController _player1 = default;
-        [SerializeField] private PlayerController _player2 = default;
+        [SerializeField] private PlayerController _player1;
+        [SerializeField] private PlayerController _player2;
 
         private bool _isAllPlayersConfigured = false;
 

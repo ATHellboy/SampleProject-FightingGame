@@ -9,9 +9,9 @@ namespace AlirezaTarahomi.FightingGame.Tool
     {
         [SerializeField] private IntVariable _objectCounter;
         [SerializeField] private float _rotatingSpeed = 1;
-        [SerializeField] private Sprite _mainSprite = default;
-        [SerializeField] private Sprite _illusionSprite = default;
-        [SerializeField] private Sprite _stuckSprite = default;
+        [SerializeField] private Sprite _mainSprite;
+        [SerializeField] private Sprite _illusionSprite;
+        [SerializeField] private Sprite _stuckSprite;
 
         public bool IsDeadly { get; private set; } = true;
         public PooledObjectStats PooledObjectStats { get; set; }

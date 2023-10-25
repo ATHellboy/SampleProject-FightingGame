@@ -10,7 +10,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
     {
         [SerializeField] private IntVariable _objectCounter;
         [SerializeField] private float _throwingForce = 1.5f;
-        [SerializeField] private PooledObjectStats _throwableObjectPoolStats = default;
+        [SerializeField] private PooledObjectStats _throwableObjectPoolStats;
         
         private PoolingSystem _poolSystem;
         protected CharacterBehaviorContext _context;

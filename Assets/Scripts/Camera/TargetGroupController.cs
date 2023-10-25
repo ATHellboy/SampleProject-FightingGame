@@ -5,7 +5,7 @@ namespace AlirezaTarahomi.FightingGame.CameraSystem
 {
     public class TargetGroupController
     {
-        private CinemachineTargetGroup _targetGroup;
+        private readonly CinemachineTargetGroup _targetGroup;
 
         public TargetGroupController(CinemachineTargetGroup targetGroup)
         {
