@@ -1,41 +1,38 @@
 ﻿using AlirezaTarahomi.FightingGame.Player.Event;
-using Assets.Infrastructure.Scripts.CQRS;
+using MessagePipe;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.UI
 {
-    public class UIGameOverPanel : MonoBehaviour, IEventHandler<OnGameOvered>
+    public class UIGameOverPanel : MonoBehaviour
     {
-        private IMessageBus _messageBus;
+        private ISubscriber<OnGameOver> _gameOverSubscriber;
+
         private UIVisibilityController _visibilityController;
+        private IDisposable disposable;
 
         [Inject]
-        public void Construct(IMessageBus messageBus)
+        public void Construct(ISubscriber<OnGameOver> gameOverSubscriber)
         {
-            _messageBus = messageBus;
-            _visibilityController = GetComponent<UIVisibilityController>();
+            _gameOverSubscriber = gameOverSubscriber;
+            _visibilityController = GetComponent<UIVisibilityController>(); 
         }
 
         void OnEnable()
         {
-            InitializeEvents();
+            DisposableBagBuilder bag = DisposableBag.CreateBuilder();
+
+            _gameOverSubscriber.Subscribe(Handle).AddTo(bag);
+
+            disposable = bag.Build();
         }
 
         void OnDisable()
         {
-            UnsubscribeEvents();
-        }
-
-        private void InitializeEvents()
-        {
-            _messageBus.Subscribe<UIGameOverPanel, OnGameOvered>(this, new MessageHandlerActionExecutor<OnGameOvered>(Handle));
-        }
-
-        private void UnsubscribeEvents()
-        {
-            _messageBus.Unsubscribe<UIGameOverPanel, OnGameOvered>(this);
+            disposable.Dispose();
         }
 
         public void OnClickRestart()
@@ -43,7 +40,7 @@ namespace AlirezaTarahomi.FightingGame.UI
             SceneManager.LoadScene(0);
         }
 
-        public void Handle(OnGameOvered @event)
+        public void Handle(OnGameOver @event)
         {
             _visibilityController.ToggleDisplaying(true);
         }

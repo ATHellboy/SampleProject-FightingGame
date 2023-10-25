@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using VContainer;
-using Assets.Infrastructure.Scripts.CQRS;
 using AlirezaTarahomi.FightingGame.InputSystem;
 using AlirezaTarahomi.FightingGame.Player.Event;
 using System.Collections;
@@ -10,6 +9,7 @@ using ScriptableObjectDropdown;
 using AlirezaTarahomi.FightingGame.CameraSystem;
 using Infrastructure.Factory;
 using Infrastructure.Extension;
+using MessagePipe;
 
 namespace AlirezaTarahomi.FightingGame.Player
 {
@@ -33,7 +33,8 @@ namespace AlirezaTarahomi.FightingGame.Player
             set => _charactersSwitchingHandler.side = value;
         }
 
-        private IMessageBus _messageBus;
+        private IPublisher<OnGameOver> _gameOverPublisher;
+
         private InputManager _inputManager;
         private IResourceFactory _resourceFactory;
         private PlayersContext _playersContext;
@@ -46,18 +47,18 @@ namespace AlirezaTarahomi.FightingGame.Player
         private int _numOfRemainedChars = 2;
 
         [Inject]
-        public void Construct(InputManager inputManager, IMessageBus messageBus, IResourceFactory resourceFactory,
-            PlayersContext playersContext, PlayerContext playerContext, CharactersSwitchingHandler charactersSwitchingHandler,
-            TargetGroupController targetGroupController, Camera avatarCamera)
+        public void Construct(InputManager inputManager, IResourceFactory resourceFactory, PlayersContext playersContext, 
+            PlayerContext playerContext, CharactersSwitchingHandler charactersSwitchingHandler, TargetGroupController targetGroupController, 
+            Camera avatarCamera, IPublisher<OnGameOver> gameOverPublisher)
         {
             _playersContext = playersContext;
             _playerContext = playerContext;
             _inputManager = inputManager;
-            _messageBus = messageBus;
             _resourceFactory = resourceFactory;
             _charactersSwitchingHandler = charactersSwitchingHandler;
             _targetGroupController = targetGroupController;
             _avatarCamera = avatarCamera;
+            _gameOverPublisher = gameOverPublisher;
         }
 
         void Start()
@@ -144,7 +145,7 @@ namespace AlirezaTarahomi.FightingGame.Player
 
             if (_numOfRemainedChars == 0)
             {
-                _messageBus.RaiseEvent(new OnGameOvered());
+                _gameOverPublisher.Publish(new OnGameOver());
             }
             else
             {
