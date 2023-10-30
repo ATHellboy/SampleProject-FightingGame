@@ -36,7 +36,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
             _context.OnFlyingToggled?.Invoke(true);
             _context.hitboxCollider.enabled = true;
             _context.AnimatorController.ToggleAttacking(true);
-            Observable.FromCoroutine(_ => MoveForwardAndAttack()).Subscribe();
+            Observable.FromCoroutine(_ => MoveForwardAndAttack()).Subscribe().AddTo(_context.Disposables);
         }
 
         public void EndBehavior()

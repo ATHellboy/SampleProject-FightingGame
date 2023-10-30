@@ -34,7 +34,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
         {
             _context.hitboxCollider.enabled = true;
             _context.AnimatorController.ToggleAttacking(true);
-            Observable.FromCoroutine(_ => AttackTime()).Subscribe();
+            Observable.FromCoroutine(_ => AttackTime()).Subscribe().AddTo(_context.Disposables);
         }
 
         public void EndBehavior()

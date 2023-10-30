@@ -11,8 +11,9 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
     {
         [SerializeField] private IntVariable _objectCounter;
         [SerializeField] private float _time = 2.5f;
-        [SerializeField] private float _powerupCooldown = 1.0f;
-        public float PowerupCooldown { get => _powerupCooldown; }
+        public float Time { get => _time; }
+        [SerializeField] private float _cooldown = 1.0f;
+        public float Cooldown { get => _cooldown; }
 
         public ScriptableObject PowerupAttackBehavior { get; }
 
@@ -31,21 +32,15 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
         {
             _lastObjectNumber = _objectCounter.value;
             _objectCounter.value = INFINITE;
-            Observable.FromCoroutine(_ => Timer()).Subscribe();
-            _context.OnPowerupToggled?.Invoke(true);
+            Observable.FromCoroutine(_ => DisableTimer()).Subscribe().AddTo(_context.Disposables);
             return PowerupType.TimeBased;
         }
 
-        public void Disable()
-        {
-            _objectCounter.value = _lastObjectNumber;
-            _context.OnPowerupToggled?.Invoke(false);
-        }
-
-        IEnumerator Timer()
+        IEnumerator DisableTimer()
         {
             yield return new WaitForSeconds(_time);
-            Disable();
+            _objectCounter.value = _lastObjectNumber;
+            _context.OnPowerupEnded?.Invoke();
         }
     }
 }

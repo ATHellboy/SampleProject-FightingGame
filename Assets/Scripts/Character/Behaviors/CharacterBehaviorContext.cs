@@ -1,5 +1,6 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Event;
 using AlirezaTarahomi.FightingGame.Service;
+using UniRx;
 using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior
@@ -13,11 +14,11 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
 
         public OnAttackEnded OnAttackEnded { get; private set; } = new();
         public OnFlyingToggled OnFlyingToggled { get; private set; } = new();
-        public OnFlyOverEnded OnFlyOverEnded { get; private set; } = new();
         public Transform Transform { get; private set; }
         public IOwnershipService OwnershipService { get; private set; }
         public CharacterAnimatorController AnimatorController { get; private set; }
         public CharacterLocomotionHandler LocomotionHandler { get; private set; }
+        public CompositeDisposable Disposables { get; private set; } = new();
 
         public CharacterBehaviorContext(Transform transform, IOwnershipService ownershipService, 
             CharacterAnimatorController animatorController, CharacterLocomotionHandler locomotionHandler)

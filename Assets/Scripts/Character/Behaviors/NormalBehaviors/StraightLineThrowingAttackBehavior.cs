@@ -3,7 +3,7 @@
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
 {
     [CreateAssetMenu(menuName = "Attacks/Normal Attacks/StraightLineThrowingBehavior")]
-    public class StraightLineThrowingBehavior : ThrowingObjectBehavior, INormalAttackBehavior
+    public class StraightLineThrowingAttackBehavior : ThrowingObjectBehavior, INormalAttackBehavior
     {
         public Status BehaviorCondition
         {

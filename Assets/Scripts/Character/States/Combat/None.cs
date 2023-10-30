@@ -14,7 +14,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
         public override void Enter(CharacterCombatStateMachineContext context)
         {
-            
+
         }
 
         public override void Update(float deltaTime, StateMachine stateMachine, CharacterCombatStateMachineContext context)
@@ -25,15 +25,16 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
             if (CheckAttackCondition(context))
             {
                 _canAttack = false;
-                Observable.FromCoroutine(_ => AttackTimer(context)).Subscribe();
+                Observable.FromCoroutine(_ => AttackTimer(context)).Subscribe().AddTo(context.CharacterContext.Disposables);
                 stateMachine.ChangeState(this, context.RelatedStates.attack, context);
             }
 
             if (CheckPowerupCondition(context))
             {
+                context.CharacterPowerupContext.OnPowerupStarted?.Invoke(context.powerup.Time, context.powerup.Cooldown);
                 PowerupType powerupType = context.powerup.Active();
                 _isPowerupInCooldown = true;
-                Observable.FromCoroutine(_ => PowerupCooldownTimer(context)).Subscribe();
+                Observable.FromCoroutine(_ => PowerupCooldownTimer(context)).Subscribe().AddTo(context.CharacterContext.Disposables);
                 if (powerupType == PowerupType.OneTime)
                 {
                     stateMachine.ChangeState(this, context.RelatedStates.attack, context);
@@ -53,7 +54,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
         public override void Exit(CharacterCombatStateMachineContext context)
         {
-            
+
         }
 
         IEnumerator AttackTimer(CharacterCombatStateMachineContext context)
@@ -64,7 +65,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
         IEnumerator PowerupCooldownTimer(CharacterCombatStateMachineContext context)
         {
-            yield return new WaitForSeconds((context.CharacterContext.stats.behaviors.powerup.value as IPowerup).PowerupCooldown);
+            yield return new WaitForSeconds((context.CharacterContext.stats.behaviors.powerup.value as IPowerup).Cooldown);
             _isPowerupInCooldown = false;
         }
 

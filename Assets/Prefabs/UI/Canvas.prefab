@@ -815,7 +815,9 @@ MonoBehaviour:
   parentReference:
     TypeName: AlirezaTarahomi.FightingGame.General.ServicesLifetimeScope
   autoRun: 1
-  autoInjectGameObjects: []
+  autoInjectGameObjects:
+  - {fileID: 2548039203608307906}
+  - {fileID: 1848479120020175828}
 --- !u!1 &7150995375687319835
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,6 +1162,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2831100889789445002, guid: e78b0cb8449fbf84f8e2e4a6db7d087a,
         type: 3}
+      propertyPath: index
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2831100889789445002, guid: e78b0cb8449fbf84f8e2e4a6db7d087a,
+        type: 3}
       propertyPath: _avatarRenderTexture
       value: 
       objectReference: {fileID: 8600000, guid: 7a1fe458dd09da045b02618fdb26d0f1, type: 2}
@@ -1453,6 +1460,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e78b0cb8449fbf84f8e2e4a6db7d087a, type: 3}
+--- !u!1 &2548039203608307906 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3862320178205647537, guid: e78b0cb8449fbf84f8e2e4a6db7d087a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1640932708694805107}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4974754642280796346 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6038240128433756873, guid: e78b0cb8449fbf84f8e2e4a6db7d087a,
@@ -1531,6 +1544,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StartCorner
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2831100889789445002, guid: e78b0cb8449fbf84f8e2e4a6db7d087a,
+        type: 3}
+      propertyPath: index
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2831100889789445002, guid: e78b0cb8449fbf84f8e2e4a6db7d087a,
         type: 3}
@@ -1832,6 +1850,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e78b0cb8449fbf84f8e2e4a6db7d087a, type: 3}
+--- !u!1 &1848479120020175828 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3862320178205647537, guid: e78b0cb8449fbf84f8e2e4a6db7d087a,
+    type: 3}
+  m_PrefabInstance: {fileID: 3188172822593804645}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &9219582217818178476 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6038240128433756873, guid: e78b0cb8449fbf84f8e2e4a6db7d087a,

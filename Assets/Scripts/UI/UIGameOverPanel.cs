@@ -12,7 +12,7 @@ namespace AlirezaTarahomi.FightingGame.UI
         private ISubscriber<OnGameOver> _gameOverSubscriber;
 
         private UIVisibilityController _visibilityController;
-        private IDisposable disposable;
+        private IDisposable _disposable;
 
         [Inject]
         public void Construct(ISubscriber<OnGameOver> gameOverSubscriber)
@@ -31,12 +31,12 @@ namespace AlirezaTarahomi.FightingGame.UI
 
             _gameOverSubscriber.Subscribe(Handle).AddTo(bag);
 
-            disposable = bag.Build();
+            _disposable = bag.Build();
         }
 
         void OnDisable()
         {
-            disposable.Dispose();
+            _disposable.Dispose();
         }
 
         public void OnClickRestart()
@@ -44,7 +44,7 @@ namespace AlirezaTarahomi.FightingGame.UI
             SceneManager.LoadScene(0);
         }
 
-        public void Handle(OnGameOver @event)
+        private void Handle(OnGameOver @event)
         {
             _visibilityController.ToggleDisplaying(true);
         }

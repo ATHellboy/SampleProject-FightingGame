@@ -3,13 +3,13 @@ using VContainer;
 using AlirezaTarahomi.FightingGame.InputSystem;
 using AlirezaTarahomi.FightingGame.Player.Event;
 using System.Collections;
-using UniRx;
 using AlirezaTarahomi.FightingGame.Character;
 using ScriptableObjectDropdown;
 using AlirezaTarahomi.FightingGame.CameraSystem;
 using Infrastructure.Factory;
 using Infrastructure.Extension;
 using MessagePipe;
+using System;
 
 namespace AlirezaTarahomi.FightingGame.Player
 {
@@ -41,6 +41,8 @@ namespace AlirezaTarahomi.FightingGame.Player
         private const string PlayerInputMoveVertical = "MoveVertical_P";
 
         private IPublisher<OnGameOver> _gameOverPublisher;
+        private IPublisher<int, OnAttackCooldownStarted> _attackCooldownPublisher;
+        private IPublisher<int, OnPowerupTimerStarted> _powerupTimerPublisher;
 
         private InputManager _inputManager;
         private IResourceFactory _resourceFactory;
@@ -56,7 +58,8 @@ namespace AlirezaTarahomi.FightingGame.Player
         [Inject]
         public void Construct(InputManager inputManager, IResourceFactory resourceFactory, PlayersContext playersContext, 
             PlayerContext playerContext, CharactersSwitchingHandler charactersSwitchingHandler, TargetGroupController targetGroupController, 
-            Camera avatarCamera, IPublisher<OnGameOver> gameOverPublisher)
+            Camera avatarCamera, IPublisher<OnGameOver> gameOverPublisher, IPublisher<int, OnAttackCooldownStarted> attackCooldownPublisher,
+            IPublisher<int, OnPowerupTimerStarted> powerupCooldownPublisher)
         {
             _playersContext = playersContext;
             _playerContext = playerContext;
@@ -66,6 +69,8 @@ namespace AlirezaTarahomi.FightingGame.Player
             _targetGroupController = targetGroupController;
             _avatarCamera = avatarCamera;
             _gameOverPublisher = gameOverPublisher;
+            _attackCooldownPublisher = attackCooldownPublisher;
+            _powerupTimerPublisher = powerupCooldownPublisher;
         }
 
         void Start()
@@ -85,9 +90,9 @@ namespace AlirezaTarahomi.FightingGame.Player
                 Switch();
             }
 
-            currentCharacterController.HandleInputPressed(InputStrings.InputJump, _inputManager.IsPressed(PlayerInputJump + _playerContext.index));
-            currentCharacterController.HandleInputPressed(InputStrings.InputAttack, _inputManager.IsPressed(PlayerInputAttack + _playerContext.index));
-            currentCharacterController.HandleInputPressed(InputStrings.InputPowerupAttack, _inputManager.IsPressed(PlayerInputPowerAttack + _playerContext.index));
+            currentCharacterController.HandleInputPressed(InputManager.Type.Jump, _inputManager.IsPressed(PlayerInputJump + _playerContext.index));
+            currentCharacterController.HandleInputPressed(InputManager.Type.Attack, _inputManager.IsPressed(PlayerInputAttack + _playerContext.index));
+            currentCharacterController.HandleInputPressed(InputManager.Type.PowerupAttack, _inputManager.IsPressed(PlayerInputPowerAttack + _playerContext.index));
 
             currentCharacterController.moveAxes =
                 new Vector2(
@@ -110,6 +115,7 @@ namespace AlirezaTarahomi.FightingGame.Player
             characterController.SetLayer(gameObject.layer);
             characterController.OnAttackStarted.AddListener(HandleOnAttackStarted);
             characterController.OnAttackEnded.AddListener(HandleOnAttackEnded);
+            characterController.OnPowerupStarted.AddListener(HandleOnPowerupStarted);
             characterController.OnDied.AddListener(HandleOnCharacterDied);
             characterController.Deactivate();
             return (characterInstance, characterStats);
@@ -131,7 +137,7 @@ namespace AlirezaTarahomi.FightingGame.Player
         private void Switch()
         {
             _canSwitch = false;
-            Observable.FromCoroutine(_ => SwitchingTimer()).Subscribe();
+            StartCoroutine(SwitchingTimer());
             _charactersSwitchingHandler.ExitCurrentCharacter();
             currentCharacterController = _charactersSwitchingHandler.EnterNextCharacter();
             _avatarCamera.orthographicSize = currentCharacterController.Context.stats.avatarCameraValues.size;
@@ -143,9 +149,6 @@ namespace AlirezaTarahomi.FightingGame.Player
             _canSwitch = true;
         }
 
-        /// <summary>
-        /// Handles the event when each character dies
-        /// </summary>
         public void HandleOnCharacterDied()
         {
             _numOfRemainedChars--;
@@ -160,20 +163,20 @@ namespace AlirezaTarahomi.FightingGame.Player
             }
         }
 
-        /// <summary>
-        /// Handles the event when character attack is started
-        /// </summary>
-        public void HandleOnAttackStarted()
+        public void HandleOnAttackStarted(Type attackType, float cooldown)
         {
             _canSwitch = false;
+            _attackCooldownPublisher.Publish(_playerContext.index, new OnAttackCooldownStarted(attackType, cooldown));
         }
 
-        /// <summary>
-        /// Handles the event when character attack is ended
-        /// </summary>
         public void HandleOnAttackEnded()
         {
             _canSwitch = true;
+        }
+
+        public void HandleOnPowerupStarted(float duration, float cooldown)
+        {
+            _powerupTimerPublisher.Publish(_playerContext.index, new OnPowerupTimerStarted(duration, cooldown));
         }
     }
 }

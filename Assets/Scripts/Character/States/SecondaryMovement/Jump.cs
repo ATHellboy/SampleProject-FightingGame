@@ -53,8 +53,8 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
 
         private bool CheckFallCondition(CharacterSecondaryMovementStateMachineContext context)
         {
-            if (context.LocomotionHandler.GetVelocity().y == 0 ||
-                Mathf.Sign(context.LocomotionHandler.GetVelocity().y) == -1)
+            float velocityY = context.LocomotionHandler.GetVelocity().y;
+            if (velocityY == 0 || Mathf.Sign(velocityY) == -1)
             {
                 return true;
             }

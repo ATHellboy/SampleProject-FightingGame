@@ -3,5 +3,5 @@ using UnityEngine.Events;
 
 namespace AlirezaTarahomi.FightingGame.Character.Event
 {
-    public class OnPowerupToggled : UnityEvent<bool> { }
+    public class OnPowerupEnded : UnityEvent { }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using AlirezaTarahomi.FightingGame.Character.Powerup;
+using System.Collections;
 using UniRx;
 using UnityEngine;
 using VContainer;
@@ -10,19 +11,27 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
     {
         [SerializeField] private float _velocity = 50;
 
-        private CharacterBehaviorContext _context;
+        private CharacterBehaviorContext _behaviorContext;
+        private CharacterPowerupContext _powerupContext;
+        private CompositeDisposable _disposables = new();
 
         [Inject]
-        public void Construct(CharacterBehaviorContext context)
+        public void Construct(CharacterBehaviorContext behaviorContext, CharacterPowerupContext powerupContext)
         {
-            _context = context;
+            _behaviorContext = behaviorContext;
+            _powerupContext = powerupContext;
+        }
+
+        void OnDisable()
+        {
+            _disposables.Dispose();
         }
 
         public Status BehaviorCondition
         {
             get
             {
-                if (_context.isPowerupActive)
+                if (_behaviorContext.isPowerupActive)
                 {
                     return Status.Success;
                 }
@@ -32,30 +41,30 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
 
         public void Behave()
         {
-            _context.OnFlyingToggled?.Invoke(true);
-            _context.hitboxCollider.enabled = true;
-            Observable.FromCoroutine(_ => FlyOver()).Subscribe();
+            _behaviorContext.OnFlyingToggled?.Invoke(true);
+            _behaviorContext.hitboxCollider.enabled = true;
+            Observable.FromCoroutine(_ => FlyOver()).Subscribe().AddTo(_behaviorContext.Disposables);
         }
 
         public void EndBehavior()
         {
-            _context.OnFlyingToggled?.Invoke(false);
-            _context.hitboxCollider.enabled = false;
-            _context.AnimatorController.ToggleAttacking(false);
+            _behaviorContext.OnFlyingToggled?.Invoke(false);
+            _behaviorContext.hitboxCollider.enabled = false;
+            _behaviorContext.AnimatorController.ToggleAttacking(false);
         }
 
         IEnumerator FlyOver()
         {
-            _context.LocomotionHandler.PushForward(_velocity);
-            _context.AnimatorController.ToggleAttacking(true);
+            _behaviorContext.LocomotionHandler.PushForward(_velocity);
+            _behaviorContext.AnimatorController.ToggleAttacking(true);
 
-            while (_context.LocomotionHandler.GetVelocity().x != 0)
+            while (_behaviorContext.LocomotionHandler.GetVelocity().x != 0)
             {
                 yield return null;
             }
 
-            _context.OnFlyOverEnded?.Invoke();
-            _context.OnAttackEnded?.Invoke();
+            _powerupContext.OnPowerupEnded?.Invoke();
+            _behaviorContext.OnAttackEnded?.Invoke();
         }
     }
 }

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _powerupAttackBehavior:
     value: {fileID: 11400000, guid: c7fed5e2f503bc54f9f8b00568b36926, type: 2}
-  _powerupCooldown: 3
+  _cooldown: 3

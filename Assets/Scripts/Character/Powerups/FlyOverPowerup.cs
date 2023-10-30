@@ -1,7 +1,6 @@
 ﻿using AlirezaTarahomi.FightingGame.Character.Behavior.Powerup;
 using ScriptableObjectDropdown;
 using UnityEngine;
-using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character.Powerup
 {
@@ -12,26 +11,14 @@ namespace AlirezaTarahomi.FightingGame.Character.Powerup
         public ScriptableObjectReference _powerupAttackBehavior;
         public ScriptableObject PowerupAttackBehavior { get { return _powerupAttackBehavior.value; } }
 
-        [SerializeField] private float _powerupCooldown = 1.0f;
-        public float PowerupCooldown { get => _powerupCooldown; }
+        public float Time { get => 0; }
 
-        private CharacterPowerupContext _context;
-
-        [Inject]
-        public void Construct(CharacterPowerupContext context)
-        {
-            _context = context;
-        }
+        [SerializeField] private float _cooldown = 1.0f;
+        public float Cooldown { get => _cooldown; }
 
         public PowerupType Active()
         {
-            _context.OnPowerupToggled?.Invoke(true);
             return PowerupType.OneTime;
-        }
-
-        public void Disable()
-        {
-            _context.OnPowerupToggled?.Invoke(false);
         }
     }
 }

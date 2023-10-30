@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1532284301453205680
+--- !u!1 &6728167624528340816
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7414143899433612532}
-  - component: {fileID: 3762114339497611801}
-  - component: {fileID: 7974823051657196389}
+  - component: {fileID: 7955441717382457219}
+  - component: {fileID: 4330735516289109237}
+  - component: {fileID: 1578057709395842464}
   m_Layer: 5
-  m_Name: TimerImage
+  m_Name: DurationImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &7414143899433612532
+--- !u!224 &7955441717382457219
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1532284301453205680}
+  m_GameObject: {fileID: 6728167624528340816}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -37,28 +37,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &3762114339497611801
+--- !u!222 &4330735516289109237
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1532284301453205680}
+  m_GameObject: {fileID: 6728167624528340816}
   m_CullTransparentMesh: 1
---- !u!114 &7974823051657196389
+--- !u!114 &1578057709395842464
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1532284301453205680}
+  m_GameObject: {fileID: 6728167624528340816}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.97351444, b: 0, a: 0.39215687}
+  m_Color: {r: 0.9743334, g: 1, b: 0.6367924, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -86,7 +86,7 @@ PrefabInstance:
     - target: {fileID: 1015051540794262046, guid: 90e389a1b7d2ef44cbfad2a5c58432a8,
         type: 3}
       propertyPath: m_Name
-      value: PowerupCooldown
+      value: PowerupTimer
       objectReference: {fileID: 0}
     - target: {fileID: 6164126713526888428, guid: 90e389a1b7d2ef44cbfad2a5c58432a8,
         type: 3}
@@ -198,8 +198,8 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6164126713526888428, guid: 90e389a1b7d2ef44cbfad2a5c58432a8,
         type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7414143899433612532}
+      insertIndex: 1
+      addedObject: {fileID: 7955441717382457219}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 90e389a1b7d2ef44cbfad2a5c58432a8, type: 3}
 --- !u!224 &689674179319042112 stripped

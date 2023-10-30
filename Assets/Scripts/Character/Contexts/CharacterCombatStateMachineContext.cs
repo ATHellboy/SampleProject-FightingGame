@@ -19,6 +19,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
 
         public OnAttackStarted OnAttackStarted { get; private set; } = new();
         public CharacterContext CharacterContext { get; private set; }
+        public CharacterPowerupContext CharacterPowerupContext { get; private set; }
         public List<IAttackBehavior> AttackBehaviors { get; private set; } = new();
 
         public class States
@@ -35,9 +36,11 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         public States RelatedStates { get; }
 
         public CharacterCombatStateMachineContext(Transform transform, CharacterContext characterContext, 
+            CharacterPowerupContext characterPowerupContext, 
             None none, Attack attack) : base(transform.gameObject, none, characterContext.debugStateMachine)
         {
             CharacterContext = characterContext;
+            CharacterPowerupContext = characterPowerupContext;
             RelatedStates = new States(none, attack);
         }
 

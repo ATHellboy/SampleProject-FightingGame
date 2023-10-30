@@ -28,13 +28,13 @@ namespace AlirezaTarahomi.FightingGame.Character
             builder.RegisterComponentInHierarchy<SpriteRenderer>().UnderTransform(transform);
             builder.RegisterComponentInHierarchy<GroundCheck>().UnderTransform(transform);
             builder.RegisterComponentInHierarchy<MovementColliderActivator>().UnderTransform(transform);
-            builder.RegisterComponentInHierarchy<CharacterHurtBoxHandler>().UnderTransform(transform);
             builder.Register<IOwnershipService, HitboxObjectsOwnershipService>(Lifetime.Singleton);
             builder.Register<CharacterAnimatorController>(Lifetime.Singleton);
             builder.Register<CharacterLocomotionHandler>(Lifetime.Singleton);
 
             //For Injection
             builder.RegisterComponentInHierarchy<CharacterController>().UnderTransform(transform);
+            builder.RegisterComponentInHierarchy<CharacterHurtBoxHandler>().UnderTransform(transform);
         }
 
         private void BindContexts(IContainerBuilder builder)

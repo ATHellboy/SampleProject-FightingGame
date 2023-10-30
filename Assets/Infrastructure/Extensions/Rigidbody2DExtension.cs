@@ -5,18 +5,16 @@ using UnityEngine;
 
 namespace Infrastructure.Extension
 {
-    public static class Rigidbody2DVelocityExtension
+    public static class Rigidbody2DExtension
     {
         public static void SetXVelocity(this Rigidbody2D rigidbody, float x)
         {
-            Vector2 newVelocity = new(x, rigidbody.velocity.y);
-            rigidbody.velocity = newVelocity;
+            rigidbody.velocity = new Vector2(x, rigidbody.velocity.y);
         }
 
         public static void SetYVelocity(this Rigidbody2D rigidbody, float y)
         {
-            Vector2 newVelocity = new(rigidbody.velocity.x, y);
-            rigidbody.velocity = newVelocity;
+            rigidbody.velocity = new Vector2(rigidbody.velocity.x, y);
         }
     }
 }

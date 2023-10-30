@@ -172,6 +172,8 @@ MonoBehaviour:
   debugStateMachine: 0
   stats: {fileID: 0}
   throwingAngle: 30
+  dieFadeOutDelay: 0.4
+  dieFadeOutDuration: 0.2
 --- !u!114 &4981043104269179970
 MonoBehaviour:
   m_ObjectHideFlags: 0

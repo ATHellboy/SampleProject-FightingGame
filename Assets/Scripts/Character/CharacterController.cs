@@ -17,6 +17,7 @@ namespace AlirezaTarahomi.FightingGame.Character
     {
         public OnAttackStarted OnAttackStarted { get => _combatStateMachineContext.OnAttackStarted; }
         public OnAttackEnded OnAttackEnded { get => _behaviorContext.OnAttackEnded; }
+        public OnPowerupStarted OnPowerupStarted { get => _powerupContext.OnPowerupStarted; }
         public OnDied OnDied { get => _mainStateMachineContext.OnDied; }
 
         [SerializeField] private GameObject _hitbox;
@@ -36,7 +37,6 @@ namespace AlirezaTarahomi.FightingGame.Character
         private CharacterPowerupContext _powerupContext;
         private CharacterLocomotionHandler _locomotionHandler;
         private CharacterAnimatorController _animtorController;
-        private CharacterHurtBoxHandler _hurtBoxHandler;
         private Collider2D _hitboxCollider;
         private MainCameraController _mainCameraController;
         private GroundCheck _groundCheck;
@@ -48,16 +48,14 @@ namespace AlirezaTarahomi.FightingGame.Character
             CharacterContext characterContext, CharacterMainStateMachineContext mainStateMachineContext,
             CharacterSecondaryMovementStateMachineContext secondaryMovementStateMachineContext,
             CharacterCombatStateMachineContext combatStateMachineContext, CharacterBehaviorContext behaviorContext, 
-            CharacterPowerupContext powerupContext, CharacterLocomotionHandler locomotionHandler, CharacterHurtBoxHandler hurtBoxHandler,
-            MainCameraController mainCameraController, GroundCheck groundCheck, MovementColliderActivator colliderActivator, 
-            CharacterAnimatorController animtorController)
+            CharacterPowerupContext powerupContext, CharacterLocomotionHandler locomotionHandler, MainCameraController mainCameraController, 
+            GroundCheck groundCheck, MovementColliderActivator colliderActivator, CharacterAnimatorController animtorController)
         {
             _container = container;
             _ownershipService = ownershipService;
             _stateMachine = stateMachine;
             Context = characterContext;
             _locomotionHandler = locomotionHandler;
-            _hurtBoxHandler = hurtBoxHandler;
             _mainCameraController = mainCameraController;
             _groundCheck = groundCheck;
             _movementColliderActivator = colliderActivator;
@@ -78,6 +76,10 @@ namespace AlirezaTarahomi.FightingGame.Character
         void OnDisable()
         {
             UnsubscribeEvents();
+
+            Context.Disposables.Dispose();
+            _behaviorContext.Disposables.Dispose();
+            _powerupContext.Disposables.Dispose();
         }
 
         private void InitializeEvents()
@@ -85,8 +87,8 @@ namespace AlirezaTarahomi.FightingGame.Character
             _groundCheck.OnGrounded.AddListener(HandleOnGrounded);
             _behaviorContext.OnAttackEnded.AddListener(HandleOnAttackEnded);
             _behaviorContext.OnFlyingToggled.AddListener(HandleOnFlyingToggled);
-            _behaviorContext.OnFlyOverEnded.AddListener(HandleOnFlyOverEnded);
-            _powerupContext.OnPowerupToggled.AddListener(HandleOnPowerupToggled);
+            _powerupContext.OnPowerupStarted.AddListener(HandleOnPowerupStarted);
+            _powerupContext.OnPowerupEnded.AddListener(HandleOnPowerupEnded);
             _mainStateMachineContext.OnDied.AddListener(HandleOnDied);
             _secondaryMovementStateMachineContext.OnChangeMoveSpeedRequested.AddListener(HandleOnChangeMoveSpeedRequested);
         }
@@ -96,23 +98,23 @@ namespace AlirezaTarahomi.FightingGame.Character
             _groundCheck.OnGrounded.RemoveListener(HandleOnGrounded);
             _behaviorContext.OnAttackEnded.RemoveListener(HandleOnAttackEnded);
             _behaviorContext.OnFlyingToggled.RemoveListener(HandleOnFlyingToggled);
-            _behaviorContext.OnFlyOverEnded.RemoveListener(HandleOnFlyOverEnded);
-            _powerupContext.OnPowerupToggled.RemoveListener(HandleOnPowerupToggled);
+            _powerupContext.OnPowerupStarted.RemoveListener(HandleOnPowerupStarted);
+            _powerupContext.OnPowerupEnded.RemoveListener(HandleOnPowerupEnded);
             _mainStateMachineContext.OnDied.RemoveListener(HandleOnDied);
             _secondaryMovementStateMachineContext.OnChangeMoveSpeedRequested.RemoveListener(HandleOnChangeMoveSpeedRequested);
         }
 
-        public void HandleInputPressed(string inputName, bool isPressed)
+        public void HandleInputPressed(InputManager.Type inputType, bool isPressed)
         {
-            switch (inputName)
+            switch (inputType)
             {
-                case InputStrings.InputJump:
+                case InputManager.Type.Jump:
                     _secondaryMovementStateMachineContext.isJumpedPressed = isPressed;
                     break;
-                case InputStrings.InputAttack:
+                case InputManager.Type.Attack:
                     _combatStateMachineContext.isAttackedPressed = isPressed;
                     break;
-                case InputStrings.InputPowerupAttack:
+                case InputManager.Type.PowerupAttack:
                     _combatStateMachineContext.isPowerupAttackedPressed = isPressed;
                     break;
             }
@@ -173,7 +175,7 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void InitAttackBehaviors()
         {
-            InitAttackBehavior(_combatStateMachineContext.powerup.PowerupAttackBehavior);
+            InitAttackBehavior((Context.stats.behaviors.powerup.value as IPowerup).PowerupAttackBehavior);
             InitAttackBehavior(Context.stats.behaviors.normalAttack.value);
             InitAttackBehavior(Context.stats.behaviors.complextAttack.value);
         }
@@ -284,41 +286,33 @@ namespace AlirezaTarahomi.FightingGame.Character
             gameObject.layer = layer;
         }
 
-        /// <summary>
-        /// Handles the event when the character attack is ended
-        /// </summary>
-        public void HandleOnAttackEnded()
-        {
-            _combatStateMachineContext.isAttackingEnded = true;
-        }
-
-        /// <summary>
-        /// Handles the event when the character powerup is toggled (activate or disabled)
-        /// </summary>
-        public void HandleOnPowerupToggled(bool active)
+        private void TogglePowerupActivation(bool active)
         {
             _behaviorContext.isPowerupActive = active;
             _combatStateMachineContext.isPowerupActive = active;
         }
 
-        /// <summary>
-        /// Handles the event when the character flies or stops flying
-        /// </summary>
+        public void HandleOnAttackEnded()
+        {
+            _combatStateMachineContext.isAttackingEnded = true;
+        }
+
+        public void HandleOnPowerupStarted(float time, float cooldown)
+        {
+            TogglePowerupActivation(true);
+        }
+
+        public void HandleOnPowerupEnded()
+        {
+            TogglePowerupActivation(false);
+        }
+
         public void HandleOnFlyingToggled(bool enable)
         {
             ToggleControls(!enable);
             _secondaryMovementStateMachineContext.isFlying = enable;
         }
 
-        public void HandleOnFlyOverEnded()
-        {
-            _behaviorContext.isPowerupActive = false;
-            _combatStateMachineContext.isPowerupActive = false;
-        }
-
-        /// <summary>
-        /// Handles the event when the character triggers the ground
-        /// </summary>
         public void HandleOnGrounded(bool isGrounded)
         {
             _isGrounded = isGrounded;
@@ -338,12 +332,8 @@ namespace AlirezaTarahomi.FightingGame.Character
             }
         }
 
-        /// <summary>
-        /// Handles the event when the character is dead
-        /// </summary>
         public void HandleOnDied()
         {
-            _locomotionHandler.Stop();
             ToggleStateMachineContexts(false);
         }
 

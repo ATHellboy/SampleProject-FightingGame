@@ -36,25 +36,14 @@ namespace AlirezaTarahomi.FightingGame.UI
             float perc = 0;
             float currentAlpha = _canvasGroup.alpha;
 
-            float finalAlpha;
-            if (active)
-            {
-                finalAlpha = 1;
-            }
-            else
-            {
-                finalAlpha = 0;
-            }
+            float finalAlpha = active ? 1 : 0;
 
             if (_time == 0)
             {
                 _canvasGroup.blocksRaycasts = active;
                 _canvasGroup.alpha = finalAlpha;
 
-                if (callback != null)
-                {
-                    callback();
-                }
+                callback?.Invoke();
 
                 yield break;
             }
@@ -81,10 +70,7 @@ namespace AlirezaTarahomi.FightingGame.UI
                 _canvasGroup.blocksRaycasts = true;
             }
 
-            if (callback != null)
-            {
-                callback();
-            }
+            callback?.Invoke();
         }
     }
 }

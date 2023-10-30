@@ -9,20 +9,17 @@ namespace Infrastructure.Extension
     {
         public static void SetXPosition(this Transform transform, float x)
         {
-            Vector3 newPosition = new(x, transform.position.y, transform.position.z);
-            transform.position = newPosition;
+            transform.position = new Vector3(x, transform.position.y, transform.position.z);
         }
 
         public static void SetYPosition(this Transform transform, float y)
         {
-            Vector3 newPosition = new(transform.position.x, y, transform.position.z);
-            transform.position = newPosition;
+            transform.position = new Vector3(transform.position.x, y, transform.position.z);
         }
 
         public static void SetXYPosition(this Transform transform, float x, float y)
         {
-            Vector3 newPosition = new(x, y, transform.position.z);
-            transform.position = newPosition;
+            transform.position = new Vector3(x, y, transform.position.z);
         }
     }
 }

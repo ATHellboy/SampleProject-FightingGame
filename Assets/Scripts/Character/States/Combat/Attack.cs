@@ -11,7 +11,6 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
 
         public override void Enter(CharacterCombatStateMachineContext context)
         {
-            context.OnAttackStarted?.Invoke();
             ExecuteAttacking(context);
         }
 
@@ -47,6 +46,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.Combat
                 _currentBehavior = context.AttackBehaviors[i];
                 if (_currentBehavior != null && _currentBehavior.BehaviorCondition == Status.Success)
                 {
+                    context.OnAttackStarted?.Invoke(_currentBehavior.GetType().GetInterfaces()[0], context.CharacterContext.stats.miscValues.attackRate);
                     _currentBehavior.Behave();
                     break;
                 }

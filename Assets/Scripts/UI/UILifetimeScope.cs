@@ -8,6 +8,7 @@ namespace AlirezaTarahomi.FightingGame.UI
     {
         protected override void Configure(IContainerBuilder builder)
         {
+            //For Injection
             builder.RegisterComponentInHierarchy<UIGameOverPanel>();
         }
     }

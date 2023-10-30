@@ -3,7 +3,7 @@
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
 {
     [CreateAssetMenu(menuName = "Attacks/Complex Attacks/ThreeDirectionThrowingBehavior")]
-    public class ThreeDirectionThrowingBehavior : ThrowingObjectBehavior, IComplexAttackBehavior
+    public class ThreeDirectionThrowingAttackBehavior : ThrowingObjectBehavior, IComplexAttackBehavior
     {
         [SerializeField] private float _offsetDegree = 20;
 

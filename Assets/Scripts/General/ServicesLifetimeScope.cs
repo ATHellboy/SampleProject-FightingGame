@@ -19,6 +19,8 @@ namespace AlirezaTarahomi.FightingGame.General
             var options = builder.RegisterMessagePipe();
             builder.RegisterBuildCallback(c => GlobalMessagePipe.SetProvider(c.AsServiceProvider()));
             builder.RegisterMessageBroker<OnGameOver>(options);
+            builder.RegisterMessageBroker<int, OnAttackCooldownStarted>(options);
+            builder.RegisterMessageBroker<int, OnPowerupTimerStarted>(options);
 
             builder.RegisterComponentInHierarchy<CameraManager>();
             builder.RegisterComponentInHierarchy<MainCameraController>();
