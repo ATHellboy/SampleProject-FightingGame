@@ -5,7 +5,7 @@ using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
 {
-    [CreateAssetMenu(menuName = "Attacks/Normal Attacks/MeleeAttackBehavior")]
+    [CreateAssetMenu(menuName = "Custom/Attacks/Normal Attacks/MeleeAttackBehavior")]
     public class MeleeAttackBehavior : ScriptableObject, INormalAttackBehavior
     {
         [SerializeField] private float _duration = 0.2f;
@@ -22,7 +22,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
         {
             get
             {
-                if (_context.isGrounded)
+                if (_context.GroundCheck.OnGround)
                 {
                     return Status.Success;
                 }

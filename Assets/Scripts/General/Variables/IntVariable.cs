@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 namespace AlirezaTarahomi.FightingGame.General.Variable
 {
-    [CreateAssetMenu(menuName = "Variables/Int")]
+    [CreateAssetMenu(menuName = "Custom/Variables/Int")]
     public class IntVariable : ShareableVariable
     {
         [SerializeField] private int _defaltValue;

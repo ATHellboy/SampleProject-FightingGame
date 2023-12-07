@@ -9,7 +9,6 @@ public static class Tags
 	public const string GameController = "GameController";
 	public const string Ground = "Ground";
 	public const string Platform = "Platform";
-	public const string Destroyer = "Destroyer";
 	public const string Wall = "Wall";
 	public const string Hitbox = "Hitbox";
 	public const string CharactersTrigger = "CharactersTrigger";

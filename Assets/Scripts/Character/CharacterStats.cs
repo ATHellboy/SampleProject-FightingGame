@@ -7,7 +7,7 @@ using AlirezaTarahomi.FightingGame.Character.Powerup;
 
 namespace AlirezaTarahomi.FightingGame.Character
 {
-    [CreateAssetMenu(menuName = "CharacterStats")]
+    [CreateAssetMenu(menuName = "Custom/CharacterStats")]
     public class CharacterStats : ScriptableObject
     {
         public Transform prefab;

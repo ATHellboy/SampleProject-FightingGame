@@ -41,7 +41,6 @@ namespace AlirezaTarahomi.FightingGame.Character
         private MainCameraController _mainCameraController;
         private GroundCheck _groundCheck;
         private MovementColliderActivator _movementColliderActivator;
-        private bool _isGrounded;
 
         [Inject]
         public void Construct(IObjectResolver container, IOwnershipService ownershipService, StateMachine stateMachine, 
@@ -230,11 +229,6 @@ namespace AlirezaTarahomi.FightingGame.Character
         private void UpdateBetweenContexts()
         {
             _mainStateMachineContext.moveAxes = moveAxes;
-
-            _secondaryMovementStateMachineContext.isGrounded = _isGrounded;
-            _combatStateMachineContext.isGrounded = _isGrounded;
-            _behaviorContext.isGrounded = _isGrounded;
-
             _behaviorContext.jumpCounter = _secondaryMovementStateMachineContext.jumpCounter;
         }
 
@@ -313,11 +307,9 @@ namespace AlirezaTarahomi.FightingGame.Character
             _secondaryMovementStateMachineContext.isFlying = enable;
         }
 
-        public void HandleOnGrounded(bool isGrounded)
+        public void HandleOnGrounded()
         {
-            _isGrounded = isGrounded;
-
-            if (!_isGrounded)
+            if (!_groundCheck.OnGround)
                 return;
 
             _locomotionHandler.ChangeDetectionCollisionMode(CollisionDetectionMode2D.Discrete);

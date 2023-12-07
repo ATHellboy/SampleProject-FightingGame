@@ -17,7 +17,7 @@ namespace AlirezaTarahomi.FightingGame.Player
     {
         public OnCharactersConfigured OnCharactersConfigured { get; private set; } = new();
 
-        [SerializeField] private Vector2 initialInsidePos = Vector2.zero;
+        [SerializeField] private Transform _spawnPoint;
         [SerializeField] private Vector2 initialOutsidePos = Vector2.zero;
         [SerializeField] private LayerMask _avatarLayerMask;
         [SerializeField] private RenderTexture _avatarRenderTexture;
@@ -75,7 +75,7 @@ namespace AlirezaTarahomi.FightingGame.Player
 
         void Start()
         {
-            (Transform target, CharacterStats stats) = InstantiateCharacter(firstCharacter, initialInsidePos);
+            (Transform target, CharacterStats stats) = InstantiateCharacter(firstCharacter, _spawnPoint.position);
             InstantiateCharacter(secondCharacter, initialOutsidePos);
             _targetGroupController.AssignTarget(_playerContext.index - 1, target, stats.cameraValues.cameraRadius, stats.cameraValues.cameraWeight);
             currentCharacterController = _charactersSwitchingHandler.ConfigCharacters();

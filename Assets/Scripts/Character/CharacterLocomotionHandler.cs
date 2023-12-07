@@ -37,7 +37,7 @@ namespace AlirezaTarahomi.FightingGame.Character
         public void Move(Vector2 moveAxes)
         {
             Flip(moveAxes.x);
-            _rigidbody.velocity = new Vector2(moveAxes.x * _moveSpeed, _rigidbody.velocity.y);
+            _rigidbody.SetXVelocity(moveAxes.x * _moveSpeed);
         }
 
         public void Jump(float height, float speed)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AlirezaTarahomi.FightingGame.Character.Powerup
 {
-    [CreateAssetMenu(menuName = "Powerups/FlyOverPowerup")]
+    [CreateAssetMenu(menuName = "Custom/Powerups/FlyOverPowerup")]
     public class FlyOverPowerup : ScriptableObject, IPowerup
     {
         [ScriptableObjectDropdown(typeof(FlyOverAttackBehavior))]

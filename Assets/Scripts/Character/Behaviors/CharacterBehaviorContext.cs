@@ -7,7 +7,6 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
 {
     public class CharacterBehaviorContext
     {
-        public bool isGrounded;
         public int jumpCounter;
         public bool isPowerupActive;
         public Collider2D hitboxCollider;
@@ -18,15 +17,18 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
         public IOwnershipService OwnershipService { get; private set; }
         public CharacterAnimatorController AnimatorController { get; private set; }
         public CharacterLocomotionHandler LocomotionHandler { get; private set; }
+        public GroundCheck GroundCheck { get; private set; }
         public CompositeDisposable Disposables { get; private set; } = new();
 
         public CharacterBehaviorContext(Transform transform, IOwnershipService ownershipService, 
-            CharacterAnimatorController animatorController, CharacterLocomotionHandler locomotionHandler)
+            CharacterAnimatorController animatorController, CharacterLocomotionHandler locomotionHandler, 
+            GroundCheck groundCheck)
         {
             Transform = transform;
             OwnershipService = ownershipService;
             AnimatorController = animatorController;
             LocomotionHandler = locomotionHandler;
+            GroundCheck = groundCheck;
         }
     }
 }

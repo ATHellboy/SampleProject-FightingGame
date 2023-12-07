@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Infrastructure.ObjectPooling
 {
-    [CreateAssetMenu(menuName = "PooledObject")]
+    [CreateAssetMenu(menuName = "Custom/PooledObject")]
     public class PooledObjectStats : ScriptableObject
     {
         public Transform prefab;

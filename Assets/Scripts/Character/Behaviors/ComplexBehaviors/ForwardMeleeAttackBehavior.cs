@@ -5,7 +5,7 @@ using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
 {
-    [CreateAssetMenu(menuName = "Attacks/Complex Attacks/ForwardMeleeAttackBehavior")]
+    [CreateAssetMenu(menuName = "Custom/Attacks/Complex Attacks/ForwardMeleeAttackBehavior")]
     public class ForwardMeleeAttackBehavior : ScriptableObject, IComplexAttackBehavior
     {
         [SerializeField] private float _velocity = 50;
@@ -23,7 +23,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
         {
             get
             {
-                if (!_context.isGrounded)
+                if (!_context.GroundCheck.OnGround)
                 {
                     return Status.Success;
                 }

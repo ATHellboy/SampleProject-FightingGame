@@ -13,13 +13,13 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         public bool isAttackedPressed;
         public bool isPowerupAttackedPressed;
         public IPowerup powerup;
-        public bool isGrounded;
         public bool isAttackingEnded;
         public bool isPowerupActive;
 
         public OnAttackStarted OnAttackStarted { get; private set; } = new();
         public CharacterContext CharacterContext { get; private set; }
         public CharacterPowerupContext CharacterPowerupContext { get; private set; }
+        public GroundCheck GroundCheck { get; private set; }
         public List<IAttackBehavior> AttackBehaviors { get; private set; } = new();
 
         public class States
@@ -36,11 +36,12 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         public States RelatedStates { get; }
 
         public CharacterCombatStateMachineContext(Transform transform, CharacterContext characterContext, 
-            CharacterPowerupContext characterPowerupContext, 
+            CharacterPowerupContext characterPowerupContext, GroundCheck groundCheck, 
             None none, Attack attack) : base(transform.gameObject, none, characterContext.debugStateMachine)
         {
             CharacterContext = characterContext;
             CharacterPowerupContext = characterPowerupContext;
+            GroundCheck = groundCheck;
             RelatedStates = new States(none, attack);
         }
 

@@ -6,6 +6,7 @@ namespace AlirezaTarahomi.FightingGame.Character
     public class GroundCheck : MonoBehaviour
     {
         public OnGrounded OnGrounded { get; private set; } = new();
+        public bool OnGround { get; private set; }
 
         private Collider2D _collider;
 
@@ -16,12 +17,14 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         void OnTriggerEnter2D(Collider2D collision)
         {
-            OnGrounded?.Invoke(true);
+            OnGround = true;
+            OnGrounded?.Invoke();
         }
 
         void OnTriggerExit2D(Collider2D collision)
         {
-            OnGrounded?.Invoke(false);
+            OnGround = false;
+            OnGrounded?.Invoke();
         }
 
         public void ToggleCollider(bool active)

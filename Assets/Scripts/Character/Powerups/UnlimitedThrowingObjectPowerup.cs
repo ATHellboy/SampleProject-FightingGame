@@ -6,7 +6,7 @@ using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character.Powerup
 {
-    [CreateAssetMenu(menuName = "Powerups/UnlimitedThrowingObjectPowerup")]
+    [CreateAssetMenu(menuName = "Custom/Powerups/UnlimitedThrowingObjectPowerup")]
     public class UnlimitedThrowingObjectPowerup : ScriptableObject, IPowerup
     {
         [SerializeField] private IntVariable _objectCounter;

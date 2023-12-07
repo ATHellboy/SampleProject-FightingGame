@@ -51,11 +51,6 @@ namespace AlirezaTarahomi.FightingGame.Tool
 
         void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag(Tags.Destroyer))
-            {
-                _poolSystem.Despawn(PooledObjectStats, transform);
-            }
-
             if (collision.CompareTag(Tags.Ground) || collision.CompareTag(Tags.Wall))
             {
                 if (_isIllusion)

@@ -6,7 +6,7 @@ using VContainer;
 
 namespace AlirezaTarahomi.FightingGame.Character.Behavior.Powerup
 {
-    [CreateAssetMenu(menuName = "Attacks/Powerup Attacks/FlyOverAttackBehavior")]
+    [CreateAssetMenu(menuName = "Custom/Attacks/Powerup Attacks/FlyOverAttackBehavior")]
     public class FlyOverAttackBehavior : ScriptableObject, IPowerupAttackBehavior
     {
         [SerializeField] private float _velocity = 50;
