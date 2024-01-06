@@ -22,7 +22,7 @@ namespace AlirezaTarahomi.FightingGame.Character
     [Serializable]
     public class GroundMovementValues
     {
-        public float walkSpeed = 10f;
+        public float moveSpeed = 10f;
     }
 
     [Serializable]

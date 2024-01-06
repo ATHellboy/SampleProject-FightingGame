@@ -13,5 +13,7 @@ namespace AlirezaTarahomi.FightingGame.InputSystem
         bool IsReleased(string action);
 
         float GetAxis(string axis);
+
+        float GetAxisRaw(string axis);
     }
 }

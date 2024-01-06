@@ -21,10 +21,11 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
 
         public void Behave()
         {
-            Vector3 angleUnit = (_context.Transform.right - _context.Transform.up) / 90;
-            UseObject(-_context.Transform.up + _offsetDegree * angleUnit);
-            UseObject(((-_context.Transform.up + (_context.Transform.right - _context.Transform.up) / 2) / 2) + _offsetDegree * angleUnit);
-            UseObject(((_context.Transform.right - _context.Transform.up) / 2) + _offsetDegree * angleUnit);
+            Vector3 angleUnit = (_context.Pivot.transform.right - _context.Pivot.transform.up) / 90;
+            UseObject(-_context.Pivot.transform.up + _offsetDegree * angleUnit);
+            UseObject(((-_context.Pivot.transform.up + (_context.Pivot.transform.right - _context.Pivot.transform.up) / 2) / 2) +
+                _offsetDegree * angleUnit);
+            UseObject(((_context.Pivot.transform.right - _context.Pivot.transform.up) / 2) + _offsetDegree * angleUnit);
         }
 
         public void EndBehavior()

@@ -20,9 +20,10 @@ namespace AlirezaTarahomi.FightingGame.Character
         public OnPowerupStarted OnPowerupStarted { get => _powerupContext.OnPowerupStarted; }
         public OnDied OnDied { get => _mainStateMachineContext.OnDied; }
 
+        [SerializeField] private GameObject _visual;
         [SerializeField] private GameObject _hitbox;
 
-        [HideInInspector] public bool isJustEntered;
+        [HideInInspector] public Vector2 moveAxesRaw;
         [HideInInspector] public Vector2 moveAxes;
 
         public CharacterContext Context { get; private set; }
@@ -39,8 +40,8 @@ namespace AlirezaTarahomi.FightingGame.Character
         private CharacterAnimatorController _animtorController;
         private Collider2D _hitboxCollider;
         private MainCameraController _mainCameraController;
-        private GroundCheck _groundCheck;
-        private MovementColliderActivator _movementColliderActivator;
+        private SurfaceCheck _surfaceCheck;
+        private SurfaceEnterChecker _surfaceEnterChecker;
 
         [Inject]
         public void Construct(IObjectResolver container, IOwnershipService ownershipService, StateMachine stateMachine, 
@@ -48,7 +49,7 @@ namespace AlirezaTarahomi.FightingGame.Character
             CharacterSecondaryMovementStateMachineContext secondaryMovementStateMachineContext,
             CharacterCombatStateMachineContext combatStateMachineContext, CharacterBehaviorContext behaviorContext, 
             CharacterPowerupContext powerupContext, CharacterLocomotionHandler locomotionHandler, MainCameraController mainCameraController, 
-            GroundCheck groundCheck, MovementColliderActivator colliderActivator, CharacterAnimatorController animtorController)
+            SurfaceCheck surfaceCheck, SurfaceEnterChecker surfaceEnterChecker, CharacterAnimatorController animtorController)
         {
             _container = container;
             _ownershipService = ownershipService;
@@ -56,8 +57,8 @@ namespace AlirezaTarahomi.FightingGame.Character
             Context = characterContext;
             _locomotionHandler = locomotionHandler;
             _mainCameraController = mainCameraController;
-            _groundCheck = groundCheck;
-            _movementColliderActivator = colliderActivator;
+            _surfaceCheck = surfaceCheck;
+            _surfaceEnterChecker = surfaceEnterChecker;
             _animtorController = animtorController;
 
             _mainStateMachineContext = mainStateMachineContext;
@@ -83,24 +84,26 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void InitializeEvents()
         {
-            _groundCheck.OnGrounded.AddListener(HandleOnGrounded);
+            _surfaceCheck.OnGrounded.AddListener(HandleOnGrounded);
             _behaviorContext.OnAttackEnded.AddListener(HandleOnAttackEnded);
             _behaviorContext.OnFlyingToggled.AddListener(HandleOnFlyingToggled);
             _powerupContext.OnPowerupStarted.AddListener(HandleOnPowerupStarted);
             _powerupContext.OnPowerupEnded.AddListener(HandleOnPowerupEnded);
             _mainStateMachineContext.OnDied.AddListener(HandleOnDied);
             _secondaryMovementStateMachineContext.OnChangeMoveSpeedRequested.AddListener(HandleOnChangeMoveSpeedRequested);
+            _surfaceEnterChecker.OnEntered.AddListener(HandleOnEntered);
         }
 
         private void UnsubscribeEvents()
         {
-            _groundCheck.OnGrounded.RemoveListener(HandleOnGrounded);
+            _surfaceCheck.OnGrounded.RemoveListener(HandleOnGrounded);
             _behaviorContext.OnAttackEnded.RemoveListener(HandleOnAttackEnded);
             _behaviorContext.OnFlyingToggled.RemoveListener(HandleOnFlyingToggled);
             _powerupContext.OnPowerupStarted.RemoveListener(HandleOnPowerupStarted);
             _powerupContext.OnPowerupEnded.RemoveListener(HandleOnPowerupEnded);
             _mainStateMachineContext.OnDied.RemoveListener(HandleOnDied);
             _secondaryMovementStateMachineContext.OnChangeMoveSpeedRequested.RemoveListener(HandleOnChangeMoveSpeedRequested);
+            _surfaceEnterChecker.OnEntered.RemoveListener(HandleOnEntered);
         }
 
         public void HandleInputPressed(InputManager.Type inputType, bool isPressed)
@@ -119,18 +122,19 @@ namespace AlirezaTarahomi.FightingGame.Character
             }
         }
 
-        public void HandleInputReleased(string inputName, bool isReleased)
+        public void HandleInputReleased(InputManager.Type inputType, bool isReleased)
         {
-            switch (inputName)
+            switch (inputType)
             {
-                default:
+                case InputManager.Type.Jump:
+                    _secondaryMovementStateMachineContext.isJumpedReleased = isReleased;
                     break;
             }
         }
 
-        public void HandleInputHeld(string inputName, bool isHeld)
+        public void HandleInputHeld(InputManager.Type inputType, bool isHeld)
         {
-            switch (inputName)
+            switch (inputType)
             {
                 default:
                     break;
@@ -146,7 +150,7 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void GetHitBox()
         {
-            if (_hitbox != null)
+            if (_hitbox)
             {
                 _ownershipService.Add(_hitbox);
                 _hitboxCollider = _hitbox.GetComponent<Collider2D>();
@@ -164,7 +168,7 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void InitAttackBehavior(ScriptableObject attackBehavior)
         {
-            if (attackBehavior != null)
+            if (attackBehavior)
             {
                 var clone = Instantiate(attackBehavior) as IAttackBehavior;
                 _container.Inject(clone);
@@ -182,13 +186,13 @@ namespace AlirezaTarahomi.FightingGame.Character
         public void Activate()
         {
             _locomotionHandler.SetGroundGravityScale();
-            _movementColliderActivator.ToggleMovementColliders(true);
+            _surfaceEnterChecker.ToggleMovementColliders(true);
         }
         
         public void Deactivate()
         {
             _locomotionHandler.SetNoGravityScale();
-            _movementColliderActivator.ToggleMovementColliders(false);
+            _surfaceEnterChecker.ToggleMovementColliders(false);
         }
 
         public void InitCharacterFace(Side side)
@@ -228,6 +232,7 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         private void UpdateBetweenContexts()
         {
+            _mainStateMachineContext.moveAxesRaw = moveAxesRaw;
             _mainStateMachineContext.moveAxes = moveAxes;
             _behaviorContext.jumpCounter = _secondaryMovementStateMachineContext.jumpCounter;
         }
@@ -253,13 +258,12 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         public void EnterStage(Side side, Vector3 targetPos)
         {
-            isJustEntered = true;
             _locomotionHandler.ChangeDetectionCollisionMode(CollisionDetectionMode2D.Continuous);
-            _groundCheck.ToggleCollider(true);
-            _movementColliderActivator.ToggleColliderActivator(true);
+            _surfaceCheck.ToggleCollider(true);
+            _surfaceEnterChecker.ToggleCollider(true);
             Vector2 cameraSize = _mainCameraController.CameraSize;
             _locomotionHandler.Teleport(new Vector2(_mainCameraController.MainCamera.transform.position.x + (int)side * cameraSize.x / 2,
-                _mainCameraController.MainCamera.transform.position.y));
+                _mainCameraController.MainCamera.transform.position.y + cameraSize.y / 4));
             _locomotionHandler.ThrowInside(side, targetPos);
         }
 
@@ -269,15 +273,15 @@ namespace AlirezaTarahomi.FightingGame.Character
             _stateMachine.Reset(_secondaryMovementStateMachineContext);
             _stateMachine.Reset(_combatStateMachineContext);
             _animtorController.Reset();
-            _groundCheck.ToggleCollider(false);
-            _movementColliderActivator.ToggleMovementColliders(false);
+            _surfaceCheck.ToggleCollider(false);
+            _surfaceEnterChecker.ToggleMovementColliders(false);
             ToggleStateMachineContexts(false);
             _locomotionHandler.GoOutside(Context.stats.miscValues.exitVelocity, side);
         }
 
-        public void SetLayer(int layer)
+        public void SetAvatarLayer(int layer)
         {
-            gameObject.layer = layer;
+            _visual.layer = layer;
         }
 
         private void TogglePowerupActivation(bool active)
@@ -309,19 +313,7 @@ namespace AlirezaTarahomi.FightingGame.Character
 
         public void HandleOnGrounded()
         {
-            if (!_groundCheck.OnGround)
-                return;
-
             _locomotionHandler.ChangeDetectionCollisionMode(CollisionDetectionMode2D.Discrete);
-            _locomotionHandler.SetGroundGravityScale();
-            _locomotionHandler.Stop();
-
-            if (isJustEntered)
-            {
-                isJustEntered = false;
-                ToggleStateMachineContexts(true);
-                ToggleControls(true);
-            }
         }
 
         public void HandleOnDied()
@@ -336,6 +328,14 @@ namespace AlirezaTarahomi.FightingGame.Character
         public void HandleOnChangeMoveSpeedRequested()
         {
             ChangeMoveSpeed();
+        }
+
+        public void HandleOnEntered()
+        {
+            ToggleStateMachineContexts(true);
+            ToggleControls(true);
+            _locomotionHandler.Stop();
+            _locomotionHandler.SetNoGravityScale();
         }
     }
 }

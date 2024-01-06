@@ -45,26 +45,23 @@ namespace AlirezaTarahomi.FightingGame.Player
         private IPublisher<int, OnPowerupTimerStarted> _powerupTimerPublisher;
 
         private InputManager _inputManager;
-        private IResourceFactory _resourceFactory;
         private PlayersContext _playersContext;
         private PlayerContext _playerContext;
         private CharactersSwitchingHandler _charactersSwitchingHandler;
         private TargetGroupController _targetGroupController;
         private Camera _avatarCamera;
-        private float _switchingCoolDown;
         private bool _canSwitch = true;
         private int _numOfRemainedChars = 2;
 
         [Inject]
-        public void Construct(InputManager inputManager, IResourceFactory resourceFactory, PlayersContext playersContext, 
-            PlayerContext playerContext, CharactersSwitchingHandler charactersSwitchingHandler, TargetGroupController targetGroupController, 
+        public void Construct(InputManager inputManager, PlayersContext playersContext, PlayerContext playerContext, 
+            CharactersSwitchingHandler charactersSwitchingHandler, TargetGroupController targetGroupController, 
             Camera avatarCamera, IPublisher<OnGameOver> gameOverPublisher, IPublisher<int, OnAttackCooldownStarted> attackCooldownPublisher,
             IPublisher<int, OnPowerupTimerStarted> powerupCooldownPublisher)
         {
             _playersContext = playersContext;
             _playerContext = playerContext;
             _inputManager = inputManager;
-            _resourceFactory = resourceFactory;
             _charactersSwitchingHandler = charactersSwitchingHandler;
             _targetGroupController = targetGroupController;
             _avatarCamera = avatarCamera;
@@ -91,12 +88,16 @@ namespace AlirezaTarahomi.FightingGame.Player
             }
 
             currentCharacterController.HandleInputPressed(InputManager.Type.Jump, _inputManager.IsPressed(PlayerInputJump + _playerContext.index));
+            currentCharacterController.HandleInputReleased(InputManager.Type.Jump, _inputManager.IsReleased(PlayerInputJump + _playerContext.index));
             currentCharacterController.HandleInputPressed(InputManager.Type.Attack, _inputManager.IsPressed(PlayerInputAttack + _playerContext.index));
             currentCharacterController.HandleInputPressed(InputManager.Type.PowerupAttack, _inputManager.IsPressed(PlayerInputPowerAttack + _playerContext.index));
 
-            currentCharacterController.moveAxes =
-                new Vector2(
-                    _inputManager.GetAxis(PlayerInputMoveHorizontal + _playerContext.index), _inputManager.GetAxis(PlayerInputMoveVertical + _playerContext.index));
+            currentCharacterController.moveAxesRaw = new Vector2(
+                _inputManager.GetAxisRaw(PlayerInputMoveHorizontal + _playerContext.index),
+                _inputManager.GetAxisRaw(PlayerInputMoveVertical + _playerContext.index));
+            currentCharacterController.moveAxes = new Vector2(
+                _inputManager.GetAxis(PlayerInputMoveHorizontal + _playerContext.index), 
+                _inputManager.GetAxis(PlayerInputMoveVertical + _playerContext.index));
         }
 
         void LateUpdate()
@@ -112,7 +113,7 @@ namespace AlirezaTarahomi.FightingGame.Player
             Transform characterInstance = Instantiate(characterStats.prefab, pos, Quaternion.identity, transform);
             var characterController = characterInstance.GetComponent<Character.CharacterController>();
             _charactersSwitchingHandler.EnqueueCharacter(characterController);
-            characterController.SetLayer(gameObject.layer);
+            characterController.SetAvatarLayer(gameObject.layer);
             characterController.OnAttackStarted.AddListener(HandleOnAttackStarted);
             characterController.OnAttackEnded.AddListener(HandleOnAttackEnded);
             characterController.OnPowerupStarted.AddListener(HandleOnPowerupStarted);
@@ -145,7 +146,7 @@ namespace AlirezaTarahomi.FightingGame.Player
 
         IEnumerator SwitchingTimer()
         {
-            yield return new WaitForSeconds(_switchingCoolDown);
+            yield return new WaitForSeconds(_playersContext.switchingCoolDown);
             _canSwitch = true;
         }
 

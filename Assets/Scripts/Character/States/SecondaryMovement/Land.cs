@@ -8,7 +8,6 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
     {
         public override void Enter(CharacterSecondaryMovementStateMachineContext context)
         {
-            context.LocomotionHandler.SetGroundGravityScale();
             context.AnimatorController.ToggleLanding(true);
         }
 
@@ -29,6 +28,15 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
 
         public override void Exit(CharacterSecondaryMovementStateMachineContext context)
         {
+            if (context.SurfaceCheck.OnSlope)
+            {
+                context.LocomotionHandler.Stop();
+                context.LocomotionHandler.SetNoGravityScale();
+            }
+            else
+            {
+                context.LocomotionHandler.SetGroundGravityScale();
+            }
             context.jumpCounter = 0;
             context.AnimatorController.ToggleLanding(false);
         }

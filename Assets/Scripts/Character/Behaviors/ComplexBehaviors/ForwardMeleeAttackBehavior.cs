@@ -23,7 +23,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Complex
         {
             get
             {
-                if (!_context.GroundCheck.OnGround)
+                if (!_context.SurfaceCheck.onGround)
                 {
                     return Status.Success;
                 }

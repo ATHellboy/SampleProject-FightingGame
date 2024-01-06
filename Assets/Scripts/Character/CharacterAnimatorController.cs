@@ -5,7 +5,7 @@ namespace AlirezaTarahomi.FightingGame.Character
     public class CharacterAnimatorController
     {
         private const string StopParameter = "isStopped";
-        private const string WalkParameter = "isWalked";
+        private const string MoveParameter = "isMoved";
         private const string JumpParameter = "isJumped";
         private const string FallParameter = "isFallen";
         private const string LandParameter = "isLanded";
@@ -24,9 +24,9 @@ namespace AlirezaTarahomi.FightingGame.Character
             _animator.SetBool(StopParameter, active);
         }
 
-        public void ToggleWalking(bool active)
+        public void ToggleMoving(bool active)
         {
-            _animator.SetBool(WalkParameter, active);
+            _animator.SetBool(MoveParameter, active);
         }
 
         public void ToggleJumping(bool active)

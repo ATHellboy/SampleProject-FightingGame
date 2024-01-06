@@ -86,7 +86,7 @@ namespace Infrastructure.ObjectPooling
             list.Add(spawnedObject);
 
             spawnedObject.gameObject.SetActive(true);
-            if (parent != null)
+            if (parent)
             {
                 spawnedObject.SetParent(parent);
             }

@@ -9,7 +9,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
         {
             get
             {
-                if (_context.GroundCheck.OnGround || _context.jumpCounter <= 1)
+                if (_context.SurfaceCheck.onGround || _context.jumpCounter <= 1)
                 {
                     return Status.Success;
                 }
@@ -19,7 +19,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior.Normal
 
         public void Behave()
         {
-            UseObject(_context.Transform.right);
+            UseObject(_context.Pivot.transform.right);
         }
 
         public void EndBehavior()

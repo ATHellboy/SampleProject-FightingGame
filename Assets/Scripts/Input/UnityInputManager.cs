@@ -23,5 +23,10 @@ namespace AlirezaTarahomi.FightingGame.InputSystem
         {
             return Input.GetAxis(axis);
         }
+
+        public float GetAxisRaw(string axis)
+        {
+            return Input.GetAxisRaw(axis);
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
         {
             if (!context.isFlying)
             {
-                stateMachine.ChangeState(this, context.RelatedStates.none, context);
+                stateMachine.ChangeState(this, context.RelatedStates.fall, context);
             }
         }
 
@@ -32,7 +32,6 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
         public override void Exit(CharacterSecondaryMovementStateMachineContext context)
         {
             context.LocomotionHandler.Stop();
-            context.LocomotionHandler.SetAirGravityScale();
         }
     }
 }

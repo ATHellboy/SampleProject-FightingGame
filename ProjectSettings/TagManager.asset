@@ -22,7 +22,7 @@ TagManager:
   - Hurtbox
   - GroundDetector
   - MovementCollider
-  - ColliderActivator
+  - SurfaceEnterChecker
   - Hitbox
   - Wall
   - Destroyer

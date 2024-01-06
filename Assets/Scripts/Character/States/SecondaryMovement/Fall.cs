@@ -25,16 +25,11 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
                 context.jumpHeight = context.CharacterContext.stats.airMovementValues.lessJumpHeight;
                 stateMachine.ChangeState(this, context.RelatedStates.jump, context);
             }
-
-            if (context.jumpCounter > 1)
-            {
-                context.LocomotionHandler.ChangeDetectionCollisionMode(CollisionDetectionMode2D.Continuous);
-            }
         }
 
         public override void FixedUpdate(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
         {
-            if (context.GroundCheck.OnGround)
+            if (context.SurfaceCheck.onGround)
             {
                 stateMachine.ChangeState(this, context.RelatedStates.land, context);
             }
@@ -48,10 +43,6 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
         public override void Exit(CharacterSecondaryMovementStateMachineContext context)
         {
             context.AnimatorController.ToggleFalling(false);
-            if (context.jumpCounter > 1)
-            {
-                context.LocomotionHandler.ChangeDetectionCollisionMode(CollisionDetectionMode2D.Discrete);
-            }
         }
     }
 }

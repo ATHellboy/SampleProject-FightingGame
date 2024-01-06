@@ -28,7 +28,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Behavior
             {
                 _objectCounter.value--;
                 Transform obj = _poolSystem.Spawn(_throwableObjectPoolStats, _context.Transform.position +
-                    _context.Transform.right, Quaternion.identity);
+                    _context.Pivot.transform.right, Quaternion.identity);
                 _context.OwnershipService.Add(obj.gameObject);
                 IThrowableObject throwableObject = obj.GetComponent<IThrowableObject>();
                 if (_context.isPowerupActive)

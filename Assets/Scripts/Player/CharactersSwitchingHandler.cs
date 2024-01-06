@@ -36,7 +36,6 @@ namespace AlirezaTarahomi.FightingGame.Player
         {
             _currentCharacterController = DequeueCharacter();
             _preCharacterController = _currentCharacterController;
-            _currentCharacterController.isJustEntered = true;
             _currentCharacterController.Activate();
             return _currentCharacterController;
         }

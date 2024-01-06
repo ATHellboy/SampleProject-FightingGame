@@ -25,9 +25,10 @@ namespace AlirezaTarahomi.FightingGame.Character
             builder.RegisterComponentInHierarchy<Animator>().UnderTransform(transform);
             builder.RegisterComponentInHierarchy<Rigidbody2D>().UnderTransform(transform);
             builder.RegisterComponentInHierarchy<Transform>().UnderTransform(transform);
+            builder.RegisterComponentInHierarchy<CharacterPivot>().UnderTransform(transform);
             builder.RegisterComponentInHierarchy<SpriteRenderer>().UnderTransform(transform);
-            builder.RegisterComponentInHierarchy<GroundCheck>().UnderTransform(transform);
-            builder.RegisterComponentInHierarchy<MovementColliderActivator>().UnderTransform(transform);
+            builder.RegisterComponentInHierarchy<SurfaceCheck>().UnderTransform(transform);
+            builder.RegisterComponentInHierarchy<SurfaceEnterChecker>().UnderTransform(transform);
             builder.Register<IOwnershipService, HitboxObjectsOwnershipService>(Lifetime.Singleton);
             builder.Register<CharacterAnimatorController>(Lifetime.Singleton);
             builder.Register<CharacterLocomotionHandler>(Lifetime.Singleton);
@@ -51,7 +52,7 @@ namespace AlirezaTarahomi.FightingGame.Character
         {
             //Main
             builder.Register<Idle>(Lifetime.Singleton);
-            builder.Register<Walk>(Lifetime.Singleton);
+            builder.Register<Move>(Lifetime.Singleton);
             builder.Register<Die>(Lifetime.Singleton);
 
             //Secondary

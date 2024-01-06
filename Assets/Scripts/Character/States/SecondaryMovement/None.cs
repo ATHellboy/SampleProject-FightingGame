@@ -30,7 +30,7 @@ namespace AlirezaTarahomi.FightingGame.Character.State.SecondaryMovement
 
         public override void FixedUpdate(float deltaTime, StateMachine stateMachine, CharacterSecondaryMovementStateMachineContext context)
         {
-            if (!context.GroundCheck.OnGround)
+            if (!context.SurfaceCheck.onGround)
             {
                 stateMachine.ChangeState(this, context.RelatedStates.fall, context);
             }

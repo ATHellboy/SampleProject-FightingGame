@@ -8,6 +8,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
     public class CharacterSecondaryMovementStateMachineContext : BaseStateMachineContext
     {
         public bool isJumpedPressed;
+        public bool isJumpedReleased;
         public float jumpHeight;
         public int jumpCounter;
         public bool isFlying;
@@ -16,7 +17,7 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         public CharacterLocomotionHandler LocomotionHandler { get; private set; }
         public CharacterAnimatorController AnimatorController { get; private set; }
         public CharacterContext CharacterContext { get; private set; }
-        public GroundCheck GroundCheck { get; private set; }
+        public SurfaceCheck SurfaceCheck { get; private set; }
 
         public class States
         {
@@ -38,13 +39,13 @@ namespace AlirezaTarahomi.FightingGame.Character.Context
         public States RelatedStates { get; }
 
         public CharacterSecondaryMovementStateMachineContext(Transform transform, CharacterContext characterContext,
-            CharacterLocomotionHandler locomotionHandler, CharacterAnimatorController animatorController, GroundCheck groundCheck,
+            CharacterLocomotionHandler locomotionHandler, CharacterAnimatorController animatorController, SurfaceCheck surfaceCheck,
             None none, Jump jump, Fall fall, Land land, Fly fly) : base(transform.gameObject, none, characterContext.debugStateMachine)
         {
             CharacterContext = characterContext;
             LocomotionHandler = locomotionHandler;
             AnimatorController = animatorController;
-            GroundCheck = groundCheck;
+            SurfaceCheck = surfaceCheck;
             RelatedStates = new States(none, jump, fall, land, fly);
         }
 
